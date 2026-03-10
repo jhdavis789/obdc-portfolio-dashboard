@@ -412,6 +412,25 @@ body {
   font-family: var(--mono); font-size: 10px; color: var(--text-2); margin-bottom: 8px;
 }
 
+/* ─── Default List ─── */
+.default-row {
+  display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+  background: var(--bg-2); border: 1px solid var(--border); margin-bottom: 4px;
+  font-family: var(--mono); font-size: 11px;
+}
+.default-row .default-company { flex: 1; color: var(--text-0); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.default-row .default-fv { color: var(--text-2); font-size: 10px; min-width: 60px; text-align: right; }
+.default-row input.default-recovery {
+  width: 48px; background: var(--bg-0); border: 1px solid var(--border); color: var(--text-0);
+  font-family: var(--mono); font-size: 11px; padding: 3px 6px; text-align: right; outline: none;
+}
+.default-row input.default-recovery:focus { border-color: var(--accent); }
+.default-row .default-remove {
+  background: none; border: none; color: var(--red); cursor: pointer; font-size: 14px;
+  padding: 0 4px; opacity: 0.6; transition: opacity 0.15s;
+}
+.default-row .default-remove:hover { opacity: 1; }
+
 /* ─── Sponsors Tab ─── */
 .grid-sponsors { display: grid; grid-template-columns: 1fr 1.5fr; gap: 16px; }
 .sponsor-list-panel .data-table tbody tr { cursor: pointer; transition: background 0.1s; }
@@ -974,6 +993,24 @@ body {
         <div class="shock-sector-list" id="shock-sectors"></div>
       </div>
     </div>
+
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-header"><span class="panel-title">Credit Defaults</span></div>
+      <div class="panel-body">
+        <p style="color:var(--text-2); font-size:12px; margin-bottom:14px; line-height:1.6;">
+          Add specific credits to a default list with assumed recovery rates. Defaulted credits are excluded from spread-widening calculations &mdash; their loss is computed as <strong style="color:var(--text-0)">(1 &minus; recovery%) &times; "fair value"</strong> instead.
+        </p>
+        <div style="display:flex; gap:8px; margin-bottom:12px; align-items:center;">
+          <input type="text" id="default-search" placeholder="Search company to add..." style="flex:1;background:var(--bg-2);border:1px solid var(--border);color:var(--text-0);font-family:var(--mono);font-size:11px;padding:6px 10px;outline:none;">
+          <div class="pos-dropdown" id="default-suggestions" style="position:relative;">
+            <div class="pos-dropdown-menu" id="default-suggestions-menu" style="top:0;left:-100%;min-width:400px;max-height:200px;"></div>
+          </div>
+        </div>
+        <div id="default-list"></div>
+        <div id="default-summary" style="font-family:var(--mono);font-size:10px;color:var(--text-2);margin-top:8px;"></div>
+      </div>
+    </div>
+
     <div class="stress-result-grid" id="stress-results" style="display:none"></div>
     <div class="grid-2" id="stress-charts-row" style="display:none">
       <div class="panel">
@@ -1703,6 +1740,7 @@ document.getElementById('search-input')?.addEventListener('input', () => applyPo
 
 // ─── Stress Test ───
 function buildStressUI() {
+  initDefaultSearch();
   // Show leverage info cards if balance sheet data available
   const levInfo = document.getElementById('leverage-info');
   if (currentBS) {
@@ -1762,14 +1800,31 @@ function runStress() {
 
   const results = [];
   let totalBefore = 0, totalAfter = 0;
+  let defaultLossTotal = 0;
   const sectorImpact = {};
 
   investments.forEach(inv => {
     const sector = inv.industry || 'Other';
-    const shockBps = shocks[sector] || 0;
     const fv = inv.fair_value_k || 0;
     totalBefore += fv;
 
+    // Check if this credit is in the default list
+    const defaultData = defaultedCredits.get(inv.company);
+    if (defaultData) {
+      // Defaulted credit: apply recovery rate, exclude from spread widening
+      const recovery = defaultData.recovery / 100;
+      const stressedFV = fv * recovery;
+      const loss = stressedFV - fv;
+      defaultLossTotal += Math.abs(loss);
+      if (!sectorImpact[sector]) sectorImpact[sector] = { before: 0, after: 0, shock: shocks[sector] || 0 };
+      sectorImpact[sector].before += fv;
+      sectorImpact[sector].after += stressedFV;
+      totalAfter += stressedFV;
+      results.push({ ...inv, stressed_fv: stressedFV, loss, loss_pct: fv ? (loss/fv)*100 : 0, defaulted: true });
+      return;
+    }
+
+    const shockBps = shocks[sector] || 0;
     if (shockBps === 0) { results.push({ ...inv, stressed_fv: fv, loss: 0, loss_pct: 0 }); totalAfter += fv; return; }
 
     const ytm = yearsToMaturity(inv.maturity);
@@ -1792,7 +1847,7 @@ function runStress() {
   investments.forEach(inv => {
     const sector = inv.industry || 'Other';
     if (!sectorImpact[sector]) sectorImpact[sector] = { before: 0, after: 0, shock: 0 };
-    if (!shocks[sector]) { sectorImpact[sector].before += inv.fair_value_k||0; sectorImpact[sector].after += inv.fair_value_k||0; }
+    if (!shocks[sector] && !defaultedCredits.has(inv.company)) { sectorImpact[sector].before += inv.fair_value_k||0; sectorImpact[sector].after += inv.fair_value_k||0; }
   });
 
   const grossLoss = totalAfter - totalBefore;
@@ -1819,10 +1874,18 @@ function runStress() {
   resContainer.style.display = '';
   resContainer.style.gridTemplateColumns = bs ? 'repeat(4, 1fr)' : 'repeat(4, 1fr)';
 
+  const spreadLoss = Math.abs(grossLoss) - defaultLossTotal;
+
   let cardsHtml = `
     <div class="stress-card"><div class="label">Gross Portfolio Loss</div><div class="value" style="color:var(--red)">${grossLoss<0?'-':''}$${Math.abs(grossLoss/1e6).toFixed(0)}M</div><div class="delta" style="color:var(--red)">${fmtPct(grossLossPct)} of portfolio</div></div>
     <div class="stress-card"><div class="label">Avg Shock Applied</div><div class="value" style="color:var(--amber)">${Math.round(avgShock)}bps</div><div class="delta" style="color:var(--text-2)">${Object.values(shocks).filter(v=>v>0).length} sectors shocked</div></div>
   `;
+  if (defaultedCredits.size > 0) {
+    cardsHtml += `
+      <div class="stress-card"><div class="label">Default Losses</div><div class="value" style="color:var(--red)">-$${(defaultLossTotal/1e3).toFixed(0)}M</div><div class="delta" style="color:var(--text-2)">${defaultedCredits.size} credits defaulted</div></div>
+      <div class="stress-card"><div class="label">Spread-Widening Losses</div><div class="value" style="color:var(--amber)">-$${(spreadLoss/1e3).toFixed(0)}M</div><div class="delta" style="color:var(--text-2)">ex-defaults</div></div>
+    `;
+  }
 
   if (bs) {
     const navColor = navLossPct < -15 ? 'var(--red)' : navLossPct < -5 ? 'var(--amber)' : 'var(--text-0)';
@@ -1877,10 +1940,10 @@ function runStress() {
 
   const losers = results.filter(r => r.loss < 0).sort((a,b) => a.loss - b.loss).slice(0, 25);
   document.querySelector('#stress-losers-table tbody').innerHTML = losers.map(inv => `
-    <tr>
-      <td class="company-cell" title="${inv.company}" style="cursor:pointer;text-decoration:underline;text-decoration-color:var(--border-bright);text-underline-offset:2px;" onclick="openSecurityModal('${inv.company.replace(/'/g, "\\'")}')">${inv.company}</td>
+    <tr${inv.defaulted ? ' style="background:rgba(239,68,68,0.08)"' : ''}>
+      <td class="company-cell" title="${inv.company}" style="cursor:pointer;text-decoration:underline;text-decoration-color:var(--border-bright);text-underline-offset:2px;" onclick="openSecurityModal('${inv.company.replace(/'/g, "\\'")}')">${inv.company}${inv.defaulted ? ' <span style="color:var(--red);font-size:9px;font-family:var(--mono);">[DEFAULT]</span>' : ''}</td>
       <td>${inv.industry||'\u2014'}</td>
-      <td class="num">${fmtBps(shocks[inv.industry]||0)}</td>
+      <td class="num">${inv.defaulted ? '<span style="color:var(--red);font-size:9px;">DEFAULT</span>' : fmtBps(shocks[inv.industry]||0)}</td>
       <td class="num">${fmtM(inv.fair_value_k)}</td>
       <td class="num">${fmtM(inv.stressed_fv)}</td>
       <td class="num neg">${fmt(inv.loss)}</td>
@@ -1893,6 +1956,8 @@ function resetStress() {
   document.querySelectorAll('.shock-input').forEach(inp => inp.value = 0);
   document.getElementById('stress-results').style.display = 'none';
   document.getElementById('stress-charts-row').style.display = 'none';
+  defaultedCredits.clear();
+  renderDefaultList();
 }
 
 // ─── Tooltip ───
@@ -2243,6 +2308,113 @@ function secModalEscHandler(e) {
 document.getElementById('security-modal-overlay').addEventListener('click', function(e) {
   if (e.target === this) closeSecurityModal();
 });
+
+// ─── Credit Defaults ───
+const defaultedCredits = new Map(); // company name -> { recovery: 0-100 }
+
+function initDefaultSearch() {
+  const input = document.getElementById('default-search');
+  const menu = document.getElementById('default-suggestions-menu');
+
+  input.addEventListener('input', () => {
+    const q = input.value.toLowerCase().trim();
+    if (q.length < 2) { menu.classList.remove('open'); return; }
+
+    // Get unique companies
+    const seen = new Set();
+    const matches = [];
+    investments.forEach(inv => {
+      if (seen.has(inv.company) || defaultedCredits.has(inv.company)) return;
+      if (inv.company.toLowerCase().includes(q) || (inv.industry||'').toLowerCase().includes(q)) {
+        seen.add(inv.company);
+        const fv = investments.filter(i => i.company === inv.company).reduce((s,i) => s + (i.fair_value_k||0), 0);
+        matches.push({ company: inv.company, industry: inv.industry, fv });
+      }
+    });
+
+    if (!matches.length) { menu.classList.remove('open'); return; }
+    matches.sort((a,b) => b.fv - a.fv);
+
+    menu.innerHTML = `<div class="dd-options">${matches.slice(0,15).map(m => `
+      <div class="dd-option" data-company="${m.company.replace(/"/g,'&quot;')}" style="cursor:pointer;">
+        <span style="flex:1">${m.company}</span>
+        <span class="dd-count">${fmtM(m.fv)}</span>
+      </div>
+    `).join('')}</div>`;
+    menu.classList.add('open');
+
+    menu.querySelectorAll('.dd-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        addDefaultCredit(opt.dataset.company);
+        input.value = '';
+        menu.classList.remove('open');
+      });
+    });
+  });
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape') menu.classList.remove('open');
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#default-search') && !e.target.closest('#default-suggestions-menu')) {
+      menu.classList.remove('open');
+    }
+  });
+}
+
+function addDefaultCredit(company, recovery = 40) {
+  defaultedCredits.set(company, { recovery });
+  renderDefaultList();
+}
+
+function removeDefaultCredit(company) {
+  defaultedCredits.delete(company);
+  renderDefaultList();
+}
+
+function renderDefaultList() {
+  const container = document.getElementById('default-list');
+  if (!defaultedCredits.size) {
+    container.innerHTML = '';
+    document.getElementById('default-summary').textContent = '';
+    return;
+  }
+
+  let html = '';
+  let totalFV = 0;
+  let totalLoss = 0;
+
+  defaultedCredits.forEach((data, company) => {
+    const compFV = investments.filter(i => i.company === company).reduce((s,i) => s + (i.fair_value_k||0), 0);
+    const loss = compFV * (1 - data.recovery / 100);
+    totalFV += compFV;
+    totalLoss += loss;
+    html += `<div class="default-row">
+      <span class="default-company" title="${company}">${company}</span>
+      <span class="default-fv">FV: ${fmtM(compFV)}</span>
+      <label style="color:var(--text-2);font-size:9px;">Recovery:</label>
+      <input type="number" class="default-recovery" value="${data.recovery}" min="0" max="100" step="5" data-company="${company.replace(/"/g,'&quot;')}" onchange="updateDefaultRecovery(this)">
+      <span style="color:var(--text-2);font-size:9px;">%</span>
+      <span style="color:var(--red);font-size:10px;min-width:55px;text-align:right;">-${fmtM(loss)}</span>
+      <button class="default-remove" onclick="removeDefaultCredit('${company.replace(/'/g,"\\'")}')">&times;</button>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+  const portFV = investments.reduce((s,i) => s + (i.fair_value_k||0), 0);
+  document.getElementById('default-summary').textContent =
+    `${defaultedCredits.size} defaulted credits | Total FV at risk: ${fmtM(totalFV)} | Est. loss: ${fmtM(totalLoss)} (${fmtPct(totalLoss/portFV*100,2)} of portfolio)`;
+}
+
+function updateDefaultRecovery(el) {
+  const company = el.dataset.company;
+  const val = Math.max(0, Math.min(100, parseInt(el.value) || 0));
+  if (defaultedCredits.has(company)) {
+    defaultedCredits.get(company).recovery = val;
+    renderDefaultList();
+  }
+}
 
 // ─── Sponsors Tab ───
 let sponsorSortState = { key: 'fv', dir: 'desc' };
