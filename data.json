@@ -57,7 +57,7 @@
       "reference_rate": "Fixed/N/A",
       "cash_rate_pct": 12.0,
       "pik_rate_pct": null,
-      "spread_bps": null,
+      "spread_bps": 767,
       "maturity": "7/2030",
       "pct_class_held": null,
       "par_amount_k": 68514.0,
@@ -88,7 +88,10 @@
       "profile": {
         "business_description": "AAM Series 1.1 Rail and Domestic Intermodal Feeder, LLC is a feeder fund within the Amergin Asset Management platform that invests in rail cars, locomotives, and domestic intermodal containers and chassis. The entity provides asset-backed financing for the acquisition and leasing of railroad and intermodal transportation equipment.",
         "end_customers": "The primary end customers are Class I railroads, short-line railroad operators, intermodal carriers, and shipping companies that lease rail cars, intermodal containers, and chassis rather than purchasing them outright. Industrial shippers of bulk commodities, chemicals, and manufactured goods that require specialized rail car fleets are the ultimate users of the leased equipment."
-      }
+      },
+      "spread_is_implied": true,
+      "implied_spread_currency": "USD",
+      "implied_spread_base_rate": 4.33
     },
     {
       "company": "AAM Series 2.1 Aviation Feeder, LLC",
@@ -98,7 +101,7 @@
       "reference_rate": "Fixed/N/A",
       "cash_rate_pct": 12.0,
       "pik_rate_pct": null,
-      "spread_bps": null,
+      "spread_bps": 767,
       "maturity": "11/2030",
       "pct_class_held": null,
       "par_amount_k": 88783.0,
@@ -135,7 +138,10 @@
       "profile": {
         "business_description": "AAM Series 2.1 Aviation Feeder, LLC is a feeder fund within the Amergin Asset Management platform that invests in aviation assets, providing tailor-made financing solutions for the acquisition, leasing, and operation of commercial aircraft and engines. Amergin, founded in 2022 as a portfolio company of Blue Owl, specializes in transportation asset finance with a focus on mid-life commercial aircraft.",
         "end_customers": "The primary end customers are commercial airlines and cargo operators that lease aircraft and engines from the platform rather than purchasing them directly. Airlines serving national and international route networks benefit from Amergin's sale-and-leaseback and financing lease structures to support their fleet requirements."
-      }
+      },
+      "spread_is_implied": true,
+      "implied_spread_currency": "USD",
+      "implied_spread_base_rate": 4.33
     },
     {
       "company": "AAM Series 2.1 Aviation Feeder, LLC",
@@ -1193,7 +1199,7 @@
       "reference_rate": "Fixed/N/A",
       "cash_rate_pct": 14.25,
       "pik_rate_pct": null,
-      "spread_bps": null,
+      "spread_bps": 992,
       "maturity": "5/2030",
       "pct_class_held": null,
       "par_amount_k": 202868.0,
@@ -1224,7 +1230,10 @@
       "profile": {
         "business_description": "Associations Finance, Inc. provides financial services to homeowner associations and community associations, including assessment collection, accounts receivable management, banking services, and financial reporting. The company works alongside community management operations to handle the financial administration of residential communities.",
         "end_customers": "The primary end customers are HOA boards and community association boards that need professional financial management for their association's operating budgets, reserve funds, and assessment collections. Individual homeowners who pay monthly assessments to their associations are the underlying payers in the financial ecosystem managed by the company."
-      }
+      },
+      "spread_is_implied": true,
+      "implied_spread_currency": "USD",
+      "implied_spread_base_rate": 4.33
     },
     {
       "company": "Associations, Inc.",
@@ -1995,7 +2004,7 @@
       "reference_rate": "Fixed/N/A",
       "cash_rate_pct": 5.5,
       "pik_rate_pct": null,
-      "spread_bps": null,
+      "spread_bps": 117,
       "maturity": "8/2030",
       "pct_class_held": null,
       "par_amount_k": 4694.0,
@@ -2032,7 +2041,10 @@
       "profile": {
         "business_description": "When I Work provides cloud-based employee scheduling, time and attendance tracking, and team communication software designed for shift-based workforces. The platform offers features including shift management, GPS clock-ins with geofencing, built-in messaging, and integrated payroll, with pricing starting at $2.50 per user per month.",
         "end_customers": "When I Work serves over one million users across 50+ countries, primarily targeting small and mid-sized businesses with hourly, shift-based workforces. Its core customers are restaurants, retail stores, healthcare facilities, and other service businesses where managers need to build schedules, track attendance, and communicate with frontline workers."
-      }
+      },
+      "spread_is_implied": true,
+      "implied_spread_currency": "USD",
+      "implied_spread_base_rate": 4.33
     },
     {
       "company": "BEHP Co-Investor II, L.P.",
@@ -5198,7 +5210,7 @@
         }
       ],
       "profile": {
-        "business_description": "Finastra is a global financial technology company providing software solutions for banks, credit unions, and other financial institutions across retail banking, lending, payments, treasury, and capital markets. Formed in 2017 through the merger of Misys and D+H under Vista Equity Partners, Finastra is trusted by over 8,000 customers\u2014including 45 of the world's top 50 banks\u2014in more than 130 countries.",
+        "business_description": "Finastra is a global financial technology company providing software solutions for banks, credit unions, and other financial institutions across retail banking, lending, payments, treasury, and capital markets. Formed in 2017 through the merger of Misys and D+H under Vista Equity Partners, Finastra is trusted by over 8,000 customers—including 45 of the world's top 50 banks—in more than 130 countries.",
         "end_customers": "Finastra's primary end customers are banks, credit unions, mortgage lenders, and other financial institutions that license its core banking, digital lending, payments, and treasury management software. The company also serves community banks and smaller financial institutions seeking cloud-based banking technology to modernize their operations and digital customer experience."
       }
     },
@@ -6267,7 +6279,7 @@
       }
     },
     {
-      "company": "H&F Opportunities LUX III S.\u00c0 R.L (dba Checkmarx)",
+      "company": "H&F Opportunities LUX III S.À R.L (dba Checkmarx)",
       "address": "140 East Ridgewood Avenue, Paramus, NJ, 07652",
       "industry": "Internet software and services",
       "investment_type": "First lien senior secured loan",
@@ -7974,7 +7986,7 @@
     },
     {
       "company": "Klarna Holding AB",
-      "address": "Sveav\u00e4gen 46, 111 34 Stockholm, Sweden",
+      "address": "Sveavägen 46, 111 34 Stockholm, Sweden",
       "industry": "Financial services",
       "investment_type": "Subordinated Floating Rate Notes",
       "reference_rate": "SOFR",
@@ -8016,7 +8028,7 @@
       ],
       "profile": {
         "business_description": "Klarna is a Swedish fintech company and the world's leading buy-now-pay-later (BNPL) provider, allowing consumers to split purchases into interest-free installments at over 500,000 retail partners worldwide. The company went public on the NYSE in September 2025 in a $1.37 billion IPO and has expanded beyond BNPL into digital banking, the Klarna Card, and AI-powered shopping tools serving 111 million consumers globally.",
-        "end_customers": "Klarna's primary end customers are online and in-store consumers\u2014particularly millennials and Gen Z shoppers\u2014who use its pay-in-4 installment plans, financing options, and price comparison tools at checkout. The company also serves e-commerce retailers and brands who integrate Klarna at checkout to increase conversion rates, average order values, and customer acquisition."
+        "end_customers": "Klarna's primary end customers are online and in-store consumers—particularly millennials and Gen Z shoppers—who use its pay-in-4 installment plans, financing options, and price comparison tools at checkout. The company also serves e-commerce retailers and brands who integrate Klarna at checkout to increase conversion rates, average order values, and customer acquisition."
       }
     },
     {
@@ -8372,7 +8384,7 @@
       ],
       "profile": {
         "business_description": "U.S. Retirement & Benefits Partners (now rebranded as Daybright) is one of the nation's largest independent financial services firms specializing in employer-sponsored retirement plans and employee benefits. The company provides 401(k), 403(b), 457(b), and 401(a) plan administration, benefits consulting, compliance services, investment advisory, and actuarial services.",
-        "end_customers": "The company's primary end customers are employers\u2014particularly school districts, municipalities, healthcare systems, and mid-market businesses\u2014that need retirement plan administration and employee benefits consulting. It also serves the employees of those organizations who participate in retirement savings plans and benefits programs."
+        "end_customers": "The company's primary end customers are employers—particularly school districts, municipalities, healthcare systems, and mid-market businesses—that need retirement plan administration and employee benefits consulting. It also serves the employees of those organizations who participate in retirement savings plans and benefits programs."
       }
     },
     {
@@ -10047,7 +10059,7 @@
       }
     },
     {
-      "company": "NELIPAK EUROPEAN HOLDINGS CO\u00d6PERATIEF U.A.",
+      "company": "NELIPAK EUROPEAN HOLDINGS COÖPERATIEF U.A.",
       "address": "21 Amflex Drive, Cranston, RI, 02921",
       "industry": "Healthcare equipment and services",
       "investment_type": "First lien senior secured EUR revolving loan",
@@ -10094,7 +10106,7 @@
       }
     },
     {
-      "company": "NELIPAK EUROPEAN HOLDINGS CO\u00d6PERATIEF U.A.",
+      "company": "NELIPAK EUROPEAN HOLDINGS COÖPERATIEF U.A.",
       "address": "21 Amflex Drive, Cranston, RI, 02921",
       "industry": "Healthcare equipment and services",
       "investment_type": "First lien senior secured EUR term loan",
@@ -11037,7 +11049,7 @@
       }
     },
     {
-      "company": "Patriot Acquisition TopCo S.\u00c0 R.L. (dba Corza Health, Inc.)",
+      "company": "Patriot Acquisition TopCo S.À R.L. (dba Corza Health, Inc.)",
       "address": "247 Station Drive Suite NE1, Westwood, MA, 02090",
       "industry": "Healthcare equipment and services",
       "investment_type": "First lien senior secured loan",
@@ -13780,7 +13792,7 @@
       ],
       "profile": {
         "business_description": "Smarsh is the leading compliance technology platform for digital communications governance, archiving, and surveillance, trusted by over 6,500 customers globally including 18 of the 20 largest financial institutions. The company's AI-native platform captures, archives, and monitors communications across email, mobile, voice, chat, video, and social media channels to help regulated organizations manage risk and meet regulatory requirements.",
-        "end_customers": "Smarsh's primary end customers are financial services firms\u2014including banks, broker-dealers, investment advisors, and insurance companies\u2014that must comply with SEC, FINRA, MiFID II, and other regulatory record-keeping and supervision requirements. The company also serves compliance teams at healthcare, government, and energy companies that need to archive and monitor employee communications for legal and regulatory purposes."
+        "end_customers": "Smarsh's primary end customers are financial services firms—including banks, broker-dealers, investment advisors, and insurance companies—that must comply with SEC, FINRA, MiFID II, and other regulatory record-keeping and supervision requirements. The company also serves compliance teams at healthcare, government, and energy companies that need to archive and monitor employee communications for legal and regulatory purposes."
       }
     },
     {
@@ -15155,7 +15167,7 @@
       ],
       "profile": {
         "business_description": "USRP Holdings is the parent holding company of U.S. Retirement & Benefits Partners (now Daybright), one of the nation's largest independent firms specializing in employer-sponsored retirement plans and employee benefits distribution. The company has grown through acquisitions of regional retirement and benefits advisory firms across the country.",
-        "end_customers": "The company's primary end customers are employers\u2014particularly school districts, municipalities, healthcare systems, and mid-market businesses\u2014seeking retirement plan administration, employee benefits design, and compliance services. It also serves the individual employees who participate in the retirement and benefits programs it administers."
+        "end_customers": "The company's primary end customers are employers—particularly school districts, municipalities, healthcare systems, and mid-market businesses—seeking retirement plan administration, employee benefits design, and compliance services. It also serves the individual employees who participate in the retirement and benefits programs it administers."
       }
     },
     {
@@ -15241,7 +15253,7 @@
       "reference_rate": "Fixed/N/A",
       "cash_rate_pct": 10.0,
       "pik_rate_pct": null,
-      "spread_bps": null,
+      "spread_bps": 567,
       "maturity": "11/2030",
       "pct_class_held": null,
       "par_amount_k": 90455.0,
@@ -15272,7 +15284,10 @@
       "profile": {
         "business_description": "VCI Asset Holdings 1 LLC is a special purpose vehicle within the Valor Compute Infrastructure platform, which acquires and leases data center compute infrastructure (including NVIDIA GPUs) to AI and hyperscale computing customers. The entity is managed by Valor Equity Partners and was created to support a $5.4 billion transaction backed by Apollo to provide compute hardware to xAI Corp.",
         "end_customers": "The primary end customer is xAI Corp (Elon Musk's AI company), which leases the GPU compute infrastructure under a triple net lease structure for training and development of its Grok large language model. More broadly, the platform targets hyperscale AI companies and technology firms with massive compute requirements for model training and inference workloads."
-      }
+      },
+      "spread_is_implied": true,
+      "implied_spread_currency": "USD",
+      "implied_spread_base_rate": 4.33
     },
     {
       "company": "VCI Intermediate TopCo 1 LLC",
@@ -15648,7 +15663,7 @@
       "reference_rate": "Fixed/N/A",
       "cash_rate_pct": 10.0,
       "pik_rate_pct": null,
-      "spread_bps": null,
+      "spread_bps": 567,
       "maturity": "2/2026",
       "pct_class_held": null,
       "par_amount_k": 14537.0,
@@ -15679,7 +15694,10 @@
       "profile": {
         "business_description": "Walker Edison is an e-commerce-driven furniture company founded in 2006 in West Jordan, Utah, that designs, sources, and sells affordable, ready-to-assemble home furnishings. The company offers furniture for bedrooms, living rooms, dining areas, home offices, and outdoor spaces, leveraging data-driven design, global sourcing operations in China, Vietnam, and Brazil, and direct-to-consumer logistics.",
         "end_customers": "Walker Edison targets value-conscious consumers shopping for affordable, modern furniture primarily through e-commerce channels including Amazon, Walmart.com, and the company's own website. Its products also reach consumers through home improvement retailers like The Home Depot, appealing to first-time homeowners, apartment renters, and budget-minded families furnishing their homes."
-      }
+      },
+      "spread_is_implied": true,
+      "implied_spread_currency": "USD",
+      "implied_spread_base_rate": 4.33
     },
     {
       "company": "Walker Edison Furniture Company LLC",

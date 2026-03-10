@@ -306,6 +306,62 @@ body {
   cursor: pointer; transition: all 0.15s;
 }
 .scenario-chip:hover { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+.scenario-chip.overlay-chip:hover { border-color: var(--purple); color: var(--purple); background: rgba(168,85,247,0.13); }
+
+.scenario-chip-group { display: flex; align-items: center; gap: 4px; }
+
+.scenario-info-btn {
+  font-family: var(--mono); font-size: 9px; width: 16px; height: 16px; line-height: 16px;
+  text-align: center; border: 1px solid var(--border); background: var(--bg-3);
+  color: var(--text-2); cursor: pointer; transition: all 0.15s; padding: 0; flex-shrink: 0;
+}
+.scenario-info-btn:hover { border-color: var(--cyan); color: var(--cyan); background: var(--bg-2); }
+
+.scenario-info-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 600;
+  display: none; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.2s ease;
+}
+.scenario-info-overlay.visible { display: flex; }
+.scenario-info-overlay.show { opacity: 1; }
+
+.scenario-info-modal {
+  width: 640px; max-width: 90vw; max-height: 85vh; background: var(--bg-1);
+  border: 1px solid var(--border-bright); display: flex; flex-direction: column;
+  transform: scale(0.95); transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scenario-info-overlay.show .scenario-info-modal { transform: scale(1); }
+
+.scenario-info-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 16px 20px 12px; border-bottom: 1px solid var(--border); background: var(--bg-2); flex-shrink: 0;
+}
+.scenario-info-title { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--amber); letter-spacing: 0.5px; }
+.scenario-info-period { font-family: var(--mono); font-size: 10px; color: var(--text-2); margin-top: 3px; }
+.scenario-info-close {
+  font-family: var(--mono); font-size: 16px; background: none; border: 1px solid var(--border);
+  color: var(--text-2); cursor: pointer; padding: 2px 8px; line-height: 1; transition: all 0.15s; flex-shrink: 0; margin-left: 16px;
+}
+.scenario-info-close:hover { color: var(--red); border-color: var(--red); }
+
+.scenario-info-body { padding: 16px 20px; flex: 1; overflow-y: auto; font-size: 12px; color: var(--text-1); line-height: 1.7; }
+.scenario-info-body h4 { font-family: var(--mono); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-2); margin: 16px 0 6px; font-weight: 600; }
+.scenario-info-body h4:first-child { margin-top: 0; }
+.scenario-info-body p { margin-bottom: 8px; }
+.scenario-info-body strong { color: var(--text-0); }
+.scenario-info-body .si-stat-row { display: flex; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+.scenario-info-body .si-stat {
+  background: var(--bg-2); border: 1px solid var(--border); padding: 8px 12px; flex: 1; min-width: 120px;
+}
+.scenario-info-body .si-stat .si-label { font-family: var(--mono); font-size: 8px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-2); }
+.scenario-info-body .si-stat .si-val { font-family: var(--mono); font-size: 15px; font-weight: 600; margin-top: 2px; }
+.scenario-info-body .si-source { font-family: var(--mono); font-size: 9px; color: var(--text-2); line-height: 1.6; }
+.scenario-info-body .si-source a { color: var(--cyan); text-decoration: none; }
+.scenario-info-body .si-source a:hover { text-decoration: underline; }
+.scenario-info-body table { width: 100%; border-collapse: collapse; margin: 8px 0; font-family: var(--mono); font-size: 10px; }
+.scenario-info-body table th { text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--border-bright); color: var(--text-2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 8px; }
+.scenario-info-body table td { padding: 4px 8px; border-bottom: 1px solid var(--border); color: var(--text-1); }
+.scenario-info-body table td:last-child { color: var(--text-0); }
 
 .stress-result-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
 .stress-card { background: var(--bg-2); border: 1px solid var(--border); padding: 12px; }
@@ -430,6 +486,39 @@ body {
   padding: 0 4px; opacity: 0.6; transition: opacity 0.15s;
 }
 .default-row .default-remove:hover { opacity: 1; }
+
+/* ─── Info Tooltip ─── */
+.info-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--bg-3); border: 1px solid var(--border-bright);
+  color: var(--text-2); font-size: 10px; font-weight: 600;
+  cursor: help; position: relative; margin-left: 6px; vertical-align: middle;
+  font-family: var(--mono); line-height: 1;
+}
+.info-btn:hover { color: var(--accent); border-color: var(--accent); }
+.info-btn .info-tooltip {
+  display: none; position: absolute; bottom: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%); width: 320px; padding: 10px 12px;
+  background: var(--bg-1); border: 1px solid var(--border-bright);
+  border-radius: 4px; font-family: var(--sans); font-size: 11px;
+  font-weight: 400; color: var(--text-1); line-height: 1.5;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 100;
+  text-align: left; white-space: normal;
+}
+.info-btn .info-tooltip::after {
+  content: ''; position: absolute; top: 100%; left: 50%;
+  transform: translateX(-50%); border: 6px solid transparent;
+  border-top-color: var(--border-bright);
+}
+.info-btn:hover .info-tooltip { display: block; }
+.info-tooltip strong { color: var(--text-0); }
+.info-tooltip code { font-family: var(--mono); font-size: 10px; color: var(--accent); background: var(--bg-3); padding: 1px 4px; border-radius: 2px; }
+.implied-tag {
+  display: inline-block; font-family: var(--mono); font-size: 9px;
+  background: var(--amber-dim); color: var(--amber); padding: 1px 4px;
+  border-radius: 2px; margin-left: 4px; vertical-align: middle;
+}
 
 /* ─── Sponsors Tab ─── */
 .grid-sponsors { display: grid; grid-template-columns: 1fr 1.5fr; gap: 16px; }
@@ -737,6 +826,20 @@ body {
 <div class="loading-overlay" id="loader"><div class="loading-text">LOADING PORTFOLIO DATA</div></div>
 <div id="tooltip" class="tooltip"></div>
 
+<!-- Scenario Info Modal -->
+<div class="scenario-info-overlay" id="scenario-info-overlay">
+  <div class="scenario-info-modal">
+    <div class="scenario-info-header">
+      <div>
+        <div class="scenario-info-title" id="scenario-info-title"></div>
+        <div class="scenario-info-period" id="scenario-info-period"></div>
+      </div>
+      <button class="scenario-info-close" onclick="closeScenarioInfo()">&times;</button>
+    </div>
+    <div class="scenario-info-body" id="scenario-info-body"></div>
+  </div>
+</div>
+
 <!-- Security Detail Modal -->
 <div class="security-modal-overlay" id="security-modal-overlay">
   <div class="security-modal" id="security-modal">
@@ -786,7 +889,7 @@ body {
 
     <!-- Spread with industry toggles -->
     <div class="panel" style="margin-bottom:16px">
-      <div class="panel-header"><span class="panel-title">Spread Distribution (BPS)</span></div>
+      <div class="panel-header"><span class="panel-title">Spread Distribution (BPS)<span class="info-btn">i<span class="info-tooltip">Floating-rate loans use the <strong>stated spread</strong> over the reference rate (SOFR, EURIBOR, SONIA). Fixed-rate loans use an <strong>implied spread</strong> = all-in coupon minus the base rate as of period end:<br><code>USD: SOFR 4.33%</code> <code>EUR: EURIBOR 2.89%</code> <code>GBP: SONIA 4.50%</code><br>Implied spreads are marked with an <span style="color:var(--amber)">amber tag</span> in tables and tooltips.</span></span></span></div>
       <div class="ind-toggles" id="spread-toggles"></div>
       <div class="panel-body"><div class="chart-wrap" style="height:280px"><canvas id="chart-spreads"></canvas></div></div>
     </div>
@@ -800,7 +903,7 @@ body {
 
     <!-- DtS with industry toggles -->
     <div class="panel" style="margin-bottom:16px">
-      <div class="panel-header"><span class="panel-title">Duration &times; Spread (DtS) &mdash; Carry vs Risk</span></div>
+      <div class="panel-header"><span class="panel-title">Duration &times; Spread (DtS) &mdash; Carry vs Risk<span class="info-btn">i<span class="info-tooltip"><strong>DtS = CSD &times; Spread (bps) / 100</strong><br>X-axis is Credit Spread Duration (CSD) &mdash; for floating-rate loans, CSD &asymp; years to maturity (interest rate duration &asymp; 0 because coupon resets). Measures carry relative to credit spread risk. Higher DtS = more spread compensation per unit of duration.</span></span></span></div>
       <div class="ind-toggles" id="dts-toggles"></div>
       <div class="panel-body"><div class="chart-wrap" style="height:340px"><canvas id="chart-dts"></canvas></div></div>
     </div>
@@ -908,7 +1011,7 @@ body {
               <th data-key="industry">Industry</th>
               <th data-key="type_simple">Type</th>
               <th data-key="investment_category">D/E</th>
-              <th data-key="spread_bps">Spread</th>
+              <th data-key="spread_bps">Spread <span class="info-btn" style="font-size:9px;width:14px;height:14px;">i<span class="info-tooltip" style="width:280px;">Floating-rate: stated spread over SOFR/EURIBOR/SONIA. Fixed-rate: <strong>implied spread</strong> (coupon minus base rate). Implied values tagged <span class="implied-tag">IMP</span>.</span></span></th>
               <th data-key="cash_rate_pct">Cash %</th>
               <th data-key="origination_date">Originated</th>
               <th data-key="maturity">Maturity</th>
@@ -917,6 +1020,7 @@ body {
               <th data-key="fair_value_k">FV ($K)</th>
               <th data-key="pct_portfolio">% Port</th>
               <th data-key="mtm_pct">MTM %</th>
+              <th data-key="csd">CSD</th>
               <th data-key="dts">DtS</th>
             </tr></thead>
             <tbody></tbody>
@@ -963,13 +1067,18 @@ body {
       <div class="panel-header"><span class="panel-title">Portfolio Stress Testing</span></div>
       <div class="panel-body">
         <p style="color:var(--text-2); font-size:12px; margin-bottom:14px; line-height:1.6;">
-          Apply spread shocks by sector to estimate &ldquo;fair value&rdquo; impact on the <strong style="color:var(--text-0)">levered</strong> portfolio. Gross portfolio losses are amplified by BDC leverage (debt/equity). Duration-based approximation: for each +100bps of spread widening, &ldquo;fair value&rdquo; declines by ~(duration &times; 0.01) of par. Results show both gross (asset-level) and levered (NAV/equity) impact, plus asset coverage ratio breach warnings.
+          Apply spread shocks by sector to estimate &ldquo;fair value&rdquo; impact on the <strong style="color:var(--text-0)">levered</strong> portfolio. Gross portfolio losses are amplified by BDC leverage (debt/equity). Spread duration approximation: for each +100bps of spread widening, fair value declines by ~(spread_duration &times; 0.01) of par. Most holdings are floating-rate (SOFR + spread) &mdash; rate duration is ~0.25yr but spread duration is ~3yr because the spread is contractually fixed. Results show both gross (asset-level) and levered (NAV/equity) impact, plus asset coverage ratio breach warnings.
         </p>
 
         <div id="leverage-info" style="display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap;"></div>
+        <div id="duration-stats" style="display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap;"></div>
 
         <div style="margin-bottom:14px">
-          <div class="panel-title" style="margin-bottom:8px; font-size:9px;">Preset Scenarios</div>
+          <div class="panel-title" style="margin-bottom:8px; font-size:9px;">Historical Scenarios</div>
+          <div class="stress-scenarios" id="historical-scenarios"></div>
+          <div class="panel-title" style="margin-bottom:8px; margin-top:12px; font-size:9px;">Overlay Scenarios <span style="font-weight:400;letter-spacing:0;text-transform:none;color:var(--text-2);">&mdash; layers on top of current shocks</span></div>
+          <div class="stress-scenarios" id="overlay-scenarios"></div>
+          <div class="panel-title" style="margin-bottom:8px; margin-top:12px; font-size:9px;">Simple Scenarios</div>
           <div class="stress-scenarios">
             <button class="scenario-chip" data-scenario="mild">Mild (+50bps all)</button>
             <button class="scenario-chip" data-scenario="moderate">Moderate (+150bps all)</button>
@@ -1060,6 +1169,11 @@ const fmtM = n => n == null ? '\u2014' : '$' + (n/1e3).toFixed(0) + 'M';
 const fmtB = n => n == null ? '\u2014' : '$' + (n/1e6).toFixed(2) + 'B';
 const fmtPct = (n, d=1) => n == null ? '\u2014' : n.toFixed(d) + '%';
 const fmtBps = n => n == null ? '\u2014' : n + 'bps';
+const fmtSpread = inv => {
+  if (inv.spread_bps == null) return '\u2014';
+  const tag = inv.spread_is_implied ? '<span class="implied-tag">IMP</span>' : '';
+  return inv.spread_bps + 'bps' + tag;
+};
 
 function parseMaturityYear(m) {
   if (!m) return null;
@@ -1078,10 +1192,33 @@ function yearsToMaturity(m) {
   return Math.max(0, (mat - now) / (365.25 * 86400000));
 }
 
-function computeDtS(inv) {
+// Spread duration: price sensitivity to credit spread changes.
+// Floating-rate (SOFR+spread): base rate resets quarterly (rate duration ≈ 0),
+// but spread is contractually fixed — spread duration = annuity factor:
+//   SD = (1 - (1+y)^-T) / y,  y = SOFR + spread, T = years to maturity
+// Fixed-rate: modified duration approximation.
+const SOFR_RATE = 0.0433; // current SOFR as of early 2026
+
+function computeSpreadDuration(inv) {
+  if (inv.investment_category === 'Equity') return null;
   const ytm = yearsToMaturity(inv.maturity);
-  if (ytm == null || inv.spread_bps == null) return null;
-  return ytm * (inv.spread_bps / 100); // duration (years) * spread (in %)
+  if (ytm == null || ytm <= 0) return null;
+  const spread = inv.spread_bps;
+  const ref = inv.reference_rate || '';
+  if (spread != null && ref.includes('SOFR')) {
+    const allIn = SOFR_RATE + spread / 10000;
+    return allIn > 0 ? (1 - Math.pow(1 + allIn, -ytm)) / allIn : ytm;
+  }
+  // Fixed rate or no spread: modified duration approx
+  const coupon = (inv.cash_rate_pct || 0) / 100;
+  const y = coupon > 0 ? coupon : 0.08;
+  return (1 - Math.pow(1 + y, -ytm)) / y;
+}
+
+function computeDtS(inv) {
+  const sd = computeSpreadDuration(inv);
+  if (sd == null || inv.spread_bps == null) return null;
+  return sd * (inv.spread_bps / 100); // spread_duration (years) × spread (%)
 }
 
 function getIndustries() {
@@ -1129,7 +1266,8 @@ async function loadData() {
     const bsResp = await fetch('balance_sheet.json');
     if (bsResp.ok) {
       const bs = await bsResp.json();
-      BALANCE_SHEETS['OBDC'] = bs; // keyed by ticker
+      const bsTicker = bs.ticker || Object.keys(BDC_REGISTRY)[0] || 'OBDC';
+      BALANCE_SHEETS[bsTicker] = bs;
     }
   } catch(e) { console.warn('No balance sheet data', e); }
 
@@ -1159,6 +1297,7 @@ function switchBDC(ticker) {
   // Compute DtS and % of portfolio for every investment
   const totalFVForPct = investments.reduce((s,i) => s + (i.fair_value_k||0), 0);
   investments.forEach(inv => {
+    inv.spread_dur = computeSpreadDuration(inv);
     inv.dts = computeDtS(inv);
     inv.pct_portfolio = inv.fair_value_k != null && totalFVForPct ? (inv.fair_value_k / totalFVForPct * 100) : null;
   });
@@ -1257,12 +1396,15 @@ function buildSummaryCards() {
   const portfolioMTM = totalCost ? ((totalFV / totalCost) - 1) * 100 : 0;
   const dtsVals = investments.map(i => i.dts).filter(v => v != null);
   const avgDtS = dtsVals.length ? dtsVals.reduce((a,b)=>a+b,0) / dtsVals.length : 0;
+  const csdInv = investments.filter(i => i.csd != null);
+  const wgtCSD = csdInv.length ? csdInv.reduce((s,i) => s + i.csd * (i.fair_value_k||0), 0) / csdInv.reduce((s,i) => s + (i.fair_value_k||0), 0) : 0;
 
   const cards = [
     { label: 'Total "Fair Value"', value: fmtB(totalFV), sub: `Par: ${fmtB(currentBDC.debt_par_k)}`, cls: 'green' },
     { label: 'Investments', value: fmt(investments.length), sub: `${uniqueCompanies} unique borrowers`, cls: 'blue' },
     { label: 'Wtd Avg Spread', value: fmtBps(Math.round(wgtSpread)), sub: `Simple avg: ${fmtBps(Math.round(avgSpread))}`, cls: 'amber' },
     { label: 'Portfolio MTM', value: fmtPct(portfolioMTM), sub: `Cost: ${fmtB(totalCost)}`, cls: portfolioMTM >= 0 ? 'green' : 'red' },
+    { label: 'Wtd Avg CSD', value: wgtCSD.toFixed(1) + 'yr', sub: `Credit spread duration`, cls: 'blue' },
     { label: 'Avg DtS', value: avgDtS.toFixed(2), sub: `Duration \u00d7 Spread`, cls: 'purple' },
     { label: 'Industries', value: fmt(new Set(investments.map(i=>i.industry)).size), sub: `Debt: ${investments.filter(i=>i.investment_category==='Debt').length} / Equity: ${investments.filter(i=>i.investment_category==='Equity').length}`, cls: 'cyan' },
   ];
@@ -1278,6 +1420,33 @@ function buildSummaryCards() {
 
 // ─── Treemap ───
 function buildTreemap() {
+  // ─── Portfolio Duration Stats ───
+  const durStatsEl = document.getElementById('duration-stats');
+  if (durStatsEl) {
+    let sdWt = 0, sdFv = 0, ytmWt = 0, ytmFv = 0, floatFv = 0, totalPortFv = 0;
+    investments.forEach(inv => {
+      const fv = inv.fair_value_k || 0;
+      totalPortFv += fv;
+      const sd = computeSpreadDuration(inv);
+      const ytm = yearsToMaturity(inv.maturity);
+      if (sd != null && fv > 0) { sdWt += sd * fv; sdFv += fv; }
+      if (ytm != null && fv > 0) { ytmWt += ytm * fv; ytmFv += fv; }
+      if ((inv.reference_rate || '').includes('SOFR') && fv > 0) floatFv += fv;
+    });
+    const waSD = sdFv > 0 ? sdWt / sdFv : 0;
+    const waYTM = ytmFv > 0 ? ytmWt / ytmFv : 0;
+    const floatPct = totalPortFv > 0 ? (floatFv / totalPortFv * 100) : 0;
+    const amplifier = leverage ? (1 + leverage) : 1;
+    const navDV01 = totalPortFv > 0 && bs ? (waSD * 0.0001 * totalPortFv / bs.total_net_assets_k * 100 * 100) : 0;
+    durStatsEl.innerHTML = `
+      <div class="stress-card" style="flex:1;min-width:120px"><div class="label">WA Yrs to Maturity</div><div class="value" style="color:var(--blue);font-size:15px">${waYTM.toFixed(2)}yr</div><div class="delta" style="color:var(--text-2)">${ytmFv > 0 ? fmtM(ytmFv) + ' coverage' : 'N/A'}</div></div>
+      <div class="stress-card" style="flex:1;min-width:120px"><div class="label">WA Spread Duration</div><div class="value" style="color:var(--purple);font-size:15px">${waSD.toFixed(2)}yr</div><div class="delta" style="color:var(--text-2)">annuity factor at ${(SOFR_RATE*100).toFixed(1)}% SOFR</div></div>
+      <div class="stress-card" style="flex:1;min-width:120px"><div class="label">Floating Rate</div><div class="value" style="color:var(--cyan);font-size:15px">${floatPct.toFixed(0)}%</div><div class="delta" style="color:var(--text-2)">${fmtM(floatFv)} SOFR-based</div></div>
+      <div class="stress-card" style="flex:1;min-width:120px"><div class="label">Rate Duration</div><div class="value" style="color:var(--accent);font-size:15px">~0.25yr</div><div class="delta" style="color:var(--text-2)">quarterly SOFR reset</div></div>
+      <div class="stress-card" style="flex:1;min-width:120px"><div class="label">Spread DV01 (NAV)</div><div class="value" style="color:var(--amber);font-size:15px">${navDV01.toFixed(1)}%</div><div class="delta" style="color:var(--text-2)">NAV change per +100bp spread (${amplifier.toFixed(1)}x levered)</div></div>
+    `;
+  }
+
   const sectorFV = {};
   investments.forEach(inv => { const s = inv.industry || 'Other'; sectorFV[s] = (sectorFV[s]||0) + (inv.fair_value_k||0); });
   const sorted = Object.entries(sectorFV).sort((a,b) => b[1] - a[1]);
@@ -1370,7 +1539,7 @@ function rebuildSpreadChart() {
       },
       scales: {
         x: {
-          title: { display: true, text: 'Spread over SOFR (bps)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          title: { display: true, text: 'Spread (bps)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
           ticks: { color: AXIS_COLOR, font: AXIS_FONT, maxRotation: 45 },
           grid: { display: false }, border: { color: BORDER_COLOR }
         },
@@ -1445,9 +1614,9 @@ function rebuildDtSChart() {
     const pts = investments
       .filter(i => i.industry === sector && i.spread_bps != null && i.maturity)
       .map(i => {
-        const dur = yearsToMaturity(i.maturity);
+        const dur = computeSpreadDuration(i);
         if (dur == null) return null;
-        return { x: dur, y: i.spread_bps, r: Math.max(3, Math.sqrt((i.fair_value_k||0)/1e3) * 2), company: i.company, fv: i.fair_value_k, dts: i.dts };
+        return { x: dur, y: i.spread_bps, r: Math.max(3, Math.sqrt((i.fair_value_k||0)/1e3) * 2), company: i.company, fv: i.fair_value_k, spread_dur: i.spread_dur, dts: i.dts, implied: i.spread_is_implied || false };
       })
       .filter(Boolean);
     if (pts.length) {
@@ -1475,24 +1644,27 @@ function rebuildDtSChart() {
           ...TT_STYLE,
           callbacks: {
             title: ctx => ctx[0].raw.company,
-            label: ctx => [
-              `Duration: ${ctx.raw.x.toFixed(1)}yr`,
-              `Spread: ${ctx.raw.y}bps`,
-              `DtS: ${ctx.raw.dts != null ? ctx.raw.dts.toFixed(2) : '\u2014'}`,
-              `FV: ${fmtM(ctx.raw.fv)}`
-            ]
+            label: ctx => {
+              const lines = [
+                `CSD: ${ctx.raw.csd != null ? ctx.raw.csd.toFixed(1) + 'yr' : '\u2014'}`,
+                `Spread: ${ctx.raw.y}bps` + (ctx.raw.implied ? ' (implied)' : ''),
+                `DtS: ${ctx.raw.dts != null ? ctx.raw.dts.toFixed(2) : '\u2014'}`,
+                `FV: ${fmtM(ctx.raw.fv)}`
+              ];
+              return lines;
+            }
           }
         }
       },
       scales: {
         x: {
-          title: { display: true, text: 'Duration (Years to Maturity)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          title: { display: true, text: 'Credit Spread Duration (Years)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
           ticks: { color: AXIS_COLOR, font: AXIS_FONT, callback: v => v.toFixed(1) + 'yr' },
           grid: { color: GRID_COLOR }, border: { color: BORDER_COLOR },
           min: 0,
         },
         y: {
-          title: { display: true, text: 'Spread over SOFR (bps)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          title: { display: true, text: 'Spread (bps)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
           ticks: { color: AXIS_COLOR, font: AXIS_FONT, callback: v => v + 'bps' },
           grid: { color: GRID_COLOR }, border: { color: BORDER_COLOR }
         }
@@ -1619,7 +1791,7 @@ function buildTopPositions() {
       <td class="company-cell" title="${inv.company}" style="cursor:pointer;text-decoration:underline;text-decoration-color:var(--border-bright);text-underline-offset:2px;" onclick="openSecurityModal('${inv.company.replace(/'/g, "\\'")}')">${inv.company}</td>
       <td>${inv.industry || '\u2014'}</td>
       <td>${inv.type_simple || '\u2014'}</td>
-      <td class="num">${fmtBps(inv.spread_bps)}</td>
+      <td class="num">${fmtSpread(inv)}</td>
       <td class="num">${fmtM(inv.fair_value_k)}</td>
       <td class="num ${(inv.mtm_pct||0) > 0 ? 'pos' : (inv.mtm_pct||0) < 0 ? 'neg' : ''}">${fmtPct(inv.mtm_pct)}</td>
     </tr>
@@ -1710,7 +1882,7 @@ function buildFullTable(filter = '') {
       <td>${inv.industry || '\u2014'}</td>
       <td>${inv.type_simple || '\u2014'}</td>
       <td>${inv.investment_category || '\u2014'}</td>
-      <td class="num">${fmtBps(inv.spread_bps)}</td>
+      <td class="num">${fmtSpread(inv)}</td>
       <td class="num">${inv.cash_rate_pct != null ? fmtPct(inv.cash_rate_pct) : '\u2014'}</td>
       <td class="num">${inv.origination_date || '\u2014'}</td>
       <td class="num">${inv.maturity || '\u2014'}</td>
@@ -1719,6 +1891,7 @@ function buildFullTable(filter = '') {
       <td class="num">${inv.fair_value_k != null ? fmt(inv.fair_value_k) : '\u2014'}</td>
       <td class="num">${pctPort != null ? fmtPct(pctPort, 2) : '\u2014'}</td>
       <td class="num ${(inv.mtm_pct||0) > 0 ? 'pos' : (inv.mtm_pct||0) < 0 ? 'neg' : ''}">${fmtPct(inv.mtm_pct)}</td>
+      <td class="num">${inv.csd != null ? inv.csd.toFixed(1) + 'yr' : '\u2014'}</td>
       <td class="num">${inv.dts != null ? inv.dts.toFixed(2) : '\u2014'}</td>
     </tr>
   `}).join('');
@@ -1757,6 +1930,33 @@ function buildStressUI() {
     levInfo.innerHTML = `<div style="color:var(--text-2);font-size:11px;font-family:var(--mono);">No balance sheet data loaded (balance_sheet.json). Stress results will show gross impact only.</div>`;
   }
 
+  // ─── Portfolio Duration Stats ───
+  const durStatsEl = document.getElementById('duration-stats');
+  if (durStatsEl) {
+    let sdWt = 0, sdFv = 0, ytmWt = 0, ytmFv = 0, floatFv = 0, totalPortFv = 0;
+    investments.forEach(inv => {
+      const fv = inv.fair_value_k || 0;
+      totalPortFv += fv;
+      const sd = computeSpreadDuration(inv);
+      const ytm = yearsToMaturity(inv.maturity);
+      if (sd != null && fv > 0) { sdWt += sd * fv; sdFv += fv; }
+      if (ytm != null && fv > 0) { ytmWt += ytm * fv; ytmFv += fv; }
+      if ((inv.reference_rate || '').includes('SOFR') && fv > 0) floatFv += fv;
+    });
+    const waSD = sdFv > 0 ? sdWt / sdFv : 0;
+    const waYTM = ytmFv > 0 ? ytmWt / ytmFv : 0;
+    const floatPct = totalPortFv > 0 ? (floatFv / totalPortFv * 100) : 0;
+    const amplifier = leverage ? (1 + leverage) : 1;
+    const navDV01 = totalPortFv > 0 && bs ? (waSD * 0.0001 * totalPortFv / bs.total_net_assets_k * 100 * 100) : 0;
+    durStatsEl.innerHTML = `
+      <div class="stress-card" style="flex:1;min-width:120px"><div class="label">WA Yrs to Maturity</div><div class="value" style="color:var(--blue);font-size:15px">${waYTM.toFixed(2)}yr</div><div class="delta" style="color:var(--text-2)">${ytmFv > 0 ? fmtM(ytmFv) + ' coverage' : 'N/A'}</div></div>
+      <div class="stress-card" style="flex:1;min-width:120px"><div class="label">WA Spread Duration</div><div class="value" style="color:var(--purple);font-size:15px">${waSD.toFixed(2)}yr</div><div class="delta" style="color:var(--text-2)">annuity factor at ${(SOFR_RATE*100).toFixed(1)}% SOFR</div></div>
+      <div class="stress-card" style="flex:1;min-width:120px"><div class="label">Floating Rate</div><div class="value" style="color:var(--cyan);font-size:15px">${floatPct.toFixed(0)}%</div><div class="delta" style="color:var(--text-2)">${fmtM(floatFv)} SOFR-based</div></div>
+      <div class="stress-card" style="flex:1;min-width:120px"><div class="label">Rate Duration</div><div class="value" style="color:var(--accent);font-size:15px">~0.25yr</div><div class="delta" style="color:var(--text-2)">quarterly SOFR reset</div></div>
+      <div class="stress-card" style="flex:1;min-width:120px"><div class="label">Spread DV01 (NAV)</div><div class="value" style="color:var(--amber);font-size:15px">${navDV01.toFixed(1)}%</div><div class="delta" style="color:var(--text-2)">NAV change per +100bp spread (${amplifier.toFixed(1)}x levered)</div></div>
+    `;
+  }
+
   const sectorFV = {};
   investments.forEach(inv => { const s = inv.industry || 'Other'; sectorFV[s] = (sectorFV[s]||0) + (inv.fair_value_k||0); });
   const sorted = Object.entries(sectorFV).sort((a,b) => b[1] - a[1]);
@@ -1769,6 +1969,429 @@ function buildStressUI() {
     </div>
   `).join('');
 
+  // ─── Historical scenario data ───
+  const HISTORICAL_SCENARIOS = {
+    'oil-embargo-1973': {
+      name: '1973 Oil Embargo',
+      chip: '1973 Oil Embargo',
+      period: 'October 1973 \u2013 March 1975',
+      defaultShock: 150,
+      sectorShocks: {
+        'Manufacturing': 250, 'Chemicals': 250, 'Containers and packaging': 200, 'Consumer products': 200,
+        'Food and beverage': 150, 'Automotive services': 250, 'Transportation': 300, 'Energy equipment and services': 100,
+        'Buildings and real estate': 200, 'Specialty Retail': 200, 'Leisure and entertainment': 250
+      },
+      info: {
+        what: 'OAPEC oil embargo following the Yom Kippur War. Oil prices quadrupled from $2.90/bbl to $11.65/bbl. US GDP contracted ~2.5%. Inflation hit 12.3% in 1974, up from 3.4% in 1972. The DJIA fell over 45%. Classic stagflation.',
+        credit: 'No HY OAS index existed. Best proxy: Moody\u2019s Baa\u2013Aaa spread widened from ~100 bps to ~170 bps (+70 bps). Baa yields reached ~10.6% vs. Aaa at ~8.9%. The Baa\u201310Y Treasury spread widened more dramatically on flight-to-quality.',
+        defaults: 'Formal HY default tracking did not exist. The speculative-grade bond market was tiny (mostly \u201cfallen angels\u201d). Impact was primarily through IG spread widening and bank lending contraction.',
+        stats: [
+          { label: 'Oil Price Move', value: '$2.90 \u2192 $11.65/bbl', color: 'var(--red)' },
+          { label: 'CPI Inflation', value: '12.3% (1974)', color: 'var(--amber)' },
+          { label: 'DJIA Drawdown', value: '\u221245%', color: 'var(--red)' },
+          { label: 'Baa\u2013Aaa Spread', value: '~170 bps (peak)', color: 'var(--amber)' }
+        ],
+        sources: [
+          'Federal Reserve History, \u201cOil Shock of 1973\u201374\u201d (federalreservehistory.org)',
+          'FRED: BAA, AAA, BAA10Y (fred.stlouisfed.org)',
+          'NBER recession dating: November 1973 \u2013 March 1975'
+        ]
+      }
+    },
+    'volcker-1979': {
+      name: '1979\u201382 Volcker Shock',
+      chip: '1979 Volcker Shock',
+      period: 'October 1979 \u2013 November 1982',
+      defaultShock: 200,
+      sectorShocks: {
+        'Buildings and real estate': 400, 'Automotive services': 350, 'Manufacturing': 300,
+        'Consumer products': 250, 'Specialty Retail': 250, 'Leisure and entertainment': 300,
+        'Containers and packaging': 200, 'Financial services': 300, 'Insurance': 200,
+        'Asset based lending and fund finance': 250, 'Transportation': 250
+      },
+      info: {
+        what: 'Fed Funds rate peaked at 19.1% (June 1981). US inflation peaked at 14.8% (March 1980). Iranian Revolution pushed oil to ~$39/bbl. Two back-to-back recessions. Unemployment reached ~10%. The S&L sector began its long decline as thrifts were caught in a duration mismatch.',
+        credit: 'No formal HY OAS index. Moody\u2019s Baa yields reached ~17.2% in late 1981 with the 10Y Treasury at ~15%, implying a Baa\u2013Treasury spread of ~200\u2013250 bps. Even investment-grade issuers were paying 14\u201317% coupons.',
+        defaults: 'Moody\u2019s spec-grade tracking began 1983. The Altman par-weighted HY default rate averaged ~2.2% (1978\u201388). Low by later standards, but the HY market was small.',
+        stats: [
+          { label: 'Fed Funds Peak', value: '19.1%', color: 'var(--red)' },
+          { label: 'CPI Inflation Peak', value: '14.8%', color: 'var(--amber)' },
+          { label: 'Baa Yield', value: '~17.2%', color: 'var(--red)' },
+          { label: 'Unemployment', value: '~10%', color: 'var(--amber)' }
+        ],
+        sources: [
+          'Federal Reserve History, \u201cVolcker\u2019s Announcement of Anti-Inflation Measures\u201d (federalreservehistory.org)',
+          'FRED: BAA, AAA, FEDFUNDS, GS10',
+          'St. Louis Fed, \u201cThe Volcker Tightening Cycle\u201d (stlouisfed.org, January 2025 Review)'
+        ]
+      }
+    },
+    'sl-lbo-1990': {
+      name: '1990\u201391 S&L / LBO Crisis',
+      chip: '1990 S&L/LBO Crisis',
+      period: '1989 \u2013 1992',
+      defaultShock: 200,
+      sectorShocks: {
+        'Buildings and real estate': 500, 'Financial services': 400, 'Asset based lending and fund finance': 350,
+        'Insurance': 300, 'Specialty Retail': 400, 'Consumer products': 300, 'Leisure and entertainment': 350,
+        'Manufacturing': 250, 'Automotive services': 250, 'Containers and packaging': 200
+      },
+      info: {
+        what: 'FIRREA (August 1989) forced S&Ls to liquidate HY bond holdings, creating a massive supply/demand imbalance. Drexel Burnham Lambert filed Chapter 11 (February 1990). The 1980s LBO wave collapsed \u2014 Campeau/Federated, Revco, Southland all defaulted.',
+        credit: 'Peak HY spread ~1,014 bps (Merrill Lynch junk bond index). Spreads jumped +258 bps from January 1989 to June 1990 alone, before the recession officially began. Total HY return 1990: <strong>\u22124.4%</strong>. 1991 rebound: <strong>+40%</strong>.',
+        defaults: 'Moody\u2019s spec-grade default rate: <strong>10.1% (1990), 10.3% (1991)</strong>. Among the highest on record until the GFC. Fell to avg 2.4% from 1992\u20132000.',
+        stats: [
+          { label: 'HY OAS Peak', value: '~1,014 bps', color: 'var(--red)' },
+          { label: 'Default Rate', value: '10.3% (1991)', color: 'var(--red)' },
+          { label: 'HY Return 1990', value: '\u22124.4%', color: 'var(--red)' },
+          { label: 'HY Return 1991', value: '+40%', color: 'var(--accent)' }
+        ],
+        sources: [
+          'SF Fed Economic Letter 2001-33, \u201cRising Junk Bond Yields\u201d (frbsf.org)',
+          'Moody\u2019s, \u201cCorporate Default and Recovery Rates, 1920\u20132006\u201d',
+          'Econlib, \u201cJunk Bonds\u201d by Glenn Yago'
+        ]
+      }
+    },
+    'ltcm-1998': {
+      name: '1998 Russia / LTCM',
+      chip: '1998 LTCM Crisis',
+      period: 'July 1997 \u2013 November 1998',
+      defaultShock: 200,
+      sectorShocks: {
+        'Financial services': 400, 'Asset based lending and fund finance': 350, 'Insurance': 300
+      },
+      info: {
+        what: 'Asian crisis (July 1997), Russia sovereign default (August 17, 1998), LTCM collapse (September\u2013October 1998 \u2014 lost $4.6 billion, leverage ~30:1). Fed orchestrated $3.6 billion bailout and cut rates 3 times. Credit markets froze for 2\u20134 weeks.',
+        credit: 'HY OAS crossed 500 bps in August 1998. Peak: ~600 bps by mid-October. Widening of <strong>+334 bps</strong> between June and October 1998. Bid-ask spreads on corporate instruments more than doubled. This was primarily a liquidity event, not a fundamental credit event.',
+        defaults: 'Moody\u2019s spec-grade: ~2.4% (1998). Low \u2014 the crisis was about liquidity and mark-to-market, not actual defaults.',
+        stats: [
+          { label: 'HY OAS Peak', value: '~600 bps', color: 'var(--amber)' },
+          { label: 'Spread Widening', value: '+334 bps', color: 'var(--red)' },
+          { label: 'Default Rate', value: '~2.4%', color: 'var(--accent)' },
+          { label: 'LTCM Losses', value: '$4.6B', color: 'var(--red)' }
+        ],
+        sources: [
+          'Federal Reserve History, \u201cNear Failure of Long-Term Capital Management\u201d',
+          'BIS CGFS, \u201cA Review of Financial Market Events in Autumn 1998\u201d (bis.org/publ/cgfs12.pdf)',
+          'SF Fed Economic Letter 2001-33',
+          'IMF World Economic Outlook, October 1998'
+        ]
+      }
+    },
+    'dotcom-2001': {
+      name: '2001\u201302 Dot-Com / Enron',
+      chip: '2001 Dot-Com/Enron',
+      period: 'March 2000 \u2013 October 2002',
+      defaultShock: 150,
+      sectorShocks: {
+        'Internet software and services': 550, 'Telecommunications': 600, 'Healthcare technology': 100,
+        'Healthcare providers and services': 50, 'Healthcare equipment and services': 50,
+        'Advertising and media': 400, 'Business services': 250, 'Professional services': 200,
+        'Financial services': 200, 'Manufacturing': 150, 'Consumer products': 100,
+        'Leisure and entertainment': 200
+      },
+      info: {
+        what: 'NASDAQ fell 78% from peak. NBER recession March\u2013November 2001. September 11 attacks. Enron bankruptcy ($63B assets, December 2001). WorldCom fraud ($11B restatement, June 2002). Adelphia bankruptcy (July 2002). A cascade of corporate governance failures.',
+        credit: 'HY OAS above 500 bps in early 2000. Post-9/11 spike to <strong>968 bps</strong> (+200 bps in days). Peak <strong>&gt;1,100 bps</strong> in mid-2002. S&P/LSTA Leveraged Loan Index price trough: <strong>86.90</strong> (November 2002).',
+        defaults: 'Moody\u2019s spec-grade: <strong>~10% (2001)</strong>. Total HY defaults ~$37.5B through Q3 2002. Telecom accounted for a disproportionate share.',
+        sectorTable: [
+          { sector: 'Telecommunications', move: '+1,129 bps', pct: '+225%' },
+          { sector: 'Technology', move: '+553 bps', pct: '+116%' },
+          { sector: 'Energy', move: '+100 bps', pct: '+21%' },
+          { sector: 'Healthcare', move: '\u221256 bps', pct: '\u221215%' }
+        ],
+        sectorTableSource: 'SF Fed Economic Letter 2001-33 (Merrill Lynch index, Jan 2000 \u2013 Aug 2001)',
+        stats: [
+          { label: 'HY OAS Peak', value: '>1,100 bps', color: 'var(--red)' },
+          { label: 'Default Rate', value: '~10% (2001)', color: 'var(--red)' },
+          { label: 'LL Index Low', value: '86.90', color: 'var(--red)' },
+          { label: 'NASDAQ Drawdown', value: '\u221278%', color: 'var(--red)' }
+        ],
+        sources: [
+          'SF Fed Economic Letter 2001-33, \u201cRising Junk Bond Yields\u201d (frbsf.org)',
+          'Altman & Bana, \u201cDefaults and Returns on HY Bonds: Through Sep 2002\u201d (SSRN)',
+          'Moody\u2019s, \u201cCorporate Default and Recovery Rates, 1920\u20132006\u201d',
+          'FRED: BAMLH0A0HYM2'
+        ]
+      }
+    },
+    'gfc-2008': {
+      name: '2008\u201309 Global Financial Crisis',
+      chip: '2008 GFC',
+      period: 'June 2007 \u2013 June 2009',
+      defaultShock: 300,
+      sectorShocks: {
+        'Financial services': 800, 'Asset based lending and fund finance': 700, 'Insurance': 600,
+        'Buildings and real estate': 700, 'Automotive services': 500, 'Consumer products': 400,
+        'Specialty Retail': 500, 'Leisure and entertainment': 500, 'Manufacturing': 400,
+        'Containers and packaging': 350, 'Energy equipment and services': 500, 'Chemicals': 350,
+        'Transportation': 400, 'Food and beverage': 200, 'Healthcare providers and services': 200,
+        'Healthcare technology': 250, 'Healthcare equipment and services': 200, 'Pharmaceuticals': 150,
+        'Internet software and services': 350, 'Professional services': 300, 'Business services': 300,
+        'Advertising and media': 400, 'Infrastructure and environmental services': 300,
+        'Distribution': 300, 'Human resource support services': 350, 'Household products': 200,
+        'Aerospace and defense': 250, 'Education': 200, 'Joint Venture': 400, 'Telecommunications': 250
+      },
+      info: {
+        what: 'Subprime mortgage collapse. Bear Stearns rescue (March 2008). Lehman Brothers bankruptcy (September 15, 2008). Banks lost >$1 trillion on toxic assets. GM and Chrysler filed bankruptcy. Oil collapsed from $147/bbl to $32/bbl. The worst financial crisis since the Great Depression.',
+        credit: 'HY OAS from all-time tight of <strong>241 bps</strong> (June 2007) to all-time wide of <strong>2,182 bps</strong> (December 15, 2008) \u2014 widening of <strong>~1,941 bps</strong>. By rating: BB ~1,100 bps; B ~1,800\u20132,000 bps; CCC ~4,000+ bps. S&P/LSTA Leveraged Loan Index price: <strong>60.33</strong> (all-time low).',
+        defaults: 'Moody\u2019s global spec-grade: <strong>13.1% (year-end 2009)</strong> \u2014 highest since the 1930s. S&P/LSTA leveraged loan default rate: <strong>10.81%</strong> (November 2009, all-time record).',
+        stats: [
+          { label: 'HY OAS Peak', value: '2,182 bps', color: 'var(--red)' },
+          { label: 'Default Rate', value: '13.1%', color: 'var(--red)' },
+          { label: 'LL Index Low', value: '60.33', color: 'var(--red)' },
+          { label: '1L Recovery', value: '63.4%', color: 'var(--amber)' }
+        ],
+        sources: [
+          'FRED: BAMLH0A0HYM2, BAMLH0A1HYBB, BAMLH0A2HYB, BAMLH0A3HYC',
+          'Moody\u2019s, \u201cCorporate Default and Recovery Rates, 1920\u20132009\u201d',
+          'S&P Global, \u201cCoronavirus crisis vs 2008: US leveraged loan distress, CLOs\u201d',
+          'Moody\u2019s Ultimate Recovery Database'
+        ]
+      }
+    },
+    'euro-crisis-2011': {
+      name: '2011 European Debt Crisis',
+      chip: '2011 Euro Crisis',
+      period: 'April 2010 \u2013 January 2012',
+      defaultShock: 175,
+      sectorShocks: {
+        'Financial services': 350, 'Asset based lending and fund finance': 300, 'Insurance': 300
+      },
+      info: {
+        what: 'Greek, Irish, Portuguese bailouts (2010\u201311). Italian and Spanish sovereign spreads surged. S&P downgraded US sovereign from AAA (August 5, 2011). European bank lending froze \u2014 HY issuance plunged from $4.5B/month to $1.1B; leveraged loans from $6.7B/month to $1.6B.',
+        credit: 'HY OAS from ~450 bps (early 2011) to <strong>910 bps</strong> (October 2011) \u2014 widening of ~460 bps. SF Fed found a 1 ppt increase in euro-area corporate bond spreads produced a <strong>0.67 ppt</strong> increase in US corporate spreads. US leveraged loan prices fell ~5 points.',
+        defaults: 'Moody\u2019s spec-grade: ~2% (2011). This was a contagion/spread event, not a default cycle.',
+        stats: [
+          { label: 'HY OAS Peak', value: '910 bps', color: 'var(--red)' },
+          { label: 'Contagion Coeff.', value: '0.67\u00d7', color: 'var(--amber)' },
+          { label: 'Default Rate', value: '~2%', color: 'var(--accent)' },
+          { label: 'EU HY Issuance Drop', value: '\u221276%', color: 'var(--red)' }
+        ],
+        sources: [
+          'SF Fed Economic Letter 2012-17, \u201cAre U.S. Corporate Bonds Exposed to Europe?\u201d (June 2012)',
+          'BIS Quarterly Review, December 2011',
+          'ECB, \u201cContagion and the European debt crisis\u201d (Constancio speech, October 2011)',
+          'FRED: BAMLH0A0HYM2'
+        ]
+      }
+    },
+    'oil-collapse-2014': {
+      name: '2014\u201316 Oil Collapse',
+      chip: '2014 Oil Collapse',
+      period: 'June 2014 \u2013 February 2016',
+      defaultShock: 125,
+      sectorShocks: {
+        'Energy equipment and services': 700, 'Chemicals': 350, 'Transportation': 100,
+        'Manufacturing': 200, 'Infrastructure and environmental services': 200, 'Distribution': 150,
+        'Containers and packaging': 150, 'Financial services': 200, 'Asset based lending and fund finance': 200
+      },
+      info: {
+        what: 'Brent crude fell from $112/bbl to $31/bbl (\u221272%). No US recession, but an \u201cearnings recession\u201d in energy and materials. Third Avenue Focused Credit Fund gated in December 2015, spooking HY markets. Over 100 energy companies went bankrupt.',
+        credit: 'Broad HY OAS from ~335 bps (June 2014) to <strong>887 bps</strong> (February 2016). Energy HY OAS reached <strong>~1,415 bps</strong> (+660 bps widening in 2015 alone). Metals/mining reached ~1,500 bps. NY Fed found oil returns explained <strong>&gt;70%</strong> of energy firm spread increases and <strong>~50%</strong> for non-energy firms via mutual fund liquidity spillover.',
+        defaults: 'Energy HY default rate: <strong>13%</strong> by May 2016 (Fitch) \u2014 record. Energy borrowers missing payments ballooned from 0.5% to 22%. Broad HY default rate: ~5% (2016).',
+        stats: [
+          { label: 'HY OAS Peak', value: '887 bps', color: 'var(--red)' },
+          { label: 'Energy HY OAS', value: '~1,415 bps', color: 'var(--red)' },
+          { label: 'Energy Default Rate', value: '13%', color: 'var(--red)' },
+          { label: 'Oil Price', value: '$112 \u2192 $31', color: 'var(--red)' }
+        ],
+        sources: [
+          'NY Fed Liberty Street Economics, \u201cWhy Did Oil Price Declines Affect Non-Energy Bonds?\u201d (Oct 2016)',
+          'Morningstar, \u201c2015 Corporate Bond Wrap-Up and Q1 2016 Outlook\u201d',
+          'Fitch Ratings, energy sector default rate reports (2015\u20132016)',
+          'FRED: BAMLH0A0HYM2'
+        ]
+      }
+    },
+    'covid-2020': {
+      name: '2020 COVID-19 Pandemic',
+      chip: '2020 COVID-19',
+      period: 'February \u2013 March 2020',
+      defaultShock: 200,
+      sectorShocks: {
+        'Leisure and entertainment': 700, 'Specialty Retail': 500, 'Automotive services': 400,
+        'Transportation': 500, 'Advertising and media': 400, 'Energy equipment and services': 600,
+        'Consumer products': 300, 'Buildings and real estate': 350, 'Human resource support services': 350,
+        'Food and beverage': 200, 'Manufacturing': 300, 'Distribution': 250,
+        'Containers and packaging': 200, 'Financial services': 250, 'Asset based lending and fund finance': 250,
+        'Insurance': 200, 'Healthcare providers and services': 200, 'Healthcare technology': 150,
+        'Healthcare equipment and services': 200, 'Pharmaceuticals': 100,
+        'Internet software and services': 150, 'Chemicals': 250,
+        'Infrastructure and environmental services': 250, 'Professional services': 200,
+        'Business services': 200, 'Household products': 100, 'Aerospace and defense': 300,
+        'Education': 250, 'Joint Venture': 350, 'Telecommunications': 100
+      },
+      info: {
+        what: 'S&P 500 fell 34% in 23 trading days (February 19 \u2013 March 23). Fed announced unlimited QE + corporate bond purchase facilities March 23. $2 trillion CARES Act. Shortest recession on record (2 months). Simultaneous Saudi\u2013Russia oil price war.',
+        credit: 'HY OAS from <strong>360 bps</strong> (December 2019) to <strong>1,087 bps</strong> (March 23) \u2014 <strong>+727 bps in under 3 months</strong>, the fastest move to 1,000 bps in history. S&P/LSTA LLI average bid price fell to <strong>76.23</strong>. March leveraged loan total return: <strong>\u221212.37%</strong>. Rallied to 82.85 within 6 days on stimulus.',
+        defaults: 'Moody\u2019s US spec-grade: <strong>7.9% (year-end 2020)</strong>. S&P/LSTA leveraged loan default rate peaked at <strong>4.17%</strong> (September 2020). Energy accounted for 28% of all loan defaults; retail was second at 16%.',
+        stats: [
+          { label: 'HY OAS Peak', value: '1,087 bps', color: 'var(--red)' },
+          { label: 'Default Rate', value: '7.9%', color: 'var(--red)' },
+          { label: 'LL Index Low', value: '76.23', color: 'var(--red)' },
+          { label: 'Spread Velocity', value: '+727 bps / 3mo', color: 'var(--red)' }
+        ],
+        sources: [
+          'St. Louis Fed, \u201cCorporate Bond Spreads and the Pandemic\u201d (April 2020)',
+          'BIS Bulletin No. 26, \u201cCorporate credit markets after the initial pandemic shock\u201d',
+          'LSTA: \u201cMarch Loan Returns Total \u221212.37%\u201d; \u201cCredit: 2020 Hindsight\u201d',
+          'FRED: BAMLH0A0HYM2'
+        ]
+      }
+    },
+    'rate-shock-2022': {
+      name: '2022 Rate Shock / Inflation',
+      chip: '2022 Rate Shock',
+      period: 'January \u2013 October 2022',
+      defaultShock: 100,
+      sectorShocks: {
+        'Buildings and real estate': 250, 'Internet software and services': 200,
+        'Leisure and entertainment': 150, 'Consumer products': 150, 'Specialty Retail': 150,
+        'Healthcare technology': 150, 'Manufacturing': 100, 'Financial services': 100,
+        'Asset based lending and fund finance': 150
+      },
+      info: {
+        what: 'CPI inflation hit 40-year high of 9.1% (June 2022). Fed raised rates from 0% to 2.25\u20132.50% by mid-2022, including the largest single hike since 1994 (+75 bps). Institutional leveraged loan issuance down 67% YoY. HY bond issuance down 76% YoY. CLO refi issuance down 94%.',
+        credit: 'HY OAS from ~310 bps (January 2022) to <strong>~600 bps</strong> (mid-2022) \u2014 notably <strong>milder</strong> than prior crises, never approaching 1,000 bps. The primary impact was on deal activity: LBO loan financing dried up as banks were stuck with \u201chung\u201d bridge commitments.',
+        defaults: 'Very low. Moody\u2019s: ~1.3% (2022). S&P/LSTA leveraged loan default rate: ~0.18% (April 2022). This was a mark-to-market and issuance event, not a default cycle.',
+        stats: [
+          { label: 'HY OAS Peak', value: '~600 bps', color: 'var(--amber)' },
+          { label: 'Default Rate', value: '~1.3%', color: 'var(--accent)' },
+          { label: 'LL Issuance \u0394', value: '\u221267% YoY', color: 'var(--red)' },
+          { label: 'CPI Peak', value: '9.1%', color: 'var(--red)' }
+        ],
+        sources: [
+          'White & Case, \u201cInflation and Interest Rates Reshape US Leveraged Finance\u201d (2022)',
+          'PineBridge Investments, \u201cLeveraged Finance Asset Allocation Insights\u201d',
+          'Altman / NYU via Creditor Rights Coalition, \u201cWhere We Are In The Credit Cycle\u201d (2024)',
+          'FRED: BAMLH0A0HYM2, FEDFUNDS'
+        ]
+      }
+    }
+  };
+
+  // Store reference for info modal access
+  buildStressUI.HISTORICAL_SCENARIOS_REF = HISTORICAL_SCENARIOS;
+
+  // Render historical scenario chips
+  const histContainer = document.getElementById('historical-scenarios');
+  histContainer.innerHTML = Object.entries(HISTORICAL_SCENARIOS).map(([key, sc]) => `
+    <div class="scenario-chip-group">
+      <button class="scenario-chip" data-scenario="${key}">${sc.chip}</button>
+      <button class="scenario-info-btn" data-scenario-info="${key}" title="Learn more">i</button>
+    </div>
+  `).join('');
+
+  // Bind info buttons
+  document.querySelectorAll('.scenario-info-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openScenarioInfo(btn.dataset.scenarioInfo);
+    });
+  });
+
+  // ─── Overlay scenarios (additive — layer on top of current shocks) ───
+  const OVERLAY_SCENARIOS = {
+    'tech-default-10': {
+      name: 'Tech 10% Default Wave',
+      chip: 'Tech 10% Default (60% recovery)',
+      description: 'Randomly defaults 10% of software/tech portfolio companies at 60% recovery. Layers on top of whatever spread shocks are already set. Re-click to re-roll.',
+      sectors: ['Internet software and services'],
+      defaultPct: 0.10,
+      recovery: 60
+    }
+  };
+  buildStressUI.OVERLAY_SCENARIOS_REF = OVERLAY_SCENARIOS;
+
+  const overlayContainer = document.getElementById('overlay-scenarios');
+  overlayContainer.innerHTML = Object.entries(OVERLAY_SCENARIOS).map(([key, ov]) => `
+    <div class="scenario-chip-group">
+      <button class="scenario-chip overlay-chip" data-overlay="${key}" style="border-color:var(--purple);color:var(--purple);">${ov.chip}</button>
+      <button class="scenario-info-btn overlay-info-btn" data-overlay-info="${key}" title="Learn more">i</button>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.overlay-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const key = chip.dataset.overlay;
+      const ov = OVERLAY_SCENARIOS[key];
+      if (!ov) return;
+
+      // Find unique companies in the target sectors
+      const seen = new Set();
+      const eligible = [];
+      investments.forEach(inv => {
+        if (ov.sectors.includes(inv.industry) && !seen.has(inv.company)) {
+          seen.add(inv.company);
+          const fv = investments.filter(i => i.company === inv.company).reduce((s,i) => s + (i.fair_value_k||0), 0);
+          eligible.push({ company: inv.company, fv });
+        }
+      });
+
+      // Randomly select defaultPct of them
+      const numDefaults = Math.max(1, Math.round(eligible.length * ov.defaultPct));
+      // Shuffle and pick
+      const shuffled = eligible.slice().sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, numDefaults);
+
+      // Clear any existing tech defaults from a previous overlay click, then add new ones
+      eligible.forEach(c => { if (defaultedCredits.has(c.company)) defaultedCredits.delete(c.company); });
+      selected.forEach(c => addDefaultCredit(c.company, ov.recovery));
+
+      renderDefaultList();
+      runStress();
+    });
+  });
+
+  document.querySelectorAll('.overlay-info-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key = btn.dataset.overlayInfo;
+      const ov = OVERLAY_SCENARIOS[key];
+      if (!ov) return;
+
+      // Count eligible companies
+      const seen = new Set();
+      let totalFV = 0;
+      investments.forEach(inv => {
+        if (ov.sectors.includes(inv.industry) && !seen.has(inv.company)) {
+          seen.add(inv.company);
+          totalFV += investments.filter(i => i.company === inv.company).reduce((s,i) => s + (i.fair_value_k||0), 0);
+        }
+      });
+      const numDefaults = Math.max(1, Math.round(seen.size * ov.defaultPct));
+
+      const overlay = document.getElementById('scenario-info-overlay');
+      document.getElementById('scenario-info-title').textContent = ov.name;
+      document.getElementById('scenario-info-period').textContent = 'Overlay \u2014 additive to current scenario';
+      document.getElementById('scenario-info-body').innerHTML = `
+        <div class="si-stat-row">
+          <div class="si-stat"><div class="si-label">Target Sectors</div><div class="si-val" style="color:var(--purple)">${ov.sectors.join(', ')}</div></div>
+          <div class="si-stat"><div class="si-label">Default Rate</div><div class="si-val" style="color:var(--red)">${(ov.defaultPct*100).toFixed(0)}%</div></div>
+          <div class="si-stat"><div class="si-label">Recovery</div><div class="si-val" style="color:var(--amber)">${ov.recovery}%</div></div>
+        </div>
+        <div class="si-stat-row">
+          <div class="si-stat"><div class="si-label">Eligible Companies</div><div class="si-val" style="color:var(--text-0)">${seen.size}</div></div>
+          <div class="si-stat"><div class="si-label">Companies Defaulted</div><div class="si-val" style="color:var(--red)">${numDefaults}</div></div>
+          <div class="si-stat"><div class="si-label">Sector Total FV</div><div class="si-val" style="color:var(--text-0)">${fmtB(totalFV)}</div></div>
+        </div>
+        <h4>How It Works</h4>
+        <p>${ov.description}</p>
+        <p>This overlay <strong>does not change spread shocks</strong>. It adds credit defaults to the default list panel below, on top of whatever spread scenario is currently active. This lets you combine a macro spread-widening event (e.g., 2008 GFC) with a sector-specific default wave.</p>
+        <p>Each click randomly re-selects which companies default. The previous tech defaults from this overlay are cleared before re-rolling.</p>
+        <h4>Mechanics</h4>
+        <p>Loss per defaulted credit = <strong>(1 \u2212 ${ov.recovery}%) \u00d7 fair value</strong> = ${(100 - ov.recovery)}% loss on each defaulted name. These credits are excluded from spread-widening calculations \u2014 their loss is computed purely from the recovery assumption.</p>
+      `;
+
+      overlay.classList.add('visible');
+      requestAnimationFrame(() => { requestAnimationFrame(() => { overlay.classList.add('show'); }); });
+      document.addEventListener('keydown', scenarioInfoEscHandler);
+    });
+  });
+
+  // Bind all scenario chips (historical + simple)
   document.querySelectorAll('.scenario-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       const scenario = chip.dataset.scenario;
@@ -1776,18 +2399,29 @@ function buildStressUI() {
       const cyclical = ['Manufacturing','Consumer products','Automotive services','Buildings and real estate','Leisure and entertainment','Specialty Retail','Containers and packaging','Transportation'];
       const softwareish = ['Internet software and services'];
       const healthcareish = ['Healthcare providers and services','Healthcare technology','Healthcare equipment and services','Pharmaceuticals'];
-      inputs.forEach(inp => {
-        const sector = inp.dataset.sector;
-        switch(scenario) {
-          case 'mild': inp.value = 50; break;
-          case 'moderate': inp.value = 150; break;
-          case 'severe': inp.value = 300; break;
-          case 'tech-stress': inp.value = softwareish.includes(sector) ? 400 : 50; break;
-          case 'healthcare-stress': inp.value = healthcareish.includes(sector) ? 300 : 50; break;
-          case 'rates-up': inp.value = 200; break;
-          case 'recession': inp.value = cyclical.includes(sector) ? 500 : 250; break;
-        }
-      });
+
+      // Check if it's a historical scenario
+      if (HISTORICAL_SCENARIOS[scenario]) {
+        const hs = HISTORICAL_SCENARIOS[scenario];
+        inputs.forEach(inp => {
+          const sector = inp.dataset.sector;
+          inp.value = hs.sectorShocks[sector] != null ? hs.sectorShocks[sector] : hs.defaultShock;
+        });
+      } else {
+        // Simple scenarios
+        inputs.forEach(inp => {
+          const sector = inp.dataset.sector;
+          switch(scenario) {
+            case 'mild': inp.value = 50; break;
+            case 'moderate': inp.value = 150; break;
+            case 'severe': inp.value = 300; break;
+            case 'tech-stress': inp.value = softwareish.includes(sector) ? 400 : 50; break;
+            case 'healthcare-stress': inp.value = healthcareish.includes(sector) ? 300 : 50; break;
+            case 'rates-up': inp.value = 200; break;
+            case 'recession': inp.value = cyclical.includes(sector) ? 500 : 250; break;
+          }
+        });
+      }
       runStress();
     });
   });
@@ -1827,8 +2461,8 @@ function runStress() {
     const shockBps = shocks[sector] || 0;
     if (shockBps === 0) { results.push({ ...inv, stressed_fv: fv, loss: 0, loss_pct: 0 }); totalAfter += fv; return; }
 
-    const ytm = yearsToMaturity(inv.maturity);
-    let duration = ytm != null ? ytm * 0.9 : 3.5;
+    let duration = computeSpreadDuration(inv);
+    if (duration == null) duration = 3.5; // fallback for missing maturity
     let mult = 1.0;
     if (inv.investment_category === 'Equity') { mult = equityMult; duration = 5; }
 
@@ -1960,6 +2594,88 @@ function resetStress() {
   renderDefaultList();
 }
 
+// ─── Scenario Info Modal ───
+function openScenarioInfo(scenarioKey) {
+  const sc = buildStressUI.HISTORICAL_SCENARIOS_REF?.[scenarioKey];
+  if (!sc) return;
+  const info = sc.info;
+  const overlay = document.getElementById('scenario-info-overlay');
+  document.getElementById('scenario-info-title').textContent = sc.name;
+  document.getElementById('scenario-info-period').textContent = sc.period;
+
+  let html = '';
+
+  // Stats cards
+  if (info.stats && info.stats.length) {
+    html += `<div class="si-stat-row">`;
+    info.stats.forEach(s => {
+      html += `<div class="si-stat"><div class="si-label">${s.label}</div><div class="si-val" style="color:${s.color}">${s.value}</div></div>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `<h4>What Happened</h4><p>${info.what}</p>`;
+  html += `<h4>Credit Market Impact</h4><p>${info.credit}</p>`;
+  html += `<h4>Default Rates</h4><p>${info.defaults}</p>`;
+
+  // Sector table if available (e.g. dot-com)
+  if (info.sectorTable) {
+    html += `<h4>Observed Sector Spread Moves</h4>`;
+    html += `<table><thead><tr><th>Sector</th><th>Spread Change</th><th>% Change</th></tr></thead><tbody>`;
+    info.sectorTable.forEach(r => {
+      html += `<tr><td>${r.sector}</td><td>${r.move}</td><td>${r.pct}</td></tr>`;
+    });
+    html += `</tbody></table>`;
+    if (info.sectorTableSource) {
+      html += `<p style="font-size:10px;color:var(--text-2);margin-top:2px;">Source: ${info.sectorTableSource}</p>`;
+    }
+  }
+
+  // Sector shocks applied in this scenario
+  const shockEntries = Object.entries(sc.sectorShocks).sort((a,b) => b[1] - a[1]);
+  if (shockEntries.length) {
+    html += `<h4>Scenario Sector Shocks Applied</h4>`;
+    html += `<table><thead><tr><th>Sector</th><th>Shock (bps)</th></tr></thead><tbody>`;
+    shockEntries.forEach(([sector, bps]) => {
+      const color = bps >= 500 ? 'var(--red)' : bps >= 300 ? 'var(--amber)' : 'var(--text-0)';
+      html += `<tr><td>${sector}</td><td style="color:${color};font-weight:600">+${bps}</td></tr>`;
+    });
+    html += `<tr style="color:var(--text-2)"><td><em>All other sectors</em></td><td>+${sc.defaultShock}</td></tr>`;
+    html += `</tbody></table>`;
+  }
+
+  // Sources
+  if (info.sources && info.sources.length) {
+    html += `<h4>Sources</h4><div class="si-source">`;
+    info.sources.forEach((s, i) => {
+      html += `${i + 1}. ${s}<br>`;
+    });
+    html += `</div>`;
+  }
+
+  document.getElementById('scenario-info-body').innerHTML = html;
+
+  overlay.classList.add('visible');
+  requestAnimationFrame(() => { requestAnimationFrame(() => { overlay.classList.add('show'); }); });
+
+  document.addEventListener('keydown', scenarioInfoEscHandler);
+}
+
+function closeScenarioInfo() {
+  const overlay = document.getElementById('scenario-info-overlay');
+  overlay.classList.remove('show');
+  document.removeEventListener('keydown', scenarioInfoEscHandler);
+  setTimeout(() => { overlay.classList.remove('visible'); }, 200);
+}
+
+function scenarioInfoEscHandler(e) {
+  if (e.key === 'Escape') closeScenarioInfo();
+}
+
+document.getElementById('scenario-info-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeScenarioInfo();
+});
+
 // ─── Tooltip ───
 function showTooltip(e, html) { const tt=document.getElementById('tooltip'); tt.innerHTML=html; tt.style.display='block'; moveTooltip(e); }
 function moveTooltip(e) { const tt=document.getElementById('tooltip'); tt.style.left=Math.min(e.clientX+16, window.innerWidth-340)+'px'; tt.style.top=Math.min(e.clientY+16, window.innerHeight-200)+'px'; }
@@ -2049,6 +2765,15 @@ function openSecurityModal(companyName) {
     <div class="sec-stat-label">Cash Rate</div>
     <div class="sec-stat-value">${avgCash != null ? fmtPct(avgCash) : '\u2014'}</div>
     <div class="sec-stat-sub">${cashRates.length > 1 ? 'avg across positions' : ''}</div>
+  </div>`;
+
+  // CSD
+  const csdVals = companyInvestments.map(i => i.csd).filter(v => v != null);
+  const avgCSD = csdVals.length ? csdVals.reduce((a,b) => a+b, 0) / csdVals.length : null;
+  html += `<div class="sec-stat-card">
+    <div class="sec-stat-label">Credit Spread Dur.</div>
+    <div class="sec-stat-value">${avgCSD != null ? avgCSD.toFixed(1) + 'yr' : '\u2014'}</div>
+    <div class="sec-stat-sub">\u2248 yrs to maturity (floating)</div>
   </div>`;
 
   // DtS
@@ -2214,7 +2939,7 @@ function openSecurityModal(companyName) {
     html += `<thead><tr>
       <th>Type</th><th>D/E</th><th>Spread</th><th>Cash %</th><th>Maturity</th>
       <th style="text-align:right">Par ($K)</th><th style="text-align:right">Cost ($K)</th>
-      <th style="text-align:right">FV ($K)</th><th style="text-align:right">MTM %</th><th style="text-align:right">DtS</th>
+      <th style="text-align:right">FV ($K)</th><th style="text-align:right">MTM %</th><th style="text-align:right">CSD</th><th style="text-align:right">DtS</th>
     </tr></thead>`;
     html += `<tbody>`;
     companyInvestments.forEach(inv => {
@@ -2222,13 +2947,14 @@ function openSecurityModal(companyName) {
       html += `<tr>
         <td>${inv.type_simple || inv.investment_type || '\u2014'}</td>
         <td>${inv.investment_category || '\u2014'}</td>
-        <td class="num">${fmtBps(inv.spread_bps)}</td>
+        <td class="num">${fmtSpread(inv)}</td>
         <td class="num">${inv.cash_rate_pct != null ? fmtPct(inv.cash_rate_pct) : '\u2014'}</td>
         <td class="num">${inv.maturity || '\u2014'}</td>
         <td class="num">${inv.par_amount_k != null ? fmt(inv.par_amount_k) : '\u2014'}</td>
         <td class="num">${inv.amortized_cost_k != null ? fmt(inv.amortized_cost_k) : '\u2014'}</td>
         <td class="num">${inv.fair_value_k != null ? fmt(inv.fair_value_k) : '\u2014'}</td>
         <td class="num ${(rowMTM||0) > 0 ? 'pos' : (rowMTM||0) < 0 ? 'neg' : ''}">${rowMTM != null ? fmtPct(rowMTM) : '\u2014'}</td>
+        <td class="num">${inv.csd != null ? inv.csd.toFixed(1) + 'yr' : '\u2014'}</td>
         <td class="num">${inv.dts != null ? inv.dts.toFixed(2) : '\u2014'}</td>
       </tr>`;
     });
@@ -2240,7 +2966,7 @@ function openSecurityModal(companyName) {
       <td class="num">${fmt(compCost)}</td>
       <td class="num">${fmt(compFV)}</td>
       <td class="num">${totalRowMTM != null ? fmtPct(totalRowMTM) : '\u2014'}</td>
-      <td></td>
+      <td></td><td></td>
     </tr>`;
     html += `</tbody></table></div>`;
   } else {
