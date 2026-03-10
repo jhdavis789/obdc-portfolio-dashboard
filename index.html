@@ -289,7 +289,7 @@ body {
 }
 .scenario-chip:hover { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
 .scenario-chip.overlay-chip:hover { border-color: var(--purple); color: var(--purple); background: rgba(168,85,247,0.13); }
-.scenario-chip.overlay-chip.active { border-color: var(--purple); color: var(--bg-0); background: var(--purple); font-weight: 600; }
+.scenario-chip.overlay-chip.active { border-color: var(--purple); color: #fff; background: var(--purple); font-weight: 600; }
 
 .scenario-chip-group { display: flex; align-items: center; gap: 4px; }
 
@@ -1022,6 +1022,7 @@ body {
               <th data-key="mtm_pct">MTM %</th>
               <th data-key="spread_dur">Spread Dur</th>
               <th data-key="dts">DtS</th>
+              <th data-key="ai_risk">AI Risk</th>
             </tr></thead>
             <tbody></tbody>
           </table>
@@ -1085,7 +1086,6 @@ body {
             <button class="scenario-chip" data-scenario="severe">Severe (+300bps all)</button>
             <button class="scenario-chip" data-scenario="tech-stress">Tech Stress (+400bps software)</button>
             <button class="scenario-chip" data-scenario="healthcare-stress">Healthcare Stress (+300bps HC)</button>
-            <button class="scenario-chip" data-scenario="rates-up">Rates +200 (all sectors)</button>
             <button class="scenario-chip" data-scenario="recession">Recession (+250 all, +500 cyclical)</button>
           </div>
         </div>
@@ -1233,7 +1233,7 @@ const AI_RISK_SCORES = {
   'Anaplan, Inc.':                                                           { score: 6, rationale: 'Connected planning under pressure from AI-enhanced spreadsheet tools and AI forecasting engines. Deep cross-functional model connectivity provides stickiness, but AI is making this a feature of ERP suites.' },
   'MINDBODY, Inc.':                                                          { score: 6, rationale: 'Wellness/fitness SaaS in a competitive, fragmented market. Core scheduling and booking functionality is replicable by AI-enhanced general-purpose platforms. Marketplace network effects provide some moat.' },
   'VEPF Torreys Aggregator, LLC (dba MINDBODY, Inc.)':                      { score: 6, rationale: 'Investment vehicle for MINDBODY. Same risk profile.' },
-  'H&F Opportunities LUX III S.\u00C0 R.L (dba Checkmarx)':                 { score: 5, rationale: 'AppSec testing growing with AI as both tailwind and threat. AI generates more code to scan but also enables commoditized security tools. CI/CD integration adds stickiness.' },
+  'H&F Opportunities LUX III S.\u00c0 R.L (dba Checkmarx)':                 { score: 5, rationale: 'AppSec testing growing with AI as both tailwind and threat. AI generates more code to scan but also enables commoditized security tools. CI/CD integration adds stickiness.' },
   'Einstein Parent, Inc. (dba Smartsheet)':                                  { score: 7, rationale: 'Work management directly threatened by AI agents that can manage tasks, update records, and generate reports autonomously. Microsoft Copilot in Excel/Planner attacks the same space.' },
   'Salinger Bidco Inc. (dba Surgical Information Systems)':                  { score: 3, rationale: 'ASC-specific surgical software must interface with anesthesia, billing, and implant tracking in compliance with CMS and accreditation. Very few vendors can meet niche regulatory requirements.' },
   'By Light Professional IT Services LLC':                                   { score: 3, rationale: 'Defense/intelligence IT services involve security clearances, ITAR/classified requirements, and long-term government contracts. AI modernization spending benefits defense IT integrators.' },
@@ -2005,6 +2005,7 @@ function buildFullTable(filter = '') {
       <td class="num ${(inv.mtm_pct||0) > 0 ? 'pos' : (inv.mtm_pct||0) < 0 ? 'neg' : ''}">${fmtPct(inv.mtm_pct)}</td>
       <td class="num">${inv.spread_dur != null ? inv.spread_dur.toFixed(1) + 'yr' : '\u2014'}</td>
       <td class="num">${inv.dts != null ? inv.dts.toFixed(2) : '\u2014'}</td>
+      <td class="num">${inv.ai_risk != null ? `<span style="color:${inv.ai_risk >= 8 ? 'var(--red)' : inv.ai_risk >= 6 ? 'var(--amber)' : 'var(--text-1)'}">${inv.ai_risk}/10</span>` : '\u2014'}</td>
     </tr>
   `}).join('');
 }
@@ -2072,16 +2073,29 @@ function buildStressUI() {
   }
 
   const sectorFV = {};
-  investments.forEach(inv => { const s = inv.industry || 'Other'; sectorFV[s] = (sectorFV[s]||0) + (inv.fair_value_k||0); });
+  const sectorSpreadWt = {};
+  const sectorSpreadFV = {};
+  investments.forEach(inv => {
+    const s = inv.industry || 'Other';
+    const fv = inv.fair_value_k || 0;
+    sectorFV[s] = (sectorFV[s]||0) + fv;
+    if (inv.spread_bps != null && inv.investment_category === 'Debt' && fv > 0) {
+      sectorSpreadWt[s] = (sectorSpreadWt[s]||0) + inv.spread_bps * fv;
+      sectorSpreadFV[s] = (sectorSpreadFV[s]||0) + fv;
+    }
+  });
   const sorted = Object.entries(sectorFV).sort((a,b) => b[1] - a[1]);
-  document.getElementById('shock-sectors').innerHTML = sorted.map(([sector, fv]) => `
+  document.getElementById('shock-sectors').innerHTML = sorted.map(([sector, fv]) => {
+    const waSpread = sectorSpreadFV[sector] ? Math.round(sectorSpreadWt[sector] / sectorSpreadFV[sector]) : null;
+    return `
     <div class="shock-sector-row">
       <span class="sector-name" title="${sector}">${sector}</span>
       <span class="fv-label">${fmtM(fv)}</span>
+      <span style="color:var(--text-2);font-family:var(--mono);font-size:9px;min-width:48px;text-align:right;">${waSpread != null ? waSpread + 'bps' : '\u2014'}</span>
       <input type="number" value="0" step="25" data-sector="${sector}" class="shock-input">
       <span style="color:var(--text-2); font-size:9px;">bps</span>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 
   // ─── Historical scenario data ───
   const HISTORICAL_SCENARIOS = {
@@ -2530,7 +2544,6 @@ function buildStressUI() {
             case 'severe': inp.value = 300; break;
             case 'tech-stress': inp.value = softwareish.includes(sector) ? 400 : 50; break;
             case 'healthcare-stress': inp.value = healthcareish.includes(sector) ? 300 : 50; break;
-            case 'rates-up': inp.value = 200; break;
             case 'recession': inp.value = cyclical.includes(sector) ? 500 : 250; break;
           }
         });
@@ -2632,7 +2645,7 @@ function runStress() {
   const spreadLoss = Math.abs(grossLoss) - defaultLossTotal;
 
   let cardsHtml = `
-    <div class="stress-card"><div class="label">Gross Portfolio Loss</div><div class="value" style="color:var(--red)">${grossLoss<0?'-':''}$${Math.abs(grossLoss/1e6).toFixed(0)}M</div><div class="delta" style="color:var(--red)">${fmtPct(grossLossPct)} of portfolio</div></div>
+    <div class="stress-card"><div class="label">Gross Portfolio Loss</div><div class="value" style="color:var(--red)">${grossLoss<0?'-':''}$${Math.abs(grossLoss/1e3).toFixed(0)}M</div><div class="delta" style="color:var(--red)">${fmtPct(grossLossPct)} of portfolio</div></div>
     <div class="stress-card"><div class="label">Avg Shock Applied</div><div class="value" style="color:var(--amber)">${Math.round(avgShock)}bps</div><div class="delta" style="color:var(--text-2)">${Object.values(shocks).filter(v=>v>0).length} sectors shocked</div></div>
   `;
   if (defaultedCredits.size > 0) {
@@ -2923,6 +2936,18 @@ function openSecurityModal(companyName) {
     <div class="sec-stat-value ${mtmCls}">${compMTM != null ? fmtPct(compMTM) : '\u2014'}</div>
     <div class="sec-stat-sub">FV vs amortized cost</div>
   </div>`;
+
+  // AI Risk Score
+  const aiRisk = primary.ai_risk;
+  const aiRationale = primary.ai_risk_rationale;
+  if (aiRisk != null) {
+    const aiColor = aiRisk >= 8 ? 'var(--red)' : aiRisk >= 6 ? 'var(--amber)' : aiRisk >= 4 ? 'var(--text-1)' : 'var(--accent)';
+    html += `<div class="sec-stat-card">
+      <div class="sec-stat-label">AI Replacement Risk</div>
+      <div class="sec-stat-value" style="color:${aiColor}">${aiRisk}/10</div>
+      <div class="sec-stat-sub" style="font-size:8px;line-height:1.3;">${aiRationale || ''}</div>
+    </div>`;
+  }
 
   // Duration / Years to Maturity
   const ytms = companyInvestments.map(i => yearsToMaturity(i.maturity)).filter(v => v != null);
@@ -3286,20 +3311,42 @@ function addSectorDefaultRule() {
   const id = ++sectorDefaultRuleId;
   sectorDefaultRules.push({ id, sector: '', pct: '', recovery: '' });
   renderSectorDefaultRules();
+  applySectorDefaultRules();
 }
 
 function removeSectorDefaultRule(id) {
   const idx = sectorDefaultRules.findIndex(r => r.id === id);
   if (idx !== -1) sectorDefaultRules.splice(idx, 1);
   renderSectorDefaultRules();
+  applySectorDefaultRules();
+}
+
+function computeSectorDefaultImpact(rule) {
+  if (!rule.sector || rule.pct === '' || rule.recovery === '') return null;
+  // Sum fair value of unique companies in this sector
+  const seen = new Set();
+  let sectorFV = 0;
+  investments.forEach(inv => {
+    if (inv.industry === rule.sector && !seen.has(inv.company)) {
+      seen.add(inv.company);
+      sectorFV += inv.fair_value_k || 0;
+    }
+  });
+  const pct = Math.max(0, Math.min(100, rule.pct)) / 100;
+  const recovery = Math.max(0, Math.min(100, rule.recovery)) / 100;
+  const expectedLoss = sectorFV * pct * (1 - recovery);
+  return expectedLoss;
 }
 
 function renderSectorDefaultRules() {
   const container = document.getElementById('sector-default-rules');
   if (!sectorDefaultRules.length) { container.innerHTML = ''; return; }
   const sectors = getSectorList();
-  container.innerHTML = sectorDefaultRules.map(rule => `
-    <div class="sector-default-rule" data-rule-id="${rule.id}">
+  container.innerHTML = sectorDefaultRules.map(rule => {
+    const impact = computeSectorDefaultImpact(rule);
+    const impactStr = impact != null ? `<span style="color:var(--red);font-size:11px;margin-left:auto;white-space:nowrap">-$${(impact/1000).toFixed(1)}M</span>` : '';
+    return `
+    <div class="sector-default-rule" data-rule-id="${rule.id}" style="display:flex;align-items:center;gap:6px">
       <input type="number" value="${rule.pct}" min="0" max="100" step="5" placeholder="%" style="width:50px" data-field="pct" onchange="updateSectorDefaultRule(${rule.id}, 'pct', this.value)">
       <span class="sdr-label">% of</span>
       <select data-field="sector" onchange="updateSectorDefaultRule(${rule.id}, 'sector', this.value)" style="max-width:220px">
@@ -3309,9 +3356,10 @@ function renderSectorDefaultRules() {
       <span class="sdr-label">with</span>
       <input type="number" value="${rule.recovery}" min="0" max="100" step="5" placeholder="%" style="width:50px" data-field="recovery" onchange="updateSectorDefaultRule(${rule.id}, 'recovery', this.value)">
       <span class="sdr-label">% recovery</span>
+      ${impactStr}
       <button class="sdr-remove" onclick="removeSectorDefaultRule(${rule.id})" title="Remove">&times;</button>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function updateSectorDefaultRule(id, field, value) {
@@ -3319,6 +3367,8 @@ function updateSectorDefaultRule(id, field, value) {
   if (!rule) return;
   if (field === 'sector') rule[field] = value;
   else rule[field] = value === '' ? '' : parseFloat(value);
+  renderSectorDefaultRules();
+  applySectorDefaultRules();
 }
 
 function applySectorDefaultRules() {
