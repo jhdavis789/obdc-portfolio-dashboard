@@ -1,0 +1,2495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BDC Portfolio Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-0: #0a0c10;
+  --bg-1: #0f1218;
+  --bg-2: #151a23;
+  --bg-3: #1c2230;
+  --border: #252d3d;
+  --border-bright: #344054;
+  --text-0: #e8ecf4;
+  --text-1: #a0aec0;
+  --text-2: #6b7a90;
+  --accent: #00d4aa;
+  --accent-dim: #00d4aa33;
+  --red: #ff4757;
+  --red-dim: #ff475722;
+  --amber: #ffa502;
+  --amber-dim: #ffa50222;
+  --blue: #3b82f6;
+  --blue-dim: #3b82f622;
+  --purple: #a855f7;
+  --cyan: #06b6d4;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'DM Sans', -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-0);
+  color: var(--text-0);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-1); }
+::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+
+/* ─── Header ─── */
+.header {
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left { display: flex; align-items: center; gap: 16px; }
+
+.bdc-select {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 2px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2300d4aa' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+}
+
+.bdc-select:focus { border-color: var(--accent); }
+
+.header-meta { display: flex; flex-direction: column; gap: 1px; }
+.header-meta .name { font-size: 13px; color: var(--text-1); font-weight: 500; }
+.header-meta .filing { font-family: var(--mono); font-size: 10px; color: var(--text-2); letter-spacing: 1px; }
+
+.header-right { display: flex; gap: 10px; align-items: center; }
+
+.nav-tab {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+
+.nav-tab:hover, .nav-tab.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* ─── Main ─── */
+.main { padding: 16px 24px 40px; max-width: 1800px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+
+/* ─── Cards ─── */
+.summary-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px; }
+
+.stat-card {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.stat-card.green::before { background: var(--accent); }
+.stat-card.red::before { background: var(--red); }
+.stat-card.blue::before { background: var(--blue); }
+.stat-card.amber::before { background: var(--amber); }
+.stat-card.purple::before { background: var(--purple); }
+.stat-card.cyan::before { background: var(--cyan); }
+
+.stat-label { font-family: var(--mono); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-2); margin-bottom: 6px; }
+.stat-value { font-family: var(--mono); font-size: 22px; font-weight: 600; color: var(--text-0); }
+.stat-sub { font-family: var(--mono); font-size: 10px; color: var(--text-2); margin-top: 4px; }
+
+/* ─── Grids ─── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+/* ─── Panel ─── */
+.panel { background: var(--bg-1); border: 1px solid var(--border); overflow: hidden; }
+
+.panel-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-2);
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.panel-title { font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-1); font-weight: 600; }
+.panel-body { padding: 14px; }
+.panel-body.flush { padding: 0; }
+
+.chart-wrap { position: relative; width: 100%; }
+.chart-wrap canvas { width: 100% !important; }
+
+/* ─── Industry Toggle Pills ─── */
+.ind-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-1);
+}
+
+.ind-pill {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.3px;
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+
+.ind-pill:hover { border-color: var(--text-1); color: var(--text-1); }
+
+.ind-pill.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.ind-pill.all-pill {
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* ─── Treemap ─── */
+.treemap-container { display: flex; flex-wrap: wrap; gap: 2px; padding: 2px; min-height: 300px; }
+
+.treemap-cell {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  overflow: hidden;
+  border-radius: 1px;
+}
+
+.treemap-cell:hover { filter: brightness(1.3); z-index: 2; outline: 1px solid var(--accent); }
+.treemap-label { font-family: var(--mono); font-size: 11px; font-weight: 600; line-height: 1.3; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5); word-break: break-word; }
+.treemap-value { font-family: var(--mono); font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.75); display: block; text-shadow: 0 1px 3px rgba(0,0,0,0.7); margin-top: 2px; }
+
+/* ─── Tables ─── */
+.data-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 11px; }
+
+.data-table thead th {
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border-bright);
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-2);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.data-table thead th:hover { color: var(--accent); }
+.data-table thead th.sorted-asc::after { content: ' \u25B2'; color: var(--accent); }
+.data-table thead th.sorted-desc::after { content: ' \u25BC'; color: var(--accent); }
+.data-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+.data-table tbody tr:hover { background: var(--bg-3); }
+.data-table td { padding: 6px 10px; white-space: nowrap; color: var(--text-1); }
+.data-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table td.pos { color: var(--accent); }
+.data-table td.neg { color: var(--red); }
+.data-table td.company-cell { max-width: 280px; overflow: hidden; text-overflow: ellipsis; color: var(--text-0); font-weight: 500; }
+
+/* ─── Tooltip ─── */
+.tooltip {
+  position: fixed;
+  background: var(--bg-3);
+  border: 1px solid var(--border-bright);
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-0);
+  pointer-events: none;
+  z-index: 1000;
+  max-width: 320px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  display: none;
+}
+
+.tooltip .tt-title { font-weight: 600; margin-bottom: 6px; color: var(--accent); font-size: 12px; }
+.tooltip .tt-row { display: flex; justify-content: space-between; gap: 12px; padding: 1px 0; }
+.tooltip .tt-label { color: var(--text-2); }
+.tooltip .tt-val { color: var(--text-0); }
+
+/* ─── Stress ─── */
+.stress-input-group {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg-2); border: 1px solid var(--border); padding: 4px 8px;
+  font-family: var(--mono); font-size: 11px;
+}
+.stress-input-group label { color: var(--text-2); font-size: 10px; min-width: 60px; }
+.stress-input-group select, .stress-input-group input {
+  background: var(--bg-0); border: 1px solid var(--border); color: var(--text-0);
+  font-family: var(--mono); font-size: 11px; padding: 4px 8px; outline: none;
+}
+.stress-input-group select:focus, .stress-input-group input:focus { border-color: var(--accent); }
+
+.stress-btn {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+  padding: 6px 16px; border: 1px solid var(--accent); background: var(--accent-dim);
+  color: var(--accent); cursor: pointer; transition: all 0.2s;
+}
+.stress-btn:hover { background: var(--accent); color: var(--bg-0); }
+.stress-btn.reset { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+.stress-btn.reset:hover { background: var(--red); color: var(--bg-0); }
+
+.stress-scenarios { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+
+.scenario-chip {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.5px; padding: 4px 10px;
+  border: 1px solid var(--border); background: var(--bg-2); color: var(--text-2);
+  cursor: pointer; transition: all 0.15s;
+}
+.scenario-chip:hover { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+
+.stress-result-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.stress-card { background: var(--bg-2); border: 1px solid var(--border); padding: 12px; }
+.stress-card .label { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-2); }
+.stress-card .value { font-family: var(--mono); font-size: 18px; font-weight: 600; margin-top: 4px; }
+.stress-card .delta { font-family: var(--mono); font-size: 11px; margin-top: 2px; }
+
+/* ─── Search / Filters ─── */
+.search-bar { display: flex; gap: 8px; margin-bottom: 14px; }
+.search-bar input {
+  flex: 1; background: var(--bg-2); border: 1px solid var(--border); color: var(--text-0);
+  font-family: var(--mono); font-size: 12px; padding: 8px 14px; outline: none;
+}
+.search-bar input:focus { border-color: var(--accent); }
+.search-bar input::placeholder { color: var(--text-2); }
+
+.filter-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+
+.pill {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.5px; padding: 3px 10px;
+  border: 1px solid var(--border); background: transparent; color: var(--text-2);
+  cursor: pointer; transition: all 0.15s;
+}
+.pill:hover, .pill.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+.table-scroll { max-height: 600px; overflow-y: auto; }
+
+.shock-sector-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 6px; }
+
+.shock-sector-row {
+  display: flex; align-items: center; gap: 8px; padding: 4px 8px;
+  background: var(--bg-2); border: 1px solid var(--border); font-family: var(--mono); font-size: 11px;
+}
+.shock-sector-row .sector-name { flex: 1; color: var(--text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
+.shock-sector-row input {
+  width: 60px; background: var(--bg-0); border: 1px solid var(--border); color: var(--text-0);
+  font-family: var(--mono); font-size: 11px; padding: 3px 6px; text-align: right; outline: none;
+}
+.shock-sector-row input:focus { border-color: var(--accent); }
+.shock-sector-row .fv-label { color: var(--text-2); font-size: 9px; min-width: 55px; text-align: right; }
+
+/* ─── Position Filters ─── */
+.pos-filters-bar {
+  display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;
+}
+.pos-search {
+  flex: 1; background: var(--bg-2); border: 1px solid var(--border); color: var(--text-0);
+  font-family: var(--mono); font-size: 12px; padding: 8px 14px; outline: none; width: 100%; box-sizing: border-box;
+}
+.pos-search:focus { border-color: var(--accent); }
+.pos-search::placeholder { color: var(--text-2); }
+.pos-filter-group { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.pos-dropdown { position: relative; }
+.pos-dropdown-btn {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.5px; padding: 5px 12px;
+  border: 1px solid var(--border); background: var(--bg-2); color: var(--text-1);
+  cursor: pointer; white-space: nowrap; transition: border-color 0.15s;
+}
+.pos-dropdown-btn:hover { border-color: var(--accent); }
+.pos-dropdown-btn .dd-arrow { font-size: 8px; margin-left: 4px; }
+.pos-dropdown-menu {
+  display: none; position: absolute; top: 100%; left: 0; z-index: 100;
+  background: var(--bg-1); border: 1px solid var(--border); min-width: 260px; max-height: 360px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4); margin-top: 2px;
+}
+.pos-dropdown-menu.open { display: block; }
+.dd-actions { display: flex; gap: 4px; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.dd-action-btn {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.5px; padding: 2px 8px;
+  border: 1px solid var(--border); background: transparent; color: var(--text-2);
+  cursor: pointer; transition: all 0.15s;
+}
+.dd-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+.dd-options { max-height: 280px; overflow-y: auto; padding: 4px 0; }
+.dd-option {
+  display: flex; align-items: center; gap: 8px; padding: 4px 10px; cursor: pointer;
+  font-family: var(--mono); font-size: 10px; color: var(--text-1); transition: background 0.1s;
+}
+.dd-option:hover { background: var(--bg-2); }
+.dd-option input[type="checkbox"] {
+  accent-color: var(--accent); width: 12px; height: 12px; margin: 0;
+}
+.dd-option .dd-count { margin-left: auto; color: var(--text-2); font-size: 9px; }
+.pos-range-filter {
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--mono); font-size: 10px; color: var(--text-2);
+}
+.pos-range-filter label { min-width: 36px; text-transform: uppercase; letter-spacing: 0.5px; font-size: 9px; }
+.range-input {
+  width: 52px; background: var(--bg-2); border: 1px solid var(--border); color: var(--text-0);
+  font-family: var(--mono); font-size: 10px; padding: 4px 6px; text-align: right; outline: none;
+}
+.range-input:focus { border-color: var(--accent); }
+.range-input::placeholder { color: var(--text-2); font-size: 9px; }
+.range-sep { color: var(--text-2); }
+.range-unit { color: var(--text-2); font-size: 9px; margin-left: 1px; }
+.pos-reset-btn {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  padding: 4px 12px; border: 1px solid var(--border); background: transparent; color: var(--text-2);
+  cursor: pointer; transition: all 0.15s;
+}
+.pos-reset-btn:hover { border-color: var(--red); color: var(--red); }
+.pos-filter-summary {
+  font-family: var(--mono); font-size: 10px; color: var(--text-2); margin-bottom: 8px;
+}
+
+/* ─── Sponsors Tab ─── */
+.grid-sponsors { display: grid; grid-template-columns: 1fr 1.5fr; gap: 16px; }
+.sponsor-list-panel .data-table tbody tr { cursor: pointer; transition: background 0.1s; }
+.sponsor-list-panel .data-table tbody tr:hover { background: var(--bg-2); }
+.sponsor-list-panel .data-table tbody tr.active { background: var(--accent-dim); border-left: 2px solid var(--accent); }
+.sponsor-detail-panel .panel-body { max-height: calc(100vh - 260px); overflow-y: auto; }
+.sponsor-portco {
+  display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+  border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s;
+}
+.sponsor-portco:hover { background: var(--bg-2); }
+.sponsor-portco:last-child { border-bottom: none; }
+.sponsor-portco-name { flex: 1; font-size: 12px; color: var(--text-0); }
+.sponsor-portco-industry { font-family: var(--mono); font-size: 9px; color: var(--text-2); }
+.sponsor-portco-fv { font-family: var(--mono); font-size: 11px; color: var(--text-1); text-align: right; min-width: 60px; }
+.sponsor-portco-mtm { font-family: var(--mono); font-size: 10px; text-align: right; min-width: 50px; }
+.sponsor-source { font-size: 11px; color: var(--text-2); line-height: 1.5; padding: 12px; border-bottom: 1px solid var(--border); background: var(--bg-2); margin-bottom: 4px; }
+
+/* ─── Responsive ─── */
+@media (max-width: 1200px) {
+  .summary-row { grid-template-columns: repeat(3, 1fr); }
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+  .grid-2-1 { grid-template-columns: 1fr; }
+}
+@media (max-width: 800px) {
+  .summary-row { grid-template-columns: repeat(2, 1fr); }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .stress-result-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.loading-overlay {
+  position: fixed; inset: 0; background: var(--bg-0);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999; transition: opacity 0.4s;
+}
+.loading-overlay.hide { opacity: 0; pointer-events: none; }
+.loading-text { font-family: var(--mono); font-size: 14px; color: var(--accent); letter-spacing: 3px; }
+.loading-text::after { content: ''; animation: dots 1.5s infinite; }
+@keyframes dots { 0%{content:''} 25%{content:'.'} 50%{content:'..'} 75%{content:'...'} }
+
+/* ─── Security Detail Modal ─── */
+.security-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 500;
+  display: none;
+  align-items: stretch;
+  justify-content: flex-end;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.security-modal-overlay.visible { display: flex; }
+.security-modal-overlay.show { opacity: 1; }
+
+.security-modal {
+  width: 680px;
+  max-width: 90vw;
+  height: 100vh;
+  background: var(--bg-1);
+  border-left: 1px solid var(--border-bright);
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+.security-modal-overlay.show .security-modal { transform: translateX(0); }
+
+.sec-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+  flex-shrink: 0;
+}
+
+.sec-modal-title-block { flex: 1; min-width: 0; }
+
+.sec-modal-company {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  word-break: break-word;
+}
+
+.sec-modal-subtitle {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sec-modal-subtitle .tag {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.sec-modal-subtitle .tag.debt { color: var(--blue); border-color: var(--blue); }
+.sec-modal-subtitle .tag.equity { color: var(--purple); border-color: var(--purple); }
+
+.sec-modal-close {
+  font-family: var(--mono);
+  font-size: 18px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  cursor: pointer;
+  padding: 4px 10px;
+  line-height: 1;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+.sec-modal-close:hover { color: var(--red); border-color: var(--red); }
+
+.sec-modal-body {
+  padding: 20px 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sec-modal-section-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-2);
+  font-weight: 600;
+  margin-bottom: 10px;
+  margin-top: 20px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+}
+.sec-modal-section-title:first-child { margin-top: 0; }
+
+.sec-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+@media (max-width: 600px) { .sec-stats-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.sec-stat-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  position: relative;
+}
+
+.sec-stat-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-2);
+  margin-bottom: 4px;
+}
+
+.sec-stat-value {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-0);
+}
+
+.sec-stat-sub {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-2);
+  margin-top: 2px;
+}
+
+.sec-stat-value.pos { color: var(--accent); }
+.sec-stat-value.neg { color: var(--red); }
+
+.sec-sponsor-info {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-1);
+}
+.sec-sponsor-info .sponsor-name { color: var(--accent); font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+.sec-sponsor-info .sponsor-detail { color: var(--text-2); font-size: 10px; }
+
+.sec-comps-list { display: flex; flex-direction: column; gap: 8px; }
+.sec-comp-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+}
+.sec-comp-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.sec-comp-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue);
+}
+.sec-comp-ticker {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-2);
+  letter-spacing: 0.5px;
+}
+.sec-comp-debt {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-1);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+.sec-comp-rationale {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--text-2);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.sec-category-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.sec-category-item {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  flex: 1;
+  min-width: 180px;
+}
+.sec-category-item .label {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-2);
+  margin-bottom: 3px;
+}
+.sec-category-item .value {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-0);
+}
+
+.sec-positions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+.sec-positions-table thead th {
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border-bright);
+  padding: 6px 8px;
+  text-align: left;
+  font-size: 8px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-2);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.sec-positions-table tbody tr { border-bottom: 1px solid var(--border); }
+.sec-positions-table td {
+  padding: 5px 8px;
+  color: var(--text-1);
+  white-space: nowrap;
+}
+.sec-positions-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.sec-positions-table tr.total-row { border-top: 2px solid var(--accent); background: var(--bg-3); }
+.sec-positions-table tr.total-row td { color: var(--accent); font-weight: 600; }
+
+.sec-address-block {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-2);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loader"><div class="loading-text">LOADING PORTFOLIO DATA</div></div>
+<div id="tooltip" class="tooltip"></div>
+
+<!-- Security Detail Modal -->
+<div class="security-modal-overlay" id="security-modal-overlay">
+  <div class="security-modal" id="security-modal">
+    <div class="sec-modal-header">
+      <div class="sec-modal-title-block">
+        <div class="sec-modal-company" id="sec-modal-company"></div>
+        <div class="sec-modal-subtitle" id="sec-modal-subtitle"></div>
+      </div>
+      <button class="sec-modal-close" onclick="closeSecurityModal()" title="Close">&times;</button>
+    </div>
+    <div class="sec-modal-body" id="sec-modal-body"></div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="header-left">
+    <select class="bdc-select" id="bdc-select"></select>
+    <div class="header-meta">
+      <div class="name" id="hd-name"></div>
+      <div class="filing" id="hd-filing"></div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="nav-tab active" data-section="overview">Overview</button>
+    <button class="nav-tab" data-section="positions">Positions</button>
+    <button class="nav-tab" data-section="sponsors">Sponsors</button>
+    <button class="nav-tab" data-section="stress">Stress Test</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ═══ OVERVIEW ═══ -->
+  <div class="section active" id="sec-overview">
+    <div class="summary-row" id="summary-cards"></div>
+
+    <div class="grid-2-1">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Industry Allocation &mdash; &ldquo;Fair Value&rdquo;</span></div>
+        <div class="panel-body"><div class="treemap-container" id="treemap"></div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Investment Type Breakdown</span></div>
+        <div class="panel-body"><div class="chart-wrap" style="height:340px"><canvas id="chart-types"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- Spread with industry toggles -->
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-header"><span class="panel-title">Spread Distribution (BPS)</span></div>
+      <div class="ind-toggles" id="spread-toggles"></div>
+      <div class="panel-body"><div class="chart-wrap" style="height:280px"><canvas id="chart-spreads"></canvas></div></div>
+    </div>
+
+    <!-- Maturity with industry toggles -->
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-header"><span class="panel-title">Maturity Wall &mdash; &ldquo;Fair Value&rdquo; by Year</span></div>
+      <div class="ind-toggles" id="maturity-toggles"></div>
+      <div class="panel-body"><div class="chart-wrap" style="height:280px"><canvas id="chart-maturity"></canvas></div></div>
+    </div>
+
+    <!-- DtS with industry toggles -->
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-header"><span class="panel-title">Duration &times; Spread (DtS) &mdash; Carry vs Risk</span></div>
+      <div class="ind-toggles" id="dts-toggles"></div>
+      <div class="panel-body"><div class="chart-wrap" style="height:340px"><canvas id="chart-dts"></canvas></div></div>
+    </div>
+
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-header"><span class="panel-title">Vintage &mdash; Origination Year Distribution (&ldquo;Fair Value&rdquo;)</span></div>
+      <div class="panel-body"><div class="chart-wrap" style="height:260px"><canvas id="chart-vintage"></canvas></div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Mark-to-Market: &ldquo;Fair Value&rdquo; vs Amortized Cost</span></div>
+        <div class="panel-body"><div class="chart-wrap" style="height:300px"><canvas id="chart-mtm"></canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Top 25 Positions by &ldquo;Fair Value&rdquo;</span></div>
+        <div class="panel-body flush">
+          <div class="table-scroll" style="max-height:340px">
+            <table class="data-table" id="top-positions-table">
+              <thead><tr><th>Company</th><th>Industry</th><th>Type</th><th>Spread</th><th>FV ($M)</th><th>MTM %</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ POSITIONS ═══ -->
+  <div class="section" id="sec-positions">
+    <div class="pos-filters-bar">
+      <input type="text" id="search-input" class="pos-search" placeholder="Search company, industry, type, sponsor...">
+      <div class="pos-filter-group">
+        <div class="pos-dropdown" id="sector-dropdown">
+          <button class="pos-dropdown-btn" id="sector-dropdown-btn">Sector: All <span class="dd-arrow">&#9662;</span></button>
+          <div class="pos-dropdown-menu" id="sector-dropdown-menu">
+            <div class="dd-actions">
+              <button class="dd-action-btn" id="sector-select-all">Select All</button>
+              <button class="dd-action-btn" id="sector-deselect-all">Deselect All</button>
+            </div>
+            <div class="dd-options" id="sector-options"></div>
+          </div>
+        </div>
+        <div class="pos-dropdown" id="type-dropdown">
+          <button class="pos-dropdown-btn" id="type-dropdown-btn">Type: All <span class="dd-arrow">&#9662;</span></button>
+          <div class="pos-dropdown-menu" id="type-dropdown-menu">
+            <div class="dd-actions">
+              <button class="dd-action-btn" id="type-select-all">Select All</button>
+              <button class="dd-action-btn" id="type-deselect-all">Deselect All</button>
+            </div>
+            <div class="dd-options" id="type-options"></div>
+          </div>
+        </div>
+        <div class="pos-dropdown" id="de-dropdown">
+          <button class="pos-dropdown-btn" id="de-dropdown-btn">D/E: All <span class="dd-arrow">&#9662;</span></button>
+          <div class="pos-dropdown-menu" id="de-dropdown-menu">
+            <div class="dd-actions">
+              <button class="dd-action-btn" id="de-select-all">Select All</button>
+              <button class="dd-action-btn" id="de-deselect-all">Deselect All</button>
+            </div>
+            <div class="dd-options" id="de-options"></div>
+          </div>
+        </div>
+      </div>
+      <div class="pos-filter-group">
+        <div class="pos-range-filter">
+          <label>Spread</label>
+          <input type="number" id="filter-spread-min" placeholder="min" class="range-input">
+          <span class="range-sep">&ndash;</span>
+          <input type="number" id="filter-spread-max" placeholder="max" class="range-input">
+          <span class="range-unit">bps</span>
+        </div>
+        <div class="pos-range-filter">
+          <label>Maturity</label>
+          <input type="number" id="filter-mat-min" placeholder="min" class="range-input" step="0.1">
+          <span class="range-sep">&ndash;</span>
+          <input type="number" id="filter-mat-max" placeholder="max" class="range-input" step="0.1">
+          <span class="range-unit">yr</span>
+        </div>
+        <div class="pos-range-filter">
+          <label>FV</label>
+          <input type="number" id="filter-fv-min" placeholder="min" class="range-input">
+          <span class="range-sep">&ndash;</span>
+          <input type="number" id="filter-fv-max" placeholder="max" class="range-input">
+          <span class="range-unit">$K</span>
+        </div>
+        <div class="pos-range-filter">
+          <label>MTM</label>
+          <input type="number" id="filter-mtm-min" placeholder="min" class="range-input" step="0.1">
+          <span class="range-sep">&ndash;</span>
+          <input type="number" id="filter-mtm-max" placeholder="max" class="range-input" step="0.1">
+          <span class="range-unit">%</span>
+        </div>
+        <button class="pos-reset-btn" onclick="resetPosFilters()">Reset</button>
+      </div>
+    </div>
+    <div class="pos-filter-summary" id="pos-filter-summary"></div>
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">Full Portfolio &mdash; <span id="pos-count">0</span> investments</span></div>
+      <div class="panel-body flush">
+        <div class="table-scroll" style="max-height:calc(100vh - 260px)">
+          <table class="data-table" id="full-table">
+            <thead><tr>
+              <th data-key="company">Company</th>
+              <th data-key="industry">Industry</th>
+              <th data-key="type_simple">Type</th>
+              <th data-key="investment_category">D/E</th>
+              <th data-key="spread_bps">Spread</th>
+              <th data-key="cash_rate_pct">Cash %</th>
+              <th data-key="origination_date">Originated</th>
+              <th data-key="maturity">Maturity</th>
+              <th data-key="par_amount_k">Par ($K)</th>
+              <th data-key="amortized_cost_k">Cost ($K)</th>
+              <th data-key="fair_value_k">FV ($K)</th>
+              <th data-key="pct_portfolio">% Port</th>
+              <th data-key="mtm_pct">MTM %</th>
+              <th data-key="dts">DtS</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SPONSORS ═══ -->
+  <div class="section" id="sec-sponsors">
+    <div class="pos-filters-bar" style="margin-bottom:16px">
+      <input type="text" id="sponsor-search" class="pos-search" placeholder="Search sponsor name...">
+    </div>
+    <div class="grid-sponsors">
+      <div class="panel sponsor-list-panel">
+        <div class="panel-header"><span class="panel-title">PE Sponsors <span id="sponsor-count" style="color:var(--text-2)"></span></span></div>
+        <div class="panel-body flush">
+          <div class="table-scroll" style="max-height:calc(100vh - 260px)">
+            <table class="data-table" id="sponsor-table">
+              <thead><tr>
+                <th data-key="sponsor" style="cursor:pointer">Sponsor</th>
+                <th data-key="count" style="cursor:pointer;text-align:right"># Cos</th>
+                <th data-key="fv" style="cursor:pointer;text-align:right">Total FV</th>
+                <th data-key="pct" style="cursor:pointer;text-align:right">% Port</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="panel sponsor-detail-panel">
+        <div class="panel-header"><span class="panel-title" id="sponsor-detail-title">Select a sponsor</span></div>
+        <div class="panel-body" id="sponsor-detail-body">
+          <div style="color:var(--text-2);font-size:12px;font-family:var(--mono);text-align:center;padding:40px 0;">Click a sponsor to see their portfolio companies</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STRESS TEST ═══ -->
+  <div class="section" id="sec-stress">
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-header"><span class="panel-title">Portfolio Stress Testing</span></div>
+      <div class="panel-body">
+        <p style="color:var(--text-2); font-size:12px; margin-bottom:14px; line-height:1.6;">
+          Apply spread shocks by sector to estimate &ldquo;fair value&rdquo; impact on the <strong style="color:var(--text-0)">levered</strong> portfolio. Gross portfolio losses are amplified by BDC leverage (debt/equity). Duration-based approximation: for each +100bps of spread widening, &ldquo;fair value&rdquo; declines by ~(duration &times; 0.01) of par. Results show both gross (asset-level) and levered (NAV/equity) impact, plus asset coverage ratio breach warnings.
+        </p>
+
+        <div id="leverage-info" style="display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap;"></div>
+
+        <div style="margin-bottom:14px">
+          <div class="panel-title" style="margin-bottom:8px; font-size:9px;">Preset Scenarios</div>
+          <div class="stress-scenarios">
+            <button class="scenario-chip" data-scenario="mild">Mild (+50bps all)</button>
+            <button class="scenario-chip" data-scenario="moderate">Moderate (+150bps all)</button>
+            <button class="scenario-chip" data-scenario="severe">Severe (+300bps all)</button>
+            <button class="scenario-chip" data-scenario="tech-stress">Tech Stress (+400bps software)</button>
+            <button class="scenario-chip" data-scenario="healthcare-stress">Healthcare Stress (+300bps HC)</button>
+            <button class="scenario-chip" data-scenario="rates-up">Rates +200 (all sectors)</button>
+            <button class="scenario-chip" data-scenario="recession">Recession (+250 all, +500 cyclical)</button>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; margin-bottom:14px; align-items:center; flex-wrap:wrap;">
+          <div class="stress-input-group">
+            <label>Equity mult</label>
+            <input type="number" id="equity-mult" value="1.5" step="0.1" min="0" max="5" style="width:50px">
+            <span style="color:var(--text-2); font-size:9px">&times; spread shock</span>
+          </div>
+          <button class="stress-btn" onclick="runStress()">Run Stress</button>
+          <button class="stress-btn reset" onclick="resetStress()">Reset</button>
+        </div>
+        <div class="panel-title" style="margin-bottom:8px; font-size:9px;">Sector-Level Spread Shocks (bps)</div>
+        <div class="shock-sector-list" id="shock-sectors"></div>
+      </div>
+    </div>
+    <div class="stress-result-grid" id="stress-results" style="display:none"></div>
+    <div class="grid-2" id="stress-charts-row" style="display:none">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Stressed &ldquo;Fair Value&rdquo; Impact by Sector</span></div>
+        <div class="panel-body"><div class="chart-wrap" style="height:320px"><canvas id="chart-stress-sectors"></canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Largest Individual Losses</span></div>
+        <div class="panel-body flush">
+          <div class="table-scroll" style="max-height:360px">
+            <table class="data-table" id="stress-losers-table">
+              <thead><tr><th>Company</th><th>Industry</th><th>Shock (bps)</th><th>FV Before</th><th>FV After</th><th>Loss ($K)</th><th>Loss %</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── Registry of loaded BDCs ───
+const BDC_REGISTRY = {};
+const BALANCE_SHEETS = {};
+let currentBDC = null;
+let currentBS = null;
+let investments = [];
+let sortState = { key: null, dir: 'desc' };
+let stressChartInstance = null;
+
+// Chart instances for rebuild
+let chartInstances = {};
+
+const SECTOR_COLORS = [
+  '#00d4aa','#3b82f6','#a855f7','#f59e0b','#ef4444','#06b6d4','#ec4899',
+  '#84cc16','#f97316','#8b5cf6','#14b8a6','#e11d48','#0ea5e9','#d946ef',
+  '#22c55e','#eab308','#6366f1','#fb923c','#a3e635','#2dd4bf','#f472b6',
+  '#facc15','#818cf8','#4ade80','#fb7185','#38bdf8','#c084fc','#fbbf24',
+  '#34d399','#f87171'
+];
+
+// ─── Helpers ───
+const fmt = (n, d=0) => n == null ? '\u2014' : n.toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d});
+const fmtM = n => n == null ? '\u2014' : '$' + (n/1e3).toFixed(0) + 'M';
+const fmtB = n => n == null ? '\u2014' : '$' + (n/1e6).toFixed(2) + 'B';
+const fmtPct = (n, d=1) => n == null ? '\u2014' : n.toFixed(d) + '%';
+const fmtBps = n => n == null ? '\u2014' : n + 'bps';
+
+function parseMaturityYear(m) {
+  if (!m) return null;
+  const parts = m.split('/');
+  return parts.length === 2 ? parseInt(parts[1]) : null;
+}
+
+function yearsToMaturity(m) {
+  if (!m) return null;
+  const parts = m.split('/');
+  if (parts.length !== 2) return null;
+  const month = parseInt(parts[0]);
+  const year = parseInt(parts[1]);
+  const now = new Date(2025, 11, 31);
+  const mat = new Date(year, month - 1, 1);
+  return Math.max(0, (mat - now) / (365.25 * 86400000));
+}
+
+function computeDtS(inv) {
+  const ytm = yearsToMaturity(inv.maturity);
+  if (ytm == null || inv.spread_bps == null) return null;
+  return ytm * (inv.spread_bps / 100); // duration (years) * spread (in %)
+}
+
+function getIndustries() {
+  const m = {};
+  investments.forEach(i => { const s = i.industry || 'Other'; m[s] = (m[s]||0) + (i.fair_value_k||0); });
+  return Object.entries(m).sort((a,b) => b[1] - a[1]);
+}
+
+function getIndustryColor(industry) {
+  const all = getIndustries().map(([s]) => s);
+  const idx = all.indexOf(industry);
+  return SECTOR_COLORS[idx >= 0 ? idx % SECTOR_COLORS.length : 0];
+}
+
+// ─── Chart defaults ───
+const AXIS_FONT = { family: "'JetBrains Mono'", size: 10 };
+const AXIS_LABEL_FONT = { family: "'JetBrains Mono'", size: 11, weight: '500' };
+const AXIS_COLOR = '#6b7a90';
+const GRID_COLOR = '#1c223044';
+const BORDER_COLOR = '#252d3d';
+const TT_STYLE = {
+  backgroundColor: '#1c2230',
+  titleFont: { family: "'JetBrains Mono'", size: 11 },
+  bodyFont: { family: "'JetBrains Mono'", size: 10 },
+  borderColor: '#344054',
+  borderWidth: 1,
+};
+
+// ─── Data Loading ───
+async function loadData() {
+  // Try loading all known BDC data files
+  const files = ['data.json']; // expand this array as more BDCs are added
+  for (const file of files) {
+    try {
+      const resp = await fetch(file);
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      const key = data.ticker || file;
+      BDC_REGISTRY[key] = data;
+    } catch(e) { console.warn('Failed to load', file, e); }
+  }
+
+  // Load balance sheet data
+  try {
+    const bsResp = await fetch('balance_sheet.json');
+    if (bsResp.ok) {
+      const bs = await bsResp.json();
+      BALANCE_SHEETS['OBDC'] = bs; // keyed by ticker
+    }
+  } catch(e) { console.warn('No balance sheet data', e); }
+
+  // Populate BDC selector
+  const sel = document.getElementById('bdc-select');
+  for (const [ticker, data] of Object.entries(BDC_REGISTRY)) {
+    const opt = document.createElement('option');
+    opt.value = ticker;
+    opt.textContent = ticker;
+    sel.appendChild(opt);
+  }
+  sel.addEventListener('change', () => switchBDC(sel.value));
+
+  // Load first BDC
+  const firstTicker = Object.keys(BDC_REGISTRY)[0];
+  if (firstTicker) switchBDC(firstTicker);
+
+  document.getElementById('loader').classList.add('hide');
+  initNav();
+}
+
+function switchBDC(ticker) {
+  currentBDC = BDC_REGISTRY[ticker];
+  currentBS = BALANCE_SHEETS[ticker] || null;
+  investments = currentBDC.investments;
+
+  // Compute DtS and % of portfolio for every investment
+  const totalFVForPct = investments.reduce((s,i) => s + (i.fair_value_k||0), 0);
+  investments.forEach(inv => {
+    inv.dts = computeDtS(inv);
+    inv.pct_portfolio = inv.fair_value_k != null && totalFVForPct ? (inv.fair_value_k / totalFVForPct * 100) : null;
+  });
+
+  document.getElementById('bdc-select').value = ticker;
+  document.getElementById('hd-name').textContent = currentBDC.bdc_name;
+  document.getElementById('hd-filing').textContent = `${currentBDC.filing_type} \u00b7 AS OF ${currentBDC.period_end}`;
+  document.title = `${ticker} Portfolio Analytics`;
+
+  // Destroy old charts
+  for (const [k, c] of Object.entries(chartInstances)) { c.destroy(); }
+  chartInstances = {};
+  if (stressChartInstance) { stressChartInstance.destroy(); stressChartInstance = null; }
+
+  // Rebuild everything
+  buildSummaryCards();
+  buildTreemap();
+  buildTypeChart();
+  buildIndustryToggles('spread-toggles', rebuildSpreadChart);
+  buildIndustryToggles('maturity-toggles', rebuildMaturityChart);
+  buildIndustryToggles('dts-toggles', rebuildDtSChart);
+  rebuildSpreadChart();
+  rebuildMaturityChart();
+  rebuildDtSChart();
+  buildVintageChart();
+  buildMTMChart();
+  buildTopPositions();
+  initPosFilters();
+  buildFullTable();
+  buildStressUI();
+  buildSponsorsTab();
+
+  sortState = { key: null, dir: 'desc' };
+}
+
+// ─── Nav ───
+function initNav() {
+  document.querySelectorAll('.nav-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('sec-' + btn.dataset.section).classList.add('active');
+    });
+  });
+}
+
+// ─── Industry Toggle Builder ───
+function buildIndustryToggles(containerId, rebuildFn) {
+  const container = document.getElementById(containerId);
+  const industries = getIndustries();
+  container.innerHTML = `<button class="ind-pill all-pill active" data-ind="__all__">ALL</button>` +
+    industries.map(([s], i) => {
+      const short = s.length > 22 ? s.slice(0, 20) + '..' : s;
+      return `<button class="ind-pill" data-ind="${s}" title="${s}" style="--dot-color:${SECTOR_COLORS[i % SECTOR_COLORS.length]}">${short}</button>`;
+    }).join('');
+
+  container.querySelectorAll('.ind-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const isAll = pill.dataset.ind === '__all__';
+      if (isAll) {
+        container.querySelectorAll('.ind-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+      } else {
+        container.querySelector('.all-pill').classList.remove('active');
+        pill.classList.toggle('active');
+        // If none active, re-activate ALL
+        if (!container.querySelector('.ind-pill.active')) {
+          container.querySelector('.all-pill').classList.add('active');
+        }
+      }
+      rebuildFn();
+    });
+  });
+}
+
+function getActiveIndustries(containerId) {
+  const container = document.getElementById(containerId);
+  const allActive = container.querySelector('.all-pill.active');
+  if (allActive) return null; // null = all
+  const active = [];
+  container.querySelectorAll('.ind-pill.active').forEach(p => {
+    if (p.dataset.ind !== '__all__') active.push(p.dataset.ind);
+  });
+  return active.length > 0 ? active : null;
+}
+
+// ─── Summary Cards ───
+function buildSummaryCards() {
+  const totalFV = investments.reduce((s,i) => s + (i.fair_value_k || 0), 0);
+  const totalCost = investments.reduce((s,i) => s + (i.amortized_cost_k || 0), 0);
+  const debtInv = investments.filter(i => i.spread_bps != null);
+  const avgSpread = debtInv.length ? debtInv.reduce((s,i) => s + i.spread_bps, 0) / debtInv.length : 0;
+  const wgtSpread = debtInv.length ? debtInv.reduce((s,i) => s + i.spread_bps * (i.fair_value_k||0), 0) / debtInv.reduce((s,i) => s + (i.fair_value_k||0), 0) : 0;
+  const uniqueCompanies = new Set(investments.map(i => i.company)).size;
+  const portfolioMTM = totalCost ? ((totalFV / totalCost) - 1) * 100 : 0;
+  const dtsVals = investments.map(i => i.dts).filter(v => v != null);
+  const avgDtS = dtsVals.length ? dtsVals.reduce((a,b)=>a+b,0) / dtsVals.length : 0;
+
+  const cards = [
+    { label: 'Total "Fair Value"', value: fmtB(totalFV), sub: `Par: ${fmtB(currentBDC.debt_par_k)}`, cls: 'green' },
+    { label: 'Investments', value: fmt(investments.length), sub: `${uniqueCompanies} unique borrowers`, cls: 'blue' },
+    { label: 'Wtd Avg Spread', value: fmtBps(Math.round(wgtSpread)), sub: `Simple avg: ${fmtBps(Math.round(avgSpread))}`, cls: 'amber' },
+    { label: 'Portfolio MTM', value: fmtPct(portfolioMTM), sub: `Cost: ${fmtB(totalCost)}`, cls: portfolioMTM >= 0 ? 'green' : 'red' },
+    { label: 'Avg DtS', value: avgDtS.toFixed(2), sub: `Duration \u00d7 Spread`, cls: 'purple' },
+    { label: 'Industries', value: fmt(new Set(investments.map(i=>i.industry)).size), sub: `Debt: ${investments.filter(i=>i.investment_category==='Debt').length} / Equity: ${investments.filter(i=>i.investment_category==='Equity').length}`, cls: 'cyan' },
+  ];
+
+  document.getElementById('summary-cards').innerHTML = cards.map(c => `
+    <div class="stat-card ${c.cls}">
+      <div class="stat-label">${c.label}</div>
+      <div class="stat-value">${c.value}</div>
+      <div class="stat-sub">${c.sub}</div>
+    </div>
+  `).join('');
+}
+
+// ─── Treemap ───
+function buildTreemap() {
+  const sectorFV = {};
+  investments.forEach(inv => { const s = inv.industry || 'Other'; sectorFV[s] = (sectorFV[s]||0) + (inv.fair_value_k||0); });
+  const sorted = Object.entries(sectorFV).sort((a,b) => b[1] - a[1]);
+  const total = sorted.reduce((s,[,v]) => s + v, 0);
+  const container = document.getElementById('treemap');
+  container.innerHTML = '';
+
+  sorted.forEach(([sector, fv], i) => {
+    const pct = (fv / total) * 100;
+    if (pct < 0.3) return;
+    const cell = document.createElement('div');
+    cell.className = 'treemap-cell';
+    cell.style.background = SECTOR_COLORS[i % SECTOR_COLORS.length] + 'cc';
+    cell.style.width = `calc(${Math.max(pct, 3)}% - 2px)`;
+    cell.style.height = pct > 5 ? '120px' : pct > 2 ? '80px' : '50px';
+    cell.style.flexGrow = pct > 5 ? 2 : 1;
+    cell.innerHTML = pct > 2 ? `<div><div class="treemap-label">${sector}</div><span class="treemap-value">${fmtM(fv)} \u00b7 ${pct.toFixed(1)}%</span></div>` : '';
+    cell.addEventListener('mouseenter', e => showTooltip(e, `
+      <div class="tt-title">${sector}</div>
+      <div class="tt-row"><span class="tt-label">Fair Value</span><span class="tt-val">${fmtM(fv)}</span></div>
+      <div class="tt-row"><span class="tt-label">% Portfolio</span><span class="tt-val">${pct.toFixed(1)}%</span></div>
+      <div class="tt-row"><span class="tt-label"># Investments</span><span class="tt-val">${investments.filter(x=>x.industry===sector).length}</span></div>
+    `));
+    cell.addEventListener('mouseleave', hideTooltip);
+    cell.addEventListener('mousemove', moveTooltip);
+    container.appendChild(cell);
+  });
+}
+
+// ─── Type Chart ───
+function buildTypeChart() {
+  const typeFV = {};
+  investments.forEach(inv => { const t = inv.type_simple || 'Other'; typeFV[t] = (typeFV[t]||0) + (inv.fair_value_k||0); });
+  const sorted = Object.entries(typeFV).sort((a,b) => b[1] - a[1]);
+  chartInstances.types = new Chart(document.getElementById('chart-types'), {
+    type: 'doughnut',
+    data: {
+      labels: sorted.map(([t]) => t),
+      datasets: [{ data: sorted.map(([,v]) => v), backgroundColor: sorted.map((_,i) => SECTOR_COLORS[i % SECTOR_COLORS.length] + 'dd'), borderColor: '#0f1218', borderWidth: 2 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '55%',
+      plugins: {
+        legend: { position: 'right', labels: { color: '#a0aec0', font: { family: "'JetBrains Mono'", size: 10 }, padding: 8, boxWidth: 12, boxHeight: 12 } },
+        tooltip: { ...TT_STYLE, callbacks: { label: ctx => ` ${ctx.label}: ${fmtM(ctx.raw)} (${((ctx.raw / ctx.dataset.data.reduce((a,b)=>a+b,0))*100).toFixed(1)}%)` } }
+      }
+    }
+  });
+}
+
+// ─── Spread Chart (with industry filter) ───
+function rebuildSpreadChart() {
+  if (chartInstances.spreads) chartInstances.spreads.destroy();
+  const activeInd = getActiveIndustries('spread-toggles');
+  let filtered = investments.filter(i => i.spread_bps != null);
+  if (activeInd) filtered = filtered.filter(i => activeInd.includes(i.industry));
+
+  const spreads = filtered.map(i => i.spread_bps);
+  if (!spreads.length) {
+    chartInstances.spreads = new Chart(document.getElementById('chart-spreads'), { type:'bar', data:{labels:[],datasets:[]}, options:{responsive:true,maintainAspectRatio:false} });
+    return;
+  }
+  const min = Math.floor(Math.min(...spreads) / 50) * 50;
+  const max = Math.ceil(Math.max(...spreads) / 50) * 50;
+  const bins = [];
+  for (let b = min; b < max; b += 50) bins.push({ label: `${b}-${b+50}`, low: b, high: b+50, count: 0, fv: 0 });
+
+  filtered.forEach(inv => {
+    const bin = bins.find(b => inv.spread_bps >= b.low && inv.spread_bps < b.high);
+    if (bin) { bin.count++; bin.fv += inv.fair_value_k||0; }
+  });
+
+  chartInstances.spreads = new Chart(document.getElementById('chart-spreads'), {
+    type: 'bar',
+    data: {
+      labels: bins.map(b => b.label),
+      datasets: [{
+        label: '# Investments',
+        data: bins.map(b => b.count),
+        backgroundColor: bins.map(b => b.low < 300 ? '#00d4aa88' : b.low < 500 ? '#3b82f688' : b.low < 700 ? '#f59e0b88' : '#ef444488'),
+        borderColor: bins.map(b => b.low < 300 ? '#00d4aa' : b.low < 500 ? '#3b82f6' : b.low < 700 ? '#f59e0b' : '#ef4444'),
+        borderWidth: 1, barPercentage: 0.9, categoryPercentage: 0.95,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { ...TT_STYLE, callbacks: { afterLabel: ctx => `Fair Value: ${fmtM(bins[ctx.dataIndex].fv)}` } }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Spread over SOFR (bps)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: AXIS_COLOR, font: AXIS_FONT, maxRotation: 45 },
+          grid: { display: false }, border: { color: BORDER_COLOR }
+        },
+        y: {
+          title: { display: true, text: 'Number of Investments', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: AXIS_COLOR, font: AXIS_FONT },
+          grid: { color: GRID_COLOR }, border: { color: BORDER_COLOR }
+        }
+      }
+    }
+  });
+}
+
+// ─── Maturity Chart (with industry filter) ───
+function rebuildMaturityChart() {
+  if (chartInstances.maturity) chartInstances.maturity.destroy();
+  const activeInd = getActiveIndustries('maturity-toggles');
+  let filtered = investments.filter(i => i.maturity);
+  if (activeInd) filtered = filtered.filter(i => activeInd.includes(i.industry));
+
+  const yearFV = {};
+  filtered.forEach(inv => { const yr = parseMaturityYear(inv.maturity); if (yr) yearFV[yr] = (yearFV[yr]||0) + (inv.fair_value_k||0); });
+  const years = Object.keys(yearFV).map(Number).sort();
+
+  chartInstances.maturity = new Chart(document.getElementById('chart-maturity'), {
+    type: 'bar',
+    data: {
+      labels: years.map(String),
+      datasets: [{
+        label: '"Fair Value" ($M)',
+        data: years.map(y => yearFV[y] / 1e3),
+        backgroundColor: years.map(y => y <= 2026 ? '#ef444488' : y <= 2028 ? '#f59e0b88' : y <= 2030 ? '#3b82f688' : '#00d4aa88'),
+        borderColor: years.map(y => y <= 2026 ? '#ef4444' : y <= 2028 ? '#f59e0b' : y <= 2030 ? '#3b82f6' : '#00d4aa'),
+        borderWidth: 1, barPercentage: 0.8,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { ...TT_STYLE, callbacks: { label: ctx => ` $${ctx.raw.toFixed(0)}M maturing in ${years[ctx.dataIndex]}` } }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Maturity Year', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: AXIS_COLOR, font: AXIS_FONT },
+          grid: { display: false }, border: { color: BORDER_COLOR }
+        },
+        y: {
+          title: { display: true, text: '"Fair Value" ($M)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: AXIS_COLOR, font: AXIS_FONT, callback: v => '$' + v + 'M' },
+          grid: { color: GRID_COLOR }, border: { color: BORDER_COLOR }
+        }
+      }
+    }
+  });
+}
+
+// ─── DtS Chart (with industry filter) ───
+function rebuildDtSChart() {
+  if (chartInstances.dts) chartInstances.dts.destroy();
+  const activeInd = getActiveIndustries('dts-toggles');
+
+  // Build per-industry datasets (scatter: x=duration, y=spread, bubble size=FV)
+  const industries = getIndustries();
+  const showIndustries = activeInd || industries.map(([s]) => s);
+
+  const datasets = [];
+  showIndustries.forEach(sector => {
+    const idx = industries.findIndex(([s]) => s === sector);
+    const color = SECTOR_COLORS[idx >= 0 ? idx % SECTOR_COLORS.length : 0];
+    const pts = investments
+      .filter(i => i.industry === sector && i.spread_bps != null && i.maturity)
+      .map(i => {
+        const dur = yearsToMaturity(i.maturity);
+        if (dur == null) return null;
+        return { x: dur, y: i.spread_bps, r: Math.max(3, Math.sqrt((i.fair_value_k||0)/1e3) * 2), company: i.company, fv: i.fair_value_k, dts: i.dts };
+      })
+      .filter(Boolean);
+    if (pts.length) {
+      datasets.push({
+        label: sector.length > 22 ? sector.slice(0,20)+'..' : sector,
+        data: pts,
+        backgroundColor: color + '77',
+        borderColor: color,
+        borderWidth: 1,
+      });
+    }
+  });
+
+  chartInstances.dts = new Chart(document.getElementById('chart-dts'), {
+    type: 'bubble',
+    data: { datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: { color: '#a0aec0', font: { family: "'JetBrains Mono'", size: 9 }, padding: 5, boxWidth: 8, boxHeight: 8 }
+        },
+        tooltip: {
+          ...TT_STYLE,
+          callbacks: {
+            title: ctx => ctx[0].raw.company,
+            label: ctx => [
+              `Duration: ${ctx.raw.x.toFixed(1)}yr`,
+              `Spread: ${ctx.raw.y}bps`,
+              `DtS: ${ctx.raw.dts != null ? ctx.raw.dts.toFixed(2) : '\u2014'}`,
+              `FV: ${fmtM(ctx.raw.fv)}`
+            ]
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Duration (Years to Maturity)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: AXIS_COLOR, font: AXIS_FONT, callback: v => v.toFixed(1) + 'yr' },
+          grid: { color: GRID_COLOR }, border: { color: BORDER_COLOR },
+          min: 0,
+        },
+        y: {
+          title: { display: true, text: 'Spread over SOFR (bps)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: AXIS_COLOR, font: AXIS_FONT, callback: v => v + 'bps' },
+          grid: { color: GRID_COLOR }, border: { color: BORDER_COLOR }
+        }
+      }
+    }
+  });
+}
+
+// ─── Vintage Chart ───
+function buildVintageChart() {
+  const vintages = {};
+  investments.forEach(inv => {
+    if (!inv.origination_date) return;
+    const year = inv.origination_date.split('-')[0];
+    if (!vintages[year]) vintages[year] = { fv: 0, count: 0 };
+    vintages[year].fv += (inv.fair_value_k || 0);
+    vintages[year].count += 1;
+  });
+  const years = Object.keys(vintages).sort();
+  const fvData = years.map(y => vintages[y].fv / 1e6);
+  const countData = years.map(y => vintages[y].count);
+
+  chartInstances.vintage = new Chart(document.getElementById('chart-vintage'), {
+    type: 'bar',
+    data: {
+      labels: years,
+      datasets: [{
+        label: '"Fair Value" ($B)',
+        data: fvData,
+        backgroundColor: '#3b82f688',
+        borderColor: '#3b82f6',
+        borderWidth: 1,
+        yAxisID: 'y'
+      }, {
+        label: '# Positions',
+        data: countData,
+        type: 'line',
+        borderColor: '#00d4aa',
+        backgroundColor: '#00d4aa33',
+        pointBackgroundColor: '#00d4aa',
+        pointRadius: 4,
+        borderWidth: 2,
+        fill: false,
+        yAxisID: 'y1'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { color: '#a0aec0', font: { family: "'JetBrains Mono'", size: 10 }, padding: 10, boxWidth: 12, boxHeight: 8 } },
+        tooltip: { ...TT_STYLE, callbacks: {
+          label: ctx => ctx.datasetIndex === 0 ? ` $${ctx.raw.toFixed(1)}B FV` : ` ${ctx.raw} positions`
+        }}
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Origination Year', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: AXIS_COLOR, font: AXIS_FONT },
+          grid: { color: GRID_COLOR }, border: { color: BORDER_COLOR }
+        },
+        y: {
+          position: 'left',
+          title: { display: true, text: '"Fair Value" ($B)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: AXIS_COLOR, font: AXIS_FONT, callback: v => '$'+v.toFixed(1)+'B' },
+          grid: { color: GRID_COLOR }, border: { color: BORDER_COLOR }
+        },
+        y1: {
+          position: 'right',
+          title: { display: true, text: '# Positions', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: AXIS_COLOR, font: AXIS_FONT },
+          grid: { display: false }, border: { color: BORDER_COLOR }
+        }
+      }
+    }
+  });
+}
+
+// ─── MTM Scatter ───
+function buildMTMChart() {
+  const topSectors = getIndustries().slice(0, 10).map(([s]) => s);
+  const datasets = topSectors.map((sector, idx) => ({
+    label: sector.length > 25 ? sector.slice(0,22)+'...' : sector,
+    data: investments
+      .filter(i => i.industry === sector && i.amortized_cost_k && i.fair_value_k)
+      .map(i => ({ x: i.amortized_cost_k/1e3, y: i.fair_value_k/1e3, company: i.company })),
+    backgroundColor: SECTOR_COLORS[idx] + '88',
+    borderColor: SECTOR_COLORS[idx],
+    borderWidth: 1, pointRadius: 4, pointHoverRadius: 7,
+  }));
+
+  chartInstances.mtm = new Chart(document.getElementById('chart-mtm'), {
+    type: 'scatter',
+    data: { datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right', labels: { color: '#a0aec0', font: { family: "'JetBrains Mono'", size: 9 }, padding: 6, boxWidth: 8, boxHeight: 8 } },
+        tooltip: { ...TT_STYLE, callbacks: {
+          title: ctx => ctx[0].raw.company,
+          label: ctx => ` Cost: $${ctx.raw.x.toFixed(0)}M  FV: $${ctx.raw.y.toFixed(0)}M  (${((ctx.raw.y/ctx.raw.x - 1)*100).toFixed(1)}%)`
+        }}
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Amortized Cost ($M)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: AXIS_COLOR, font: AXIS_FONT, callback: v => '$'+v+'M' },
+          grid: { color: GRID_COLOR }, border: { color: BORDER_COLOR }
+        },
+        y: {
+          title: { display: true, text: '"Fair Value" ($M)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: AXIS_COLOR, font: AXIS_FONT, callback: v => '$'+v+'M' },
+          grid: { color: GRID_COLOR }, border: { color: BORDER_COLOR }
+        }
+      }
+    }
+  });
+}
+
+// ─── Top Positions ───
+function buildTopPositions() {
+  const sorted = [...investments].sort((a,b) => (b.fair_value_k||0) - (a.fair_value_k||0)).slice(0, 25);
+  document.querySelector('#top-positions-table tbody').innerHTML = sorted.map(inv => `
+    <tr>
+      <td class="company-cell" title="${inv.company}" style="cursor:pointer;text-decoration:underline;text-decoration-color:var(--border-bright);text-underline-offset:2px;" onclick="openSecurityModal('${inv.company.replace(/'/g, "\\'")}')">${inv.company}</td>
+      <td>${inv.industry || '\u2014'}</td>
+      <td>${inv.type_simple || '\u2014'}</td>
+      <td class="num">${fmtBps(inv.spread_bps)}</td>
+      <td class="num">${fmtM(inv.fair_value_k)}</td>
+      <td class="num ${(inv.mtm_pct||0) > 0 ? 'pos' : (inv.mtm_pct||0) < 0 ? 'neg' : ''}">${fmtPct(inv.mtm_pct)}</td>
+    </tr>
+  `).join('');
+}
+
+// ─── Full Table ───
+function buildFullTable(filter = '') {
+  let filtered = investments;
+
+  // Text search
+  if (filter) {
+    const q = filter.toLowerCase();
+    filtered = filtered.filter(i =>
+      (i.company||'').toLowerCase().includes(q) ||
+      (i.industry||'').toLowerCase().includes(q) ||
+      (i.type_simple||'').toLowerCase().includes(q) ||
+      (i.investment_type||'').toLowerCase().includes(q) ||
+      (i.sponsor||'').toLowerCase().includes(q)
+    );
+  }
+
+  // Dropdown filters
+  const sectorSel = getDropdownSelected('sector');
+  if (sectorSel) filtered = filtered.filter(i => sectorSel.has(i.industry || 'Other'));
+  const typeSel = getDropdownSelected('type');
+  if (typeSel) filtered = filtered.filter(i => typeSel.has(i.type_simple || 'Other'));
+  const deSel = getDropdownSelected('de');
+  if (deSel) filtered = filtered.filter(i => deSel.has(i.investment_category || 'Other'));
+
+  // Range filters
+  const spreadMin = getRangeVal('filter-spread-min');
+  const spreadMax = getRangeVal('filter-spread-max');
+  if (spreadMin != null) filtered = filtered.filter(i => i.spread_bps != null && i.spread_bps >= spreadMin);
+  if (spreadMax != null) filtered = filtered.filter(i => i.spread_bps != null && i.spread_bps <= spreadMax);
+
+  const matMin = getRangeVal('filter-mat-min');
+  const matMax = getRangeVal('filter-mat-max');
+  if (matMin != null || matMax != null) {
+    filtered = filtered.filter(i => {
+      const yr = yearsToMaturity(i.maturity);
+      if (yr == null) return false;
+      if (matMin != null && yr < matMin) return false;
+      if (matMax != null && yr > matMax) return false;
+      return true;
+    });
+  }
+
+  const fvMin = getRangeVal('filter-fv-min');
+  const fvMax = getRangeVal('filter-fv-max');
+  if (fvMin != null) filtered = filtered.filter(i => (i.fair_value_k||0) >= fvMin);
+  if (fvMax != null) filtered = filtered.filter(i => (i.fair_value_k||0) <= fvMax);
+
+  const mtmMin = getRangeVal('filter-mtm-min');
+  const mtmMax = getRangeVal('filter-mtm-max');
+  if (mtmMin != null) filtered = filtered.filter(i => i.mtm_pct != null && i.mtm_pct >= mtmMin);
+  if (mtmMax != null) filtered = filtered.filter(i => i.mtm_pct != null && i.mtm_pct <= mtmMax);
+
+  // Sort
+  if (sortState.key) {
+    filtered.sort((a, b) => {
+      let va = a[sortState.key], vb = b[sortState.key];
+      if (va == null) va = sortState.dir === 'asc' ? Infinity : -Infinity;
+      if (vb == null) vb = sortState.dir === 'asc' ? Infinity : -Infinity;
+      if (typeof va === 'string') return sortState.dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+      return sortState.dir === 'asc' ? va - vb : vb - va;
+    });
+  }
+
+  document.getElementById('pos-count').textContent = filtered.length;
+
+  const totalPortFV = investments.reduce((s,i) => s + (i.fair_value_k||0), 0);
+  const filteredFV = filtered.reduce((s,i) => s + (i.fair_value_k||0), 0);
+
+  // Filter summary
+  const summary = document.getElementById('pos-filter-summary');
+  if (filtered.length < investments.length) {
+    summary.textContent = `Showing ${filtered.length} of ${investments.length} positions | Filtered FV: ${fmtM(filteredFV)} (${fmtPct(filteredFV/totalPortFV*100,1)} of portfolio)`;
+  } else {
+    summary.textContent = '';
+  }
+
+  document.querySelector('#full-table tbody').innerHTML = filtered.map(inv => {
+    const pctPort = inv.fair_value_k != null && totalPortFV ? (inv.fair_value_k / totalPortFV * 100) : null;
+    return `
+    <tr>
+      <td class="company-cell" title="${inv.company}" style="cursor:pointer;text-decoration:underline;text-decoration-color:var(--border-bright);text-underline-offset:2px;" onclick="openSecurityModal('${inv.company.replace(/'/g, "\\'")}')">${inv.company}</td>
+      <td>${inv.industry || '\u2014'}</td>
+      <td>${inv.type_simple || '\u2014'}</td>
+      <td>${inv.investment_category || '\u2014'}</td>
+      <td class="num">${fmtBps(inv.spread_bps)}</td>
+      <td class="num">${inv.cash_rate_pct != null ? fmtPct(inv.cash_rate_pct) : '\u2014'}</td>
+      <td class="num">${inv.origination_date || '\u2014'}</td>
+      <td class="num">${inv.maturity || '\u2014'}</td>
+      <td class="num">${inv.par_amount_k != null ? fmt(inv.par_amount_k) : '\u2014'}</td>
+      <td class="num">${inv.amortized_cost_k != null ? fmt(inv.amortized_cost_k) : '\u2014'}</td>
+      <td class="num">${inv.fair_value_k != null ? fmt(inv.fair_value_k) : '\u2014'}</td>
+      <td class="num">${pctPort != null ? fmtPct(pctPort, 2) : '\u2014'}</td>
+      <td class="num ${(inv.mtm_pct||0) > 0 ? 'pos' : (inv.mtm_pct||0) < 0 ? 'neg' : ''}">${fmtPct(inv.mtm_pct)}</td>
+      <td class="num">${inv.dts != null ? inv.dts.toFixed(2) : '\u2014'}</td>
+    </tr>
+  `}).join('');
+}
+
+// ─── Table sorting ───
+document.querySelector('#full-table thead').addEventListener('click', e => {
+  const th = e.target.closest('th');
+  if (!th || !th.dataset.key) return;
+  const key = th.dataset.key;
+  if (sortState.key === key) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+  else { sortState.key = key; sortState.dir = 'desc'; }
+  document.querySelectorAll('#full-table th').forEach(t => t.classList.remove('sorted-asc', 'sorted-desc'));
+  th.classList.add(sortState.dir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+  buildFullTable(document.getElementById('search-input').value);
+});
+
+document.getElementById('search-input')?.addEventListener('input', () => applyPosFilters());
+
+// ─── Stress Test ───
+function buildStressUI() {
+  // Show leverage info cards if balance sheet data available
+  const levInfo = document.getElementById('leverage-info');
+  if (currentBS) {
+    const bs = currentBS;
+    const leverage = bs.total_debt_outstanding_principal_k / bs.total_net_assets_k;
+    levInfo.innerHTML = `
+      <div class="stress-card" style="flex:1;min-width:140px"><div class="label">Total Assets</div><div class="value" style="color:var(--text-0);font-size:15px">${fmtB(bs.total_assets_k)}</div></div>
+      <div class="stress-card" style="flex:1;min-width:140px"><div class="label">Total Borrowings</div><div class="value" style="color:var(--amber);font-size:15px">${fmtB(bs.total_debt_outstanding_principal_k)}</div></div>
+      <div class="stress-card" style="flex:1;min-width:140px"><div class="label">Net Assets (NAV)</div><div class="value" style="color:var(--accent);font-size:15px">${fmtB(bs.total_net_assets_k)}</div><div class="delta" style="color:var(--text-2)">$${bs.nav_per_share}/share</div></div>
+      <div class="stress-card" style="flex:1;min-width:140px"><div class="label">Leverage (D/E)</div><div class="value" style="color:${leverage > 1.25 ? 'var(--red)' : 'var(--text-0)'};font-size:15px">${leverage.toFixed(2)}x</div><div class="delta" style="color:var(--text-2)">Target: ${bs.target_leverage_ratio}</div></div>
+      <div class="stress-card" style="flex:1;min-width:140px"><div class="label">Asset Coverage</div><div class="value" style="color:${bs.asset_coverage_ratio_pct < 160 ? 'var(--red)' : 'var(--text-0)'};font-size:15px">${bs.asset_coverage_ratio_pct}%</div><div class="delta" style="color:var(--text-2)">Min: ${bs.minimum_asset_coverage_pct}%</div></div>
+    `;
+  } else {
+    levInfo.innerHTML = `<div style="color:var(--text-2);font-size:11px;font-family:var(--mono);">No balance sheet data loaded (balance_sheet.json). Stress results will show gross impact only.</div>`;
+  }
+
+  const sectorFV = {};
+  investments.forEach(inv => { const s = inv.industry || 'Other'; sectorFV[s] = (sectorFV[s]||0) + (inv.fair_value_k||0); });
+  const sorted = Object.entries(sectorFV).sort((a,b) => b[1] - a[1]);
+  document.getElementById('shock-sectors').innerHTML = sorted.map(([sector, fv]) => `
+    <div class="shock-sector-row">
+      <span class="sector-name" title="${sector}">${sector}</span>
+      <span class="fv-label">${fmtM(fv)}</span>
+      <input type="number" value="0" step="25" data-sector="${sector}" class="shock-input">
+      <span style="color:var(--text-2); font-size:9px;">bps</span>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.scenario-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const scenario = chip.dataset.scenario;
+      const inputs = document.querySelectorAll('.shock-input');
+      const cyclical = ['Manufacturing','Consumer products','Automotive services','Buildings and real estate','Leisure and entertainment','Specialty Retail','Containers and packaging','Transportation'];
+      const softwareish = ['Internet software and services'];
+      const healthcareish = ['Healthcare providers and services','Healthcare technology','Healthcare equipment and services','Pharmaceuticals'];
+      inputs.forEach(inp => {
+        const sector = inp.dataset.sector;
+        switch(scenario) {
+          case 'mild': inp.value = 50; break;
+          case 'moderate': inp.value = 150; break;
+          case 'severe': inp.value = 300; break;
+          case 'tech-stress': inp.value = softwareish.includes(sector) ? 400 : 50; break;
+          case 'healthcare-stress': inp.value = healthcareish.includes(sector) ? 300 : 50; break;
+          case 'rates-up': inp.value = 200; break;
+          case 'recession': inp.value = cyclical.includes(sector) ? 500 : 250; break;
+        }
+      });
+      runStress();
+    });
+  });
+}
+
+function runStress() {
+  const equityMult = parseFloat(document.getElementById('equity-mult').value) || 1.5;
+  const shocks = {};
+  document.querySelectorAll('.shock-input').forEach(inp => { shocks[inp.dataset.sector] = parseInt(inp.value) || 0; });
+
+  const results = [];
+  let totalBefore = 0, totalAfter = 0;
+  const sectorImpact = {};
+
+  investments.forEach(inv => {
+    const sector = inv.industry || 'Other';
+    const shockBps = shocks[sector] || 0;
+    const fv = inv.fair_value_k || 0;
+    totalBefore += fv;
+
+    if (shockBps === 0) { results.push({ ...inv, stressed_fv: fv, loss: 0, loss_pct: 0 }); totalAfter += fv; return; }
+
+    const ytm = yearsToMaturity(inv.maturity);
+    let duration = ytm != null ? ytm * 0.9 : 3.5;
+    let mult = 1.0;
+    if (inv.investment_category === 'Equity') { mult = equityMult; duration = 5; }
+
+    const priceImpact = -(duration * (shockBps * mult / 10000));
+    const stressedFV = Math.max(0, fv * (1 + priceImpact));
+    const loss = stressedFV - fv;
+
+    if (!sectorImpact[sector]) sectorImpact[sector] = { before: 0, after: 0, shock: shockBps };
+    sectorImpact[sector].before += fv;
+    sectorImpact[sector].after += stressedFV;
+    totalAfter += stressedFV;
+    results.push({ ...inv, stressed_fv: stressedFV, loss, loss_pct: fv ? (loss/fv)*100 : 0 });
+  });
+
+  // Fill zero-shock sectors
+  investments.forEach(inv => {
+    const sector = inv.industry || 'Other';
+    if (!sectorImpact[sector]) sectorImpact[sector] = { before: 0, after: 0, shock: 0 };
+    if (!shocks[sector]) { sectorImpact[sector].before += inv.fair_value_k||0; sectorImpact[sector].after += inv.fair_value_k||0; }
+  });
+
+  const grossLoss = totalAfter - totalBefore;
+  const grossLossPct = (grossLoss / totalBefore) * 100;
+  const avgShock = Object.values(shocks).reduce((s,v)=>s+v,0) / Math.max(1, Object.values(shocks).filter(v=>v>0).length);
+
+  // ─── Leverage calculations ───
+  const bs = currentBS;
+  let navBefore = bs ? bs.total_net_assets_k : null;
+  let borrowings = bs ? bs.total_debt_outstanding_principal_k : null;
+  let navAfter = navBefore != null ? navBefore + grossLoss : null; // liabilities unchanged, assets drop
+  let navLossPct = navBefore ? ((navAfter - navBefore) / navBefore * 100) : null;
+  let navPerShareBefore = bs ? bs.nav_per_share : null;
+  let navPerShareAfter = (navPerShareBefore != null && navBefore) ? navPerShareBefore * (navAfter / navBefore) : null;
+  let leverage = (borrowings && navBefore) ? borrowings / navBefore : null;
+  let stressedLeverage = (borrowings && navAfter && navAfter > 0) ? borrowings / navAfter : null;
+  let assetCovBefore = bs ? bs.asset_coverage_ratio_pct : null;
+  // Asset coverage = total assets / total borrowings. Stressed assets = total_assets + grossLoss
+  let stressedAssets = bs ? (bs.total_assets_k + grossLoss) : null;
+  let assetCovAfter = (stressedAssets && borrowings) ? (stressedAssets / borrowings * 100) : null;
+  let covenantBreach = assetCovAfter != null && assetCovAfter < 150;
+
+  const resContainer = document.getElementById('stress-results');
+  resContainer.style.display = '';
+  resContainer.style.gridTemplateColumns = bs ? 'repeat(4, 1fr)' : 'repeat(4, 1fr)';
+
+  let cardsHtml = `
+    <div class="stress-card"><div class="label">Gross Portfolio Loss</div><div class="value" style="color:var(--red)">${grossLoss<0?'-':''}$${Math.abs(grossLoss/1e6).toFixed(0)}M</div><div class="delta" style="color:var(--red)">${fmtPct(grossLossPct)} of portfolio</div></div>
+    <div class="stress-card"><div class="label">Avg Shock Applied</div><div class="value" style="color:var(--amber)">${Math.round(avgShock)}bps</div><div class="delta" style="color:var(--text-2)">${Object.values(shocks).filter(v=>v>0).length} sectors shocked</div></div>
+  `;
+
+  if (bs) {
+    const navColor = navLossPct < -15 ? 'var(--red)' : navLossPct < -5 ? 'var(--amber)' : 'var(--text-0)';
+    const covColor = covenantBreach ? 'var(--red)' : assetCovAfter < 160 ? 'var(--amber)' : 'var(--text-0)';
+    cardsHtml += `
+      <div class="stress-card"><div class="label">NAV Impact (Levered)</div><div class="value" style="color:${navColor}">${navLossPct<0?'':'+'}${fmtPct(navLossPct)}</div><div class="delta" style="color:var(--text-2)">$${navPerShareBefore?.toFixed(2)} &rarr; $${navPerShareAfter?.toFixed(2)} /share</div></div>
+      <div class="stress-card"><div class="label">Stressed Leverage</div><div class="value" style="color:${stressedLeverage > 1.5 ? 'var(--red)' : 'var(--text-0)'}">${stressedLeverage?.toFixed(2)}x D/E</div><div class="delta" style="color:var(--text-2)">Was: ${leverage?.toFixed(2)}x</div></div>
+      <div class="stress-card"><div class="label">Asset Coverage Ratio</div><div class="value" style="color:${covColor}">${assetCovAfter?.toFixed(0)}%</div><div class="delta" style="color:${covenantBreach ? 'var(--red)' : 'var(--text-2)'}">${covenantBreach ? 'BREACH — Below 150% minimum' : `Was: ${assetCovBefore}% (min 150%)`}</div></div>
+      <div class="stress-card"><div class="label">NAV After Stress</div><div class="value" style="color:${navColor}">${fmtB(navAfter)}</div><div class="delta" style="color:var(--text-2)">Was: ${fmtB(navBefore)}</div></div>
+    `;
+  } else {
+    cardsHtml += `
+      <div class="stress-card"><div class="label">Portfolio &ldquo;FV&rdquo; After</div><div class="value" style="color:var(--red)">${fmtB(totalAfter)}</div><div class="delta" style="color:var(--text-2)">Was: ${fmtB(totalBefore)}</div></div>
+      <div class="stress-card"><div class="label">Levered Impact</div><div class="value" style="color:var(--text-2)">N/A</div><div class="delta" style="color:var(--text-2)">Load balance_sheet.json</div></div>
+    `;
+  }
+  resContainer.innerHTML = cardsHtml;
+
+  document.getElementById('stress-charts-row').style.display = '';
+  const sortedSectors = Object.entries(sectorImpact).filter(([,v])=>v.shock>0).sort((a,b)=>(a[1].after-a[1].before)-(b[1].after-b[1].before));
+
+  if (stressChartInstance) stressChartInstance.destroy();
+  stressChartInstance = new Chart(document.getElementById('chart-stress-sectors'), {
+    type: 'bar',
+    data: {
+      labels: sortedSectors.map(([s])=> s.length > 20 ? s.slice(0,18)+'..' : s),
+      datasets: [{
+        label: '"Fair Value" Loss ($M)', data: sortedSectors.map(([,v])=>(v.after-v.before)/1e3),
+        backgroundColor: '#ef444488', borderColor: '#ef4444', borderWidth: 1,
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { ...TT_STYLE, callbacks: { afterLabel: ctx => { const [s,v]=sortedSectors[ctx.dataIndex]; return `Shock: +${v.shock}bps\nBefore: ${fmtM(v.before)}\nAfter: ${fmtM(v.after)}`; } } }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: '"Fair Value" Change ($M)', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: AXIS_COLOR, font: AXIS_FONT, callback: v => '$'+v+'M' },
+          grid: { color: GRID_COLOR }, border: { color: BORDER_COLOR }
+        },
+        y: {
+          title: { display: true, text: 'Sector', color: AXIS_COLOR, font: AXIS_LABEL_FONT },
+          ticks: { color: '#a0aec0', font: AXIS_FONT },
+          grid: { display: false }, border: { color: BORDER_COLOR }
+        }
+      }
+    }
+  });
+
+  const losers = results.filter(r => r.loss < 0).sort((a,b) => a.loss - b.loss).slice(0, 25);
+  document.querySelector('#stress-losers-table tbody').innerHTML = losers.map(inv => `
+    <tr>
+      <td class="company-cell" title="${inv.company}" style="cursor:pointer;text-decoration:underline;text-decoration-color:var(--border-bright);text-underline-offset:2px;" onclick="openSecurityModal('${inv.company.replace(/'/g, "\\'")}')">${inv.company}</td>
+      <td>${inv.industry||'\u2014'}</td>
+      <td class="num">${fmtBps(shocks[inv.industry]||0)}</td>
+      <td class="num">${fmtM(inv.fair_value_k)}</td>
+      <td class="num">${fmtM(inv.stressed_fv)}</td>
+      <td class="num neg">${fmt(inv.loss)}</td>
+      <td class="num neg">${fmtPct(inv.loss_pct)}</td>
+    </tr>
+  `).join('');
+}
+
+function resetStress() {
+  document.querySelectorAll('.shock-input').forEach(inp => inp.value = 0);
+  document.getElementById('stress-results').style.display = 'none';
+  document.getElementById('stress-charts-row').style.display = 'none';
+}
+
+// ─── Tooltip ───
+function showTooltip(e, html) { const tt=document.getElementById('tooltip'); tt.innerHTML=html; tt.style.display='block'; moveTooltip(e); }
+function moveTooltip(e) { const tt=document.getElementById('tooltip'); tt.style.left=Math.min(e.clientX+16, window.innerWidth-340)+'px'; tt.style.top=Math.min(e.clientY+16, window.innerHeight-200)+'px'; }
+function hideTooltip() { document.getElementById('tooltip').style.display='none'; }
+
+// ─── Security Detail Modal ───
+let sponsorsData = null;
+let sponsorsLoaded = false;
+
+async function loadSponsors() {
+  if (sponsorsLoaded) return;
+  try {
+    const resp = await fetch('sponsors.json');
+    if (resp.ok) sponsorsData = await resp.json();
+  } catch(e) { /* sponsors.json not available, that's fine */ }
+  sponsorsLoaded = true;
+}
+
+function openSecurityModal(companyName) {
+  const overlay = document.getElementById('security-modal-overlay');
+  const body = document.getElementById('sec-modal-body');
+
+  // Find all investments for this company
+  const companyInvestments = investments.filter(inv => inv.company === companyName);
+  if (!companyInvestments.length) return;
+
+  const primary = companyInvestments[0];
+  const totalFV = investments.reduce((s,i) => s + (i.fair_value_k||0), 0);
+
+  // Aggregate values across all positions for this company
+  const compFV = companyInvestments.reduce((s,i) => s + (i.fair_value_k||0), 0);
+  const compCost = companyInvestments.reduce((s,i) => s + (i.amortized_cost_k||0), 0);
+  const compPar = companyInvestments.reduce((s,i) => s + (i.par_amount_k||0), 0);
+  const compPctPort = totalFV ? (compFV / totalFV * 100) : 0;
+
+  // Header
+  document.getElementById('sec-modal-company').textContent = companyName;
+
+  const categories = [...new Set(companyInvestments.map(i => i.investment_category).filter(Boolean))];
+  const types = [...new Set(companyInvestments.map(i => i.type_simple || i.investment_type).filter(Boolean))];
+
+  let subtitleHTML = '';
+  if (primary.industry) subtitleHTML += `<span class="tag">${primary.industry}</span>`;
+  categories.forEach(cat => {
+    const cls = cat === 'Debt' ? 'debt' : cat === 'Equity' ? 'equity' : '';
+    subtitleHTML += `<span class="tag ${cls}">${cat}</span>`;
+  });
+  types.forEach(t => subtitleHTML += `<span class="tag">${t}</span>`);
+  document.getElementById('sec-modal-subtitle').innerHTML = subtitleHTML;
+
+  // Build body content
+  let html = '';
+
+  // Key stats
+  html += `<div class="sec-modal-section-title">Key Metrics</div>`;
+  html += `<div class="sec-stats-grid">`;
+
+  // Fair Value
+  html += `<div class="sec-stat-card">
+    <div class="sec-stat-label">Fair Value</div>
+    <div class="sec-stat-value">${fmtM(compFV)}</div>
+    <div class="sec-stat-sub">${fmt(compFV)}K</div>
+  </div>`;
+
+  // % Portfolio
+  html += `<div class="sec-stat-card">
+    <div class="sec-stat-label">% of Portfolio</div>
+    <div class="sec-stat-value">${fmtPct(compPctPort, 2)}</div>
+    <div class="sec-stat-sub">of ${fmtB(totalFV)} total FV</div>
+  </div>`;
+
+  // Spread (show primary or weighted)
+  const debtPositions = companyInvestments.filter(i => i.spread_bps != null);
+  const wgtSpread = debtPositions.length
+    ? debtPositions.reduce((s,i) => s + i.spread_bps * (i.fair_value_k||0), 0) / debtPositions.reduce((s,i) => s + (i.fair_value_k||0), 0)
+    : null;
+  html += `<div class="sec-stat-card">
+    <div class="sec-stat-label">Spread</div>
+    <div class="sec-stat-value">${wgtSpread != null ? fmtBps(Math.round(wgtSpread)) : '\u2014'}</div>
+    <div class="sec-stat-sub">${debtPositions.length > 1 ? 'FV-weighted avg' : 'over SOFR'}</div>
+  </div>`;
+
+  // Cash Rate
+  const cashRates = companyInvestments.filter(i => i.cash_rate_pct != null);
+  const avgCash = cashRates.length ? cashRates.reduce((s,i) => s + i.cash_rate_pct, 0) / cashRates.length : null;
+  html += `<div class="sec-stat-card">
+    <div class="sec-stat-label">Cash Rate</div>
+    <div class="sec-stat-value">${avgCash != null ? fmtPct(avgCash) : '\u2014'}</div>
+    <div class="sec-stat-sub">${cashRates.length > 1 ? 'avg across positions' : ''}</div>
+  </div>`;
+
+  // DtS
+  const dtsVals = companyInvestments.map(i => i.dts).filter(v => v != null);
+  const avgDtS = dtsVals.length ? dtsVals.reduce((a,b) => a+b, 0) / dtsVals.length : null;
+  html += `<div class="sec-stat-card">
+    <div class="sec-stat-label">DtS (Dur x Spread)</div>
+    <div class="sec-stat-value">${avgDtS != null ? avgDtS.toFixed(2) : '\u2014'}</div>
+    <div class="sec-stat-sub">carry vs risk metric</div>
+  </div>`;
+
+  // MTM %
+  const compMTM = compCost ? ((compFV / compCost) - 1) * 100 : null;
+  const mtmCls = compMTM != null ? (compMTM >= 0 ? 'pos' : 'neg') : '';
+  html += `<div class="sec-stat-card">
+    <div class="sec-stat-label">MTM %</div>
+    <div class="sec-stat-value ${mtmCls}">${compMTM != null ? fmtPct(compMTM) : '\u2014'}</div>
+    <div class="sec-stat-sub">FV vs amortized cost</div>
+  </div>`;
+
+  // Duration / Years to Maturity
+  const ytms = companyInvestments.map(i => yearsToMaturity(i.maturity)).filter(v => v != null);
+  const avgYTM = ytms.length ? ytms.reduce((a,b) => a+b, 0) / ytms.length : null;
+  html += `<div class="sec-stat-card">
+    <div class="sec-stat-label">Duration / YTM</div>
+    <div class="sec-stat-value">${avgYTM != null ? avgYTM.toFixed(1) + 'yr' : '\u2014'}</div>
+    <div class="sec-stat-sub">${ytms.length > 1 ? 'avg across positions' : 'years to maturity'}</div>
+  </div>`;
+
+  // Par Amount
+  html += `<div class="sec-stat-card">
+    <div class="sec-stat-label">Par Amount</div>
+    <div class="sec-stat-value">${fmtM(compPar)}</div>
+    <div class="sec-stat-sub">${fmt(compPar)}K</div>
+  </div>`;
+
+  // Amortized Cost
+  html += `<div class="sec-stat-card">
+    <div class="sec-stat-label">Amortized Cost</div>
+    <div class="sec-stat-value">${fmtM(compCost)}</div>
+    <div class="sec-stat-sub">${fmt(compCost)}K</div>
+  </div>`;
+
+  // Maturity Date
+  const maturities = [...new Set(companyInvestments.map(i => i.maturity).filter(Boolean))];
+  html += `<div class="sec-stat-card">
+    <div class="sec-stat-label">Maturity</div>
+    <div class="sec-stat-value" style="font-size:14px">${maturities.length === 1 ? maturities[0] : maturities.length > 1 ? 'Multiple' : '\u2014'}</div>
+    <div class="sec-stat-sub">${maturities.length > 1 ? maturities.join(', ') : ''}</div>
+  </div>`;
+
+  // Origination Date
+  const origDates = [...new Set(companyInvestments.map(i => i.origination_date).filter(Boolean))];
+  const origMethods = [...new Set(companyInvestments.map(i => i.origination_method).filter(Boolean))];
+  const origConf = [...new Set(companyInvestments.map(i => i.origination_confidence).filter(Boolean))];
+  const origNotes = [...new Set(companyInvestments.map(i => i.origination_notes).filter(Boolean))];
+  const origSub = origConf.length ? origConf[0] + ' conf.' : '';
+  const origMethodLabel = origMethods.length ? ' (' + origMethods[0].replace(/_/g, ' ') + ')' : '';
+  html += `<div class="sec-stat-card">
+    <div class="sec-stat-label">Originated</div>
+    <div class="sec-stat-value" style="font-size:14px">${origDates.length === 1 ? origDates[0] : origDates.length > 1 ? 'Multiple' : '\u2014'}</div>
+    <div class="sec-stat-sub" title="${origNotes.length ? origNotes[0] : ''}">${origSub}${origMethodLabel}</div>
+  </div>`;
+
+  // PIK Rate (if any position has it)
+  const pikPositions = companyInvestments.filter(i => i.pik_rate_pct != null && i.pik_rate_pct > 0);
+  if (pikPositions.length) {
+    const avgPik = pikPositions.reduce((s,i) => s + i.pik_rate_pct, 0) / pikPositions.length;
+    html += `<div class="sec-stat-card">
+      <div class="sec-stat-label">PIK Rate</div>
+      <div class="sec-stat-value" style="color:var(--amber)">${fmtPct(avgPik)}</div>
+      <div class="sec-stat-sub">payment in kind</div>
+    </div>`;
+  }
+
+  // Reference Rate
+  const refRates = [...new Set(companyInvestments.map(i => i.reference_rate).filter(Boolean))];
+  if (refRates.length) {
+    html += `<div class="sec-stat-card">
+      <div class="sec-stat-label">Reference Rate</div>
+      <div class="sec-stat-value" style="font-size:12px">${refRates.join(', ')}</div>
+      <div class="sec-stat-sub">benchmark rate</div>
+    </div>`;
+  }
+
+  html += `</div>`; // close sec-stats-grid
+
+  // Company Profile
+  const profile = primary.profile || {};
+  if (profile.business_description || profile.end_customers) {
+    html += `<div class="sec-modal-section-title">Company Profile</div>`;
+    if (profile.business_description) {
+      html += `<div style="margin-bottom:10px;"><span style="color:var(--text-2);font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:1px;">What the business does</span>
+      <div style="color:var(--text-1);font-size:12px;line-height:1.5;margin-top:4px;">${profile.business_description}</div></div>`;
+    }
+    if (profile.end_customers) {
+      html += `<div><span style="color:var(--text-2);font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:1px;">Main end-customers</span>
+      <div style="color:var(--text-1);font-size:12px;line-height:1.5;margin-top:4px;">${profile.end_customers}</div></div>`;
+    }
+  }
+
+  // Sponsor info
+  const sponsorName = primary.sponsor || null;
+  const sponsorSource = primary.sponsor_source || null;
+  if (sponsorName) {
+    html += `<div class="sec-modal-section-title">Sponsor / Owner</div>`;
+    html += `<div style="padding:4px 0;">`;
+    html += `<div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:4px;">${sponsorName}</div>`;
+    if (sponsorSource) {
+      html += `<div style="font-size:11px;color:var(--text-2);line-height:1.5;">${sponsorSource}</div>`;
+    }
+    html += `</div>`;
+  }
+  html += `<div id="sec-sponsor-area"></div>`;
+
+  // Category / Classification info
+  html += `<div class="sec-modal-section-title">Classification</div>`;
+  html += `<div class="sec-category-row">`;
+  const invCategories = [...new Set(companyInvestments.map(i => i.investment_category).filter(Boolean))];
+  if (invCategories.length) {
+    html += `<div class="sec-category-item"><div class="label">Debt / Equity</div><div class="value">${invCategories.join(', ')}</div></div>`;
+  }
+  const cats = [...new Set(companyInvestments.map(i => i.category).filter(Boolean))];
+  if (cats.length) {
+    html += `<div class="sec-category-item"><div class="label">Control Status</div><div class="value">${cats.join(', ')}</div></div>`;
+  }
+  const invTypes = [...new Set(companyInvestments.map(i => i.investment_type).filter(Boolean))];
+  if (invTypes.length) {
+    html += `<div class="sec-category-item"><div class="label">Investment Types</div><div class="value" style="font-size:10px;word-break:break-word;white-space:normal;">${invTypes.join('; ')}</div></div>`;
+  }
+  html += `</div>`;
+
+  // Publicly Traded Debt Comps
+  const compsList = primary.comps || [];
+  if (compsList.length) {
+    html += `<div class="sec-modal-section-title">Publicly Traded Debt Comps</div>`;
+    html += `<div class="sec-comps-list">`;
+    compsList.forEach(comp => {
+      html += `<div class="sec-comp-card">
+        <div class="sec-comp-header">
+          <span class="sec-comp-name">${comp.name}</span>
+          <span class="sec-comp-ticker">${comp.ticker || ''}</span>
+        </div>
+        <div class="sec-comp-debt">${comp.debt || ''}</div>
+        <div class="sec-comp-rationale">${comp.rationale || ''}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // Address
+  const addresses = [...new Set(companyInvestments.map(i => i.address).filter(Boolean))];
+  if (addresses.length) {
+    html += `<div class="sec-modal-section-title">Address</div>`;
+    html += `<div class="sec-address-block">${addresses.join('<br>')}</div>`;
+  }
+
+  // Multiple positions table
+  if (companyInvestments.length > 1) {
+    html += `<div class="sec-modal-section-title">All Positions (${companyInvestments.length})</div>`;
+    html += `<div style="overflow-x:auto;">`;
+    html += `<table class="sec-positions-table">`;
+    html += `<thead><tr>
+      <th>Type</th><th>D/E</th><th>Spread</th><th>Cash %</th><th>Maturity</th>
+      <th style="text-align:right">Par ($K)</th><th style="text-align:right">Cost ($K)</th>
+      <th style="text-align:right">FV ($K)</th><th style="text-align:right">MTM %</th><th style="text-align:right">DtS</th>
+    </tr></thead>`;
+    html += `<tbody>`;
+    companyInvestments.forEach(inv => {
+      const rowMTM = inv.amortized_cost_k ? ((inv.fair_value_k / inv.amortized_cost_k) - 1) * 100 : null;
+      html += `<tr>
+        <td>${inv.type_simple || inv.investment_type || '\u2014'}</td>
+        <td>${inv.investment_category || '\u2014'}</td>
+        <td class="num">${fmtBps(inv.spread_bps)}</td>
+        <td class="num">${inv.cash_rate_pct != null ? fmtPct(inv.cash_rate_pct) : '\u2014'}</td>
+        <td class="num">${inv.maturity || '\u2014'}</td>
+        <td class="num">${inv.par_amount_k != null ? fmt(inv.par_amount_k) : '\u2014'}</td>
+        <td class="num">${inv.amortized_cost_k != null ? fmt(inv.amortized_cost_k) : '\u2014'}</td>
+        <td class="num">${inv.fair_value_k != null ? fmt(inv.fair_value_k) : '\u2014'}</td>
+        <td class="num ${(rowMTM||0) > 0 ? 'pos' : (rowMTM||0) < 0 ? 'neg' : ''}">${rowMTM != null ? fmtPct(rowMTM) : '\u2014'}</td>
+        <td class="num">${inv.dts != null ? inv.dts.toFixed(2) : '\u2014'}</td>
+      </tr>`;
+    });
+    // Total row
+    const totalRowMTM = compCost ? ((compFV / compCost) - 1) * 100 : null;
+    html += `<tr class="total-row">
+      <td>TOTAL</td><td></td><td></td><td></td><td></td>
+      <td class="num">${fmt(compPar)}</td>
+      <td class="num">${fmt(compCost)}</td>
+      <td class="num">${fmt(compFV)}</td>
+      <td class="num">${totalRowMTM != null ? fmtPct(totalRowMTM) : '\u2014'}</td>
+      <td></td>
+    </tr>`;
+    html += `</tbody></table></div>`;
+  } else {
+    // Single position - show the full investment type
+    html += `<div class="sec-modal-section-title">Position Detail</div>`;
+    const inv = companyInvestments[0];
+    html += `<div class="sec-category-row">`;
+    html += `<div class="sec-category-item"><div class="label">Investment Type</div><div class="value" style="font-size:10px;white-space:normal;word-break:break-word;">${inv.investment_type || '\u2014'}</div></div>`;
+    html += `<div class="sec-category-item"><div class="label">Type (Simple)</div><div class="value">${inv.type_simple || '\u2014'}</div></div>`;
+    html += `</div>`;
+  }
+
+  body.innerHTML = html;
+
+  // Show modal with animation
+  overlay.classList.add('visible');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      overlay.classList.add('show');
+    });
+  });
+
+  // Escape key handler
+  document.addEventListener('keydown', secModalEscHandler);
+
+  // Load sponsors data in background
+  loadSponsors().then(() => {
+    if (!sponsorsData) return;
+    const sponsorArea = document.getElementById('sec-sponsor-area');
+    if (!sponsorArea) return;
+
+    // Try to find sponsor by company name
+    let sponsor = null;
+    if (Array.isArray(sponsorsData)) {
+      sponsor = sponsorsData.find(s => s.company === companyName || s.name === companyName);
+    } else if (sponsorsData[companyName]) {
+      sponsor = sponsorsData[companyName];
+    }
+
+    if (sponsor) {
+      let sponsorHTML = `<div class="sec-modal-section-title">Sponsor / Owner</div>`;
+      sponsorHTML += `<div class="sec-sponsor-info">`;
+      sponsorHTML += `<div class="sponsor-name">${sponsor.sponsor || sponsor.name || sponsor.owner || '\u2014'}</div>`;
+      if (sponsor.type) sponsorHTML += `<div class="sponsor-detail">Type: ${sponsor.type}</div>`;
+      if (sponsor.fund) sponsorHTML += `<div class="sponsor-detail">Fund: ${sponsor.fund}</div>`;
+      if (sponsor.notes) sponsorHTML += `<div class="sponsor-detail">${sponsor.notes}</div>`;
+      sponsorHTML += `</div>`;
+      sponsorArea.innerHTML = sponsorHTML;
+    }
+  });
+}
+
+function closeSecurityModal() {
+  const overlay = document.getElementById('security-modal-overlay');
+  overlay.classList.remove('show');
+  document.removeEventListener('keydown', secModalEscHandler);
+  setTimeout(() => { overlay.classList.remove('visible'); }, 300);
+}
+
+function secModalEscHandler(e) {
+  if (e.key === 'Escape') closeSecurityModal();
+}
+
+// Close modal when clicking outside
+document.getElementById('security-modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeSecurityModal();
+});
+
+// ─── Sponsors Tab ───
+let sponsorSortState = { key: 'fv', dir: 'desc' };
+
+function buildSponsorsTab() {
+  // Build sponsor → company mapping
+  const sponsorMap = {};
+  investments.forEach(inv => {
+    const s = inv.sponsor;
+    if (!s) return;
+    if (!sponsorMap[s]) sponsorMap[s] = { companies: {}, fv: 0 };
+    const co = inv.company;
+    if (!sponsorMap[s].companies[co]) {
+      sponsorMap[s].companies[co] = { company: co, industry: inv.industry, fv: 0, cost: 0, source: inv.sponsor_source || '' };
+    }
+    sponsorMap[s].companies[co].fv += (inv.fair_value_k || 0);
+    sponsorMap[s].companies[co].cost += (inv.amortized_cost_k || 0);
+    sponsorMap[s].fv += (inv.fair_value_k || 0);
+  });
+
+  const totalFV = investments.reduce((s, i) => s + (i.fair_value_k || 0), 0);
+
+  let sponsorList = Object.entries(sponsorMap).map(([name, data]) => ({
+    sponsor: name,
+    count: Object.keys(data.companies).length,
+    fv: data.fv,
+    pct: data.fv / totalFV * 100,
+    companies: data.companies,
+  }));
+
+  // Sort
+  sponsorList.sort((a, b) => {
+    let va = a[sponsorSortState.key], vb = b[sponsorSortState.key];
+    if (typeof va === 'string') return sponsorSortState.dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+    return sponsorSortState.dir === 'asc' ? va - vb : vb - va;
+  });
+
+  // Apply search filter
+  const q = (document.getElementById('sponsor-search')?.value || '').toLowerCase();
+  if (q) sponsorList = sponsorList.filter(s => s.sponsor.toLowerCase().includes(q));
+
+  document.getElementById('sponsor-count').textContent = `(${sponsorList.length} sponsors, ${sponsorList.reduce((s,x)=>s+x.count,0)} companies)`;
+
+  const tbody = document.querySelector('#sponsor-table tbody');
+  tbody.innerHTML = sponsorList.map(s => `
+    <tr data-sponsor="${s.sponsor.replace(/"/g, '&quot;')}">
+      <td>${s.sponsor}</td>
+      <td class="num">${s.count}</td>
+      <td class="num">${fmtM(s.fv)}</td>
+      <td class="num">${fmtPct(s.pct, 1)}</td>
+    </tr>
+  `).join('');
+
+  // Click handlers
+  tbody.querySelectorAll('tr').forEach(tr => {
+    tr.addEventListener('click', () => {
+      tbody.querySelectorAll('tr').forEach(r => r.classList.remove('active'));
+      tr.classList.add('active');
+      const sName = tr.dataset.sponsor;
+      const sData = sponsorList.find(s => s.sponsor === sName);
+      showSponsorDetail(sName, sData);
+    });
+  });
+
+  // Sort handler
+  document.querySelector('#sponsor-table thead').onclick = e => {
+    const th = e.target.closest('th');
+    if (!th || !th.dataset.key) return;
+    const key = th.dataset.key;
+    if (sponsorSortState.key === key) sponsorSortState.dir = sponsorSortState.dir === 'asc' ? 'desc' : 'asc';
+    else { sponsorSortState.key = key; sponsorSortState.dir = 'desc'; }
+    buildSponsorsTab();
+  };
+}
+
+function showSponsorDetail(name, data) {
+  document.getElementById('sponsor-detail-title').textContent = name;
+  const companies = Object.values(data.companies).sort((a, b) => b.fv - a.fv);
+  let html = '';
+
+  // Show source text from first company
+  const firstSource = companies.find(c => c.source)?.source;
+  if (firstSource) {
+    html += `<div class="sponsor-source">${firstSource}</div>`;
+  }
+
+  companies.forEach(co => {
+    const mtm = co.cost ? ((co.fv / co.cost) - 1) * 100 : null;
+    const mtmCls = (mtm || 0) > 0 ? 'pos' : (mtm || 0) < 0 ? 'neg' : '';
+    html += `<div class="sponsor-portco" onclick="openSecurityModal('${co.company.replace(/'/g, "\\'")}')">
+      <div>
+        <div class="sponsor-portco-name">${co.company}</div>
+        <div class="sponsor-portco-industry">${co.industry || ''}</div>
+      </div>
+      <div class="sponsor-portco-fv">${fmtM(co.fv)}</div>
+      <div class="sponsor-portco-mtm ${mtmCls}">${mtm != null ? fmtPct(mtm) : '\u2014'}</div>
+    </div>`;
+  });
+
+  // Summary row
+  const totalFV = companies.reduce((s, c) => s + c.fv, 0);
+  const totalCost = companies.reduce((s, c) => s + c.cost, 0);
+  const totalMTM = totalCost ? ((totalFV / totalCost) - 1) * 100 : null;
+  html += `<div style="padding:10px 12px;border-top:1px solid var(--border);background:var(--bg-2);display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;">
+    <span style="color:var(--text-2)">${companies.length} companies</span>
+    <span style="color:var(--text-1)">Total FV: ${fmtM(totalFV)}</span>
+    <span class="${(totalMTM||0)>0?'pos':(totalMTM||0)<0?'neg':''}">${totalMTM != null ? 'Avg MTM: ' + fmtPct(totalMTM) : ''}</span>
+  </div>`;
+
+  document.getElementById('sponsor-detail-body').innerHTML = html;
+}
+
+document.getElementById('sponsor-search')?.addEventListener('input', () => buildSponsorsTab());
+
+// ─── Enhanced Position Filters ───
+let posFilterState = {
+  sectors: null, // null = all selected
+  types: null,
+  de: null,
+};
+
+function initPosFilters() {
+  // Build sector dropdown options
+  const sectorCounts = {};
+  const typeCounts = {};
+  const deCounts = {};
+  investments.forEach(i => {
+    const s = i.industry || 'Other';
+    sectorCounts[s] = (sectorCounts[s] || 0) + 1;
+    const t = i.type_simple || 'Other';
+    typeCounts[t] = (typeCounts[t] || 0) + 1;
+    const d = i.investment_category || 'Other';
+    deCounts[d] = (deCounts[d] || 0) + 1;
+  });
+
+  buildDropdownOptions('sector-options', sectorCounts, 'sector');
+  buildDropdownOptions('type-options', typeCounts, 'type');
+  buildDropdownOptions('de-options', deCounts, 'de');
+
+  // Dropdown toggle behavior
+  document.querySelectorAll('.pos-dropdown-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const menu = btn.nextElementSibling;
+      const wasOpen = menu.classList.contains('open');
+      document.querySelectorAll('.pos-dropdown-menu').forEach(m => m.classList.remove('open'));
+      if (!wasOpen) menu.classList.add('open');
+    });
+  });
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.pos-dropdown-menu').forEach(m => m.classList.remove('open'));
+  });
+  document.querySelectorAll('.pos-dropdown-menu').forEach(m => {
+    m.addEventListener('click', e => e.stopPropagation());
+  });
+
+  // Select all / deselect all
+  ['sector', 'type', 'de'].forEach(prefix => {
+    document.getElementById(`${prefix}-select-all`).addEventListener('click', () => {
+      document.querySelectorAll(`#${prefix}-options input`).forEach(cb => cb.checked = true);
+      onDropdownChange(prefix);
+    });
+    document.getElementById(`${prefix}-deselect-all`).addEventListener('click', () => {
+      document.querySelectorAll(`#${prefix}-options input`).forEach(cb => cb.checked = false);
+      onDropdownChange(prefix);
+    });
+  });
+
+  // Range filter listeners
+  ['filter-spread-min','filter-spread-max','filter-mat-min','filter-mat-max','filter-fv-min','filter-fv-max','filter-mtm-min','filter-mtm-max'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', () => applyPosFilters());
+  });
+}
+
+function buildDropdownOptions(containerId, counts, prefix) {
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  const container = document.getElementById(containerId);
+  container.innerHTML = sorted.map(([val, cnt]) => `
+    <label class="dd-option">
+      <input type="checkbox" checked data-val="${val}" data-prefix="${prefix}">
+      <span>${val}</span>
+      <span class="dd-count">${cnt}</span>
+    </label>
+  `).join('');
+  container.querySelectorAll('input').forEach(cb => {
+    cb.addEventListener('change', () => onDropdownChange(prefix));
+  });
+}
+
+function onDropdownChange(prefix) {
+  const checkboxes = document.querySelectorAll(`#${prefix}-options input`);
+  const total = checkboxes.length;
+  const checked = [...checkboxes].filter(cb => cb.checked);
+  const allChecked = checked.length === total;
+
+  // Update button label
+  const btnId = `${prefix}-dropdown-btn`;
+  const labelMap = { sector: 'Sector', type: 'Type', de: 'D/E' };
+  const btn = document.getElementById(btnId);
+  if (allChecked) {
+    btn.innerHTML = `${labelMap[prefix]}: All <span class="dd-arrow">&#9662;</span>`;
+  } else if (checked.length === 0) {
+    btn.innerHTML = `${labelMap[prefix]}: None <span class="dd-arrow">&#9662;</span>`;
+  } else if (checked.length <= 2) {
+    const names = checked.map(cb => cb.dataset.val.length > 15 ? cb.dataset.val.slice(0,13)+'..' : cb.dataset.val).join(', ');
+    btn.innerHTML = `${labelMap[prefix]}: ${names} <span class="dd-arrow">&#9662;</span>`;
+  } else {
+    btn.innerHTML = `${labelMap[prefix]}: ${checked.length}/${total} <span class="dd-arrow">&#9662;</span>`;
+  }
+
+  applyPosFilters();
+}
+
+function getDropdownSelected(prefix) {
+  const checkboxes = document.querySelectorAll(`#${prefix}-options input`);
+  const total = checkboxes.length;
+  const checked = [...checkboxes].filter(cb => cb.checked);
+  if (checked.length === total) return null; // all = no filter
+  return new Set(checked.map(cb => cb.dataset.val));
+}
+
+function getRangeVal(id) {
+  const el = document.getElementById(id);
+  const v = el?.value;
+  return v !== '' && v != null ? parseFloat(v) : null;
+}
+
+function applyPosFilters() {
+  const searchVal = document.getElementById('search-input').value;
+  buildFullTable(searchVal);
+}
+
+function resetPosFilters() {
+  document.getElementById('search-input').value = '';
+  document.querySelectorAll('.pos-dropdown-menu input[type="checkbox"]').forEach(cb => cb.checked = true);
+  ['sector', 'type', 'de'].forEach(prefix => onDropdownChange(prefix));
+  ['filter-spread-min','filter-spread-max','filter-mat-min','filter-mat-max','filter-fv-min','filter-fv-max','filter-mtm-min','filter-mtm-max'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  applyPosFilters();
+}
+
+// ─── Boot ───
+loadData();
+</script>
+</body>
+</html>
