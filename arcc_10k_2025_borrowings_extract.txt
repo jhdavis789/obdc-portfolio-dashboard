@@ -1,0 +1,293 @@
+ARCC 10-K FY2025 (Period ending December 31, 2025) - Borrowings and Collateral Extraction
+Filed: 2026-02-04
+SEC Accession: 0001287750-26-000006
+Source: https://www.sec.gov/Archives/edgar/data/1287750/000128775026000006/arcc-20251231.htm
+
+================================================================================
+A. BORROWINGS NOTE (Note 5 - DEBT)
+================================================================================
+
+Asset Coverage: 189% as of December 31, 2025 (minimum required: 150%)
+Aggregate principal amount of senior securities: $16,012 million
+Weighted average stated interest rate: 4.9% (including impact of interest rate swaps)
+Weighted average maturity: 4.2 years
+
+DEBT SUMMARY TABLE (as of December 31, 2025, in millions):
+
+Facility                          | Total Committed/  | Principal    | Carrying
+                                  | Outstanding(1)    | Outstanding  | Value
+----------------------------------+-------------------+--------------+---------
+Revolving Credit Facility         | $5,493 (2)        | $2,028       | $2,031
+Revolving Funding Facility        | $2,250            | $1,234       | $1,234
+SMBC Funding Facility             | $1,100 (3)        | $563         | $563
+BNP Funding Facility              | $1,265            | $717         | $717
+April 2036 CLO Notes (4)         | $476              | $476         | $473 (5)
+October 2036 CLO Secured Loans(4)| $544              | $544         | $541 (5)
+January 2038 CLO Notes (4)       | $700              | $700         | $697 (5)
+January 2026 Notes                | $1,150            | $1,150       | $1,150 (5)
+July 2026 Notes                   | $1,000            | $1,000       | $999 (5)
+January 2027 Notes                | $900              | $900         | $900 (5)(6)
+June 2027 Notes                   | $500              | $500         | $498 (5)
+June 2028 Notes                   | $1,250            | $1,250       | $1,248 (5)
+March 2029 Notes                  | $1,000            | $1,000       | $999 (5)(6)
+July 2029 Notes                   | $850              | $850         | $861 (5)(6)
+September 2030 Notes              | $750              | $750         | $743 (5)(6)
+January 2031 Notes                | $650              | $650         | $634 (5)(6)
+November 2031 Notes               | $700              | $700         | $693 (5)
+March 2032 Notes                  | $1,000            | $1,000       | $1,010 (5)(6)
+----------------------------------+-------------------+--------------+---------
+TOTAL                             | $21,578           | $16,012      | $15,991
+
+Table Footnotes:
+(1) Represents total aggregate amount committed or outstanding. Credit Facility borrowings are subject to borrowing base and other restrictions.
+(2) Accordion feature allows increase to max ~$7,925 as of 12/31/2025.
+(3) Accordion feature allows increase to max $1,300 as of 12/31/2025.
+(4) Excludes subordinated notes retained by the Company (eliminated in consolidation).
+(5) Represents aggregate principal less unamortized debt issuance costs and net unaccreted/amortized discount or premium.
+(6) Carrying value includes adjustments from effective hedge accounting relationships.
+
+================================================================================
+FACILITY DETAILS
+================================================================================
+
+--- REVOLVING CREDIT FACILITY ---
+Borrower: Ares Capital Corporation
+Committed: $5,493 million ($4,349 revolving + $1,144 term loan)
+Outstanding: $2,028 million (12/31/2025)
+Available for borrowing: $3,411 million (net of $54 letters of credit)
+Accordion max: ~$7,925 million
+Interest Rate: SOFR + 0.10% CSA + 1.525%/1.650%/1.775% spread (since April 15, 2025)
+  (determined monthly based on borrowing base relative to facility utilization)
+Weighted avg spread: 1.53% as of 12/31/2025
+SOFR rates (12/31/2025): 1M=3.69%, 3M=3.65%, 6M=3.57%
+Commitment fee: 0.325% on unused portion
+Letter of credit sub-limit: $400 million ($54 outstanding as of 12/31/2025)
+Avg outstanding balance (2025): $1,613 million
+Avg stated interest rate (2025): 5.93%
+Maturity structure:
+  Revolving tranche: $4,058 (revolving period ends Apr 15, 2029; maturity Apr 15, 2030)
+                     $246 (revolving period ends Mar 31, 2026; maturity Mar 31, 2027)
+                     $45 (revolving period ends Apr 12, 2028; maturity Apr 12, 2029)
+  Term loan tranche: $1,035 (maturity Apr 15, 2030)
+                     $45 (maturity Apr 12, 2029)
+                     $40 (maturity Apr 19, 2028)
+                     $24 (maturity Mar 31, 2027)
+Collateral: Secured by certain assets in Company's portfolio. EXCLUDES investments held by:
+  - Ares Capital CP (Revolving Funding Facility)
+  - ACJB (SMBC Funding Facility)
+  - AFB (BNP Funding Facility)
+  - ADL CLO 1, ADL CLO 4, ADL CLO 7 (CLO securitizations)
+  - Certain other investments
+Borrowing base: Applies different advance rates to different types of assets (based on value per facility docs)
+
+--- LETTER OF CREDIT FACILITY ---
+Issuer: Deutsche Bank AG New York Branch
+Uncommitted facility
+Outstanding: $218 million (12/31/2025)
+Secured pari passu with Revolving Credit Facility
+
+--- REVOLVING FUNDING FACILITY ---
+Borrower: Ares Capital CP Funding LLC ("Ares Capital CP")
+Committed: $2,250 million
+Outstanding: $1,234 million (12/31/2025)
+Interest Rate: SOFR or base rate + 1.80% (since July 28, 2025)
+Commitment fee: 0.50% to 1.25% depending on unused portion
+End of reinvestment period: July 28, 2028
+Maturity: July 28, 2030
+Avg outstanding balance (2025): $1,068 million
+Avg stated interest rate (2025): 6.15%
+Collateral: All assets held by Ares Capital CP, plus Company's membership interest
+Borrowing base: Different advance rates applied to different asset types held by Ares Capital CP
+Restrictions: Sector concentrations, loan size, payment frequency, status, collateral interests, fixed rate loans, portfolio company leverage
+
+--- SMBC FUNDING FACILITY ---
+Borrower: Ares Capital JB Funding LLC ("ACJB")
+Agent: Sumitomo Mitsui Banking Corporation
+Committed: $1,100 million (accordion to $1,300)
+Outstanding: $563 million (12/31/2025)
+Interest Rate: SOFR + 1.80% or base rate + 0.80% (since July 25, 2025)
+Commitment fee: 0.50% to 1.00% depending on unused portion
+End of reinvestment period: July 25, 2028
+Maturity: July 25, 2030 (both subject to two 1-year extensions by mutual agreement)
+Avg outstanding balance (2025): $455 million
+Avg stated interest rate (2025): 6.13%
+Collateral: All assets held by ACJB
+Borrowing base: Applies an advance rate to assets held by ACJB
+Restrictions: Sector concentrations, loan size, payment frequency, status, collateral interests, fixed rate loans, portfolio company leverage
+
+--- BNP FUNDING FACILITY ---
+Borrower: ARCC FB Funding LLC ("AFB")
+Agent: BNP Paribas
+Committed: $1,265 million
+Outstanding: $717 million (12/31/2025)
+Interest Rate: SOFR or base rate + 1.90% during reinvestment period, +2.40% after (since March 20, 2025)
+End of reinvestment period: March 20, 2028
+Maturity: March 20, 2030
+Avg outstanding balance (2025): $721 million
+Avg stated interest rate (2025): 6.18%
+Collateral: All assets held by AFB
+Borrowing base: Applies an advance rate to assets held by AFB
+Restrictions: Sector concentrations, loan size, payment frequency, status, collateral interests, fixed rate loans, portfolio company leverage
+
+--- ADL CLO 1 (April 2036 CLO) ---
+Issuer: Ares Direct Lending CLO 1 LLC ("ADL CLO 1")
+Completed: May 2024
+Total: $702 million
+  Class A Senior Notes: $406 million, SOFR + 1.80%, maturity April 25, 2036
+  Class B Senior Notes: $70 million, SOFR + 2.20%, maturity April 25, 2036
+  Subordinated Notes: ~$226 million (retained by Company, eliminated in consolidation)
+Total CLO Secured Notes (external): $476 million
+Blended weighted avg spread: 1.86%
+Reinvestment period: Through April 25, 2028
+Backed by: First lien senior secured loans contributed by Company
+
+--- ADL CLO 4 (October 2036 CLO) ---
+Issuer: Ares Direct Lending CLO 4 LLC ("ADL CLO 4")
+Completed: November 2024
+Total: $804 million
+  Class A Senior Loans: $464 million, SOFR + 1.54%, maturity October 24, 2036
+  Class B Senior Loans: $80 million, SOFR + 1.83%, maturity October 24, 2036
+  Subordinated Notes: ~$260 million (retained by Company, eliminated in consolidation)
+Total CLO Secured Loans (external): $544 million
+Blended weighted avg spread: 1.58%
+Reinvestment period: Through October 24, 2028
+Backed by: First lien senior secured loans contributed by Company
+
+--- ADL CLO 7 (January 2038 CLO) ---
+Issuer: Ares Direct Lending CLO 7 LLC ("ADL CLO 7")
+Completed: December 2025
+Total: $1,003 million
+  Class A-1 Senior Notes: $570 million, SOFR + 1.40%, maturity January 20, 2038
+  Class A-2 Senior Notes: $50 million, SOFR + 1.65%, maturity January 20, 2038
+  Class B Senior Notes: $80 million, SOFR + 1.85%, maturity January 20, 2038
+  Subordinated Notes: ~$303 million (retained by Company, eliminated in consolidation)
+Total CLO Secured Notes (external): $700 million
+Blended weighted avg spread: 1.47%
+Reinvestment period: Through January 20, 2038
+Backed by: First lien senior secured loans contributed by Company
+
+--- UNSECURED NOTES ---
+January 2026 Notes: $1,150M, 3.875%, issued Jul 2020, maturity Jan 15, 2026
+July 2026 Notes: $1,000M, 2.150%, issued Jan 2021, maturity Jul 15, 2026
+January 2027 Notes: $900M, 6.331% eff (swapped), issued Aug 2023, maturity Jan 15, 2027
+June 2027 Notes: $500M, 2.875%, issued Jan 2022, maturity Jun 15, 2027
+June 2028 Notes: $1,250M, 2.875%, issued Jun 2021, maturity Jun 15, 2028
+March 2029 Notes: $1,000M, 5.895% eff (swapped), issued Jan 2024, maturity Mar 1, 2029
+July 2029 Notes: $850M, 5.393% eff (swapped), issued May 2024, maturity Jul 15, 2029
+September 2030 Notes: $750M, 5.643% eff (swapped), issued Jun 2025, maturity Sep 1, 2030
+January 2031 Notes: $650M, 5.100%, issued Sep 2025, maturity Jan 15, 2031
+November 2031 Notes: $700M, 3.200%, issued Nov 2021, maturity Nov 15, 2031
+March 2032 Notes: $1,000M, 5.800%, issued Jan 2025, maturity Mar 8, 2032
+
+================================================================================
+B. SCHEDULE OF INVESTMENTS FOOTNOTES (Pledging Indicators)
+================================================================================
+
+Total Investments at fair value: $29,484.8 million (amortized cost $29,249.9 million) as of 12/31/2025
+
+Key Footnotes from the Consolidated Schedule of Investments:
+
+(1) Other than the Company's investments listed in footnote 5 below (subject to the limitations
+    set forth therein), the Company does not "Control" any of its portfolio companies, for the
+    purposes of the Investment Company Act of 1940.
+
+(2) PLEDGING INDICATOR: These assets are pledged as collateral under the Company's or the
+    Company's consolidated subsidiaries' various revolving credit facilities and debt
+    securitizations and, as a result, are not directly available to the creditors of the Company
+    to satisfy any obligations of the Company other than the obligations under each of the
+    respective credit facilities and debt securitizations (see Note 5).
+
+    NOTE: Footnote (2) is the PRIMARY indicator used throughout the Schedule of Investments to
+    mark individual investments as pledged. Investments marked "(2)" are pledged to one or more
+    of: Revolving Credit Facility, Revolving Funding Facility, SMBC Funding Facility, BNP Funding
+    Facility, ADL CLO 1, ADL CLO 4, or ADL CLO 7. ARCC does NOT use separate letter footnotes
+    to distinguish which specific facility each investment is pledged to. The single "(2)" footnote
+    covers all facilities collectively.
+
+(3) Investments without an interest rate are non-income producing.
+(4) Affiliated Person (owns 5%+ of voting securities or exercises control).
+(5) Controlled affiliate (owns 25%+ or exercises control).
+(6) Non-qualifying asset under Section 55(a) of the Investment Company Act.
+(7) Variable rate loans reference SOFR or alternate base rate.
+(8) Loan on non-accrual status as of 12/31/2025.
+(9) Loan includes interest rate floor feature.
+(10) SDLP certificates entitled to excess cash flow from SDLP loan portfolio.
+(11) First lien revolving loan with letters of credit outstanding (no amounts funded).
+(12) First lien revolving loan with amounts funded plus letters of credit outstanding.
+(13) Company had commitments to fund revolving/delayed draw loans.
+(14) Company had commitments to fund equity investments.
+(15) Company had commitments to co-invest in SDLP for delayed draw loans up to $60M.
+(16) Fair value determined using unobservable inputs (Level 3), except for investments noted.
+(17) Estimated net unrealized gain for tax purposes: ~$300M on tax cost basis of $29.2B.
+
+================================================================================
+C. COLLATERAL ELIGIBILITY CRITERIA, ADVANCE RATES, CONCENTRATION LIMITS
+================================================================================
+
+The 10-K provides GENERAL descriptions (not specific advance rate percentages) for each facility:
+
+REVOLVING CREDIT FACILITY:
+- Borrowing base applies "different advance rates to different types of assets (based on their
+  value as determined pursuant to the Revolving Credit Facility)"
+- Covenants include: (a) limitations on additional indebtedness and liens, (b) limitations on
+  certain investments, (c) limitations on restricted payments, (d) minimum stockholders' equity,
+  (e) ratio of total assets (less non-debt liabilities) to total indebtedness >= 1.5:1.0,
+  (f) limitations on pledging unencumbered assets, (g) limitations on agreements prohibiting liens
+- Available borrowing subject to borrowing base and other restrictions
+
+REVOLVING FUNDING FACILITY (Ares Capital CP):
+- Borrowing base applies "different advance rates to different types of assets held by Ares Capital CP"
+- Restrictions: sector concentrations, loan size, payment frequency and status, collateral interests,
+  loans with fixed rates, portfolio company leverage
+- All affect borrowing base and therefore available borrowing
+
+SMBC FUNDING FACILITY (ACJB):
+- Borrowing base applies "an advance rate to assets held by ACJB"
+- Same restriction categories as Revolving Funding Facility
+
+BNP FUNDING FACILITY (AFB):
+- Borrowing base applies "an advance rate to assets held by AFB"
+- Same restriction categories as Revolving Funding Facility
+
+CLO SECURITIZATIONS:
+- ADL CLO 1, ADL CLO 4, ADL CLO 7 contain conditions for acquiring additional loans
+  "in accordance with rating agency criteria or as otherwise agreed with certain institutional investors"
+- CLOs are backed by "diversified portfolio of first lien senior secured loans"
+
+NOTE: Specific advance rate percentages, concentration limit percentages, and detailed eligibility
+criteria are NOT disclosed in the 10-K filing. These are contained in the underlying credit
+agreements which are filed as exhibits but are hundreds of pages long.
+
+================================================================================
+D. FAIR VALUE OF ASSETS PLEDGED AS COLLATERAL
+================================================================================
+
+The 10-K does NOT provide a breakdown of fair value of assets pledged to each individual facility.
+
+What IS disclosed:
+- Total investments at fair value: $29,484.8 million (12/31/2025)
+- Footnote (2) on the Schedule of Investments marks individual investments as pledged, but does
+  NOT distinguish which specific facility they are pledged to
+- Each sub-facility (Ares Capital CP, ACJB, AFB, ADL CLO 1/4/7) holds its own segregated pool
+  of assets as collateral
+- The Revolving Credit Facility is secured by "certain assets in the Company's portfolio" and
+  explicitly EXCLUDES investments held by subsidiaries for other facilities
+
+The only way to determine fair value per facility would be to:
+1. Review each line item in the Schedule of Investments to determine which subsidiary holds it
+   (not disclosed at the line-item level in the 10-K)
+2. Or review subsidiary-level financial statements in the 10-K/A filing
+
+APPROXIMATE AVAILABLE BORROWING CAPACITY (implied collateral adequacy):
+- Revolving Credit Facility: $3,411M available (of $5,493M committed)
+- Total across all credit facilities: ~$5.5 billion available for additional borrowings
+- Approximately $4.5 billion was outstanding under the Credit Facilities
+  (Revolving Credit Facility + Revolving Funding Facility + SMBC + BNP)
+
+================================================================================
+SUBSEQUENT EVENTS (Note 16)
+================================================================================
+- March 2025: Repaid $600M March 2025 Notes at maturity
+- July 2025: Repaid $1,250M July 2025 Notes at maturity
+- January 2026: Issued $750M of April 2031 Notes (5.250%, maturity April 12, 2031)
+- January 2026 Notes ($1,150M, 3.875%) maturing January 15, 2026
