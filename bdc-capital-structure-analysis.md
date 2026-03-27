@@ -125,6 +125,26 @@ By mapping every investment entry in the Schedule to its footnote markers:
 | Klick Inc. | 1L Term Loan | $71M |
 | *...51 more positions* | | |
 
+### What We Can vs Cannot See Inside Each Ring
+
+**Disclosure limitation:** OBDC consolidates all SPV and CLO subsidiaries. The consolidated Schedule of Investments presents all 365 positions in a single table, with only a binary footnote (26 = not pledged, no 26 = pledged). There is **no per-entity footnote** — the 10-K does not tell you which specific investments sit inside ORCC Financing II vs Owl Rock CLO V vs the parent. Neither the XBRL data nor any exhibit provides this per-subsidiary breakdown. The Owl Rock CLOs also do **not** file ABS-EE reports with the SEC (they are private placements under Section 4(a)(2)).
+
+However, we can decompose the portfolio by **investment type** to understand what *could* be in each ring:
+
+| Investment Type | Positions | Fair Value | Likely Ring |
+|----------------|-----------|------------|-------------|
+| First Lien Term Loans | 211 | $11,815M | SPVs, CLOs, or Revolver collateral |
+| First Lien Delayed Draw | 22 | $155M | SPVs, CLOs, or Revolver collateral |
+| First Lien Revolvers | 35 | $83M | SPVs, CLOs, or Revolver collateral |
+| Second Lien | 12 | $849M | Revolver collateral or unencumbered |
+| Equity | 66 | $1,629M | Unencumbered (not eligible for SPV/CLO) |
+| Specialty Finance Equity | 8 | $1,387M | Unencumbered (JV interests, platforms) |
+| Unsecured Notes | 7 | $394M | Unencumbered |
+| Other (convertible, sub) | 4 | $163M | Unencumbered |
+| **Total** | **365** | **$16,474M** | |
+
+**Key structural inference:** SPV asset facilities and CLOs hold exclusively **first lien senior secured loans** (per their credit agreements' eligibility criteria). This means the 81 equity, specialty finance, unsecured, and subordinated positions ($3,410M) are almost certainly **unencumbered** — they cannot be contributed to SPV/CLO structures.
+
 ### Estimated Asset Allocation
 
 ```
@@ -132,38 +152,87 @@ By mapping every investment entry in the Schedule to its footnote markers:
 │                    OBDC TOTAL PORTFOLIO: $16.5B                  │
 │                                                                  │
 │  ┌─────────────────────────────────────┐                         │
-│  │  Pool A: REVOLVER COLLATERAL        │  ~$1.8B  (11%)         │
+│  │  Ring A: REVOLVER COLLATERAL        │  ~$1.8B  (11%)         │
 │  │  61 positions at parent level       │                         │
+│  │  Mostly 1L term loans + some 2L    │                         │
 │  │  Backs $1.0B drawn / $4.0B commit   │                         │
 │  │  OC ratio: 1.75x on drawn           │                         │
+│  │  ✓ VISIBLE in 10-K (no fn 26)       │                         │
 │  └─────────────────────────────────────┘                         │
 │                                                                  │
 │  ┌─────────────────────────────────────┐                         │
-│  │  Pool B: SPV & CLO ASSETS           │  ~$5.5B  (33%) est.    │
-│  │  Transferred to subsidiary entities │                         │
-│  │  Backs $3.4B SPV+CLO debt           │                         │
-│  │  OC ratio: ~1.6x on drawn           │                         │
+│  │  Ring B: SPV ASSET FACILITIES       │  ~$1.7B est.           │
+│  │  4 SPVs: ORCC Fin II (Natixis),    │  $1,056M debt          │
+│  │  ORCC III Fin (SocGen), ORCC III    │                         │
+│  │  Fin II (Deutsche), OBDC III Fin   │                         │
+│  │  III (BofA)                         │                         │
+│  │  Hold first lien loans only        │                         │
+│  │  Subject to OC, IC, concentration   │                         │
 │  │  ⚠ NOT available to parent          │                         │
+│  │  ✗ Per-SPV holdings not disclosed   │                         │
 │  └─────────────────────────────────────┘                         │
 │                                                                  │
 │  ┌─────────────────────────────────────┐                         │
-│  │  Pool C: UNENCUMBERED               │  ~$9.2B  (56%) est.    │
-│  │  Not pledged to any facility        │                         │
-│  │  Supports $5.0B unsecured notes     │                         │
-│  │  + $7.4B equity                     │                         │
-│  │  Coverage: ~1.8x on unsecured       │                         │
+│  │  Ring C: CLO SECURITIZATIONS        │  ~$3.7B est.           │
+│  │  7 CLOs: Owl Rock CLO I, III, IV,  │  $2,298M debt          │
+│  │  V, VII, X, XIV                     │                         │
+│  │  Hold first lien loans only        │                         │
+│  │  Non-recourse, term-matched         │                         │
+│  │  No ABS-EE filings (4(a)(2))       │                         │
+│  │  ⚠ NOT available to parent          │                         │
+│  │  ✗ Per-CLO holdings not disclosed   │                         │
 │  └─────────────────────────────────────┘                         │
 │                                                                  │
-│  Note: Pools B+C are both marked (26) in the Schedule.           │
-│  We cannot distinguish them from the Schedule alone — the        │
-│  10-K does not disclose which specific investments are           │
-│  inside which SPV or CLO entity.                                 │
+│  ┌─────────────────────────────────────┐                         │
+│  │  Ring D: SLF JOINT VENTURE          │  $2.3B assets          │
+│  │  Blue Owl Credit SLF LLC           │  $1.7B debt            │
+│  │  Unconsolidated — NOT on OBDC's    │  OBDC equity: $415M    │
+│  │  schedule (only equity interest)    │                         │
+│  │  ~250 broadly syndicated 1L loans  │                         │
+│  │  ✓ VISIBLE via EX-99.2 (see below) │                         │
+│  └─────────────────────────────────────┘                         │
+│                                                                  │
+│  ┌─────────────────────────────────────┐                         │
+│  │  Unencumbered Assets                │  ~$9.2B est. (56%)     │
+│  │  81 equity/specialty/unsecured      │  $3,410M (certain)     │
+│  │  + first lien loans not in SPV/CLO │  ~$5,800M (est.)       │
+│  │  Supports $5.0B unsecured notes    │                         │
+│  │  Coverage: ~1.8x on unsecured      │                         │
+│  └─────────────────────────────────────┘                         │
+│                                                                  │
+│  ⚠ Rings B+C+Unencumbered are all marked (26) in the Schedule.  │
+│  The 10-K does not map individual investments to specific SPVs   │
+│  or CLOs. Only Ring A and Ring D contents are directly visible.  │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+### Largest Unencumbered Positions (certain — equity & specialty finance)
+
+These positions are definitively NOT inside any SPV or CLO (ineligible asset types):
+
+| Company | Type | Fair Value |
+|---------|------|------------|
+| Wingspire Capital Holdings | Specialty Finance Equity | $607M |
+| Blue Owl Credit SLF LLC | JV Equity Interest | $415M |
+| Fifth Season Investments | Specialty Finance Equity | $403M |
+| Metis HoldCo (Mavis Tire) | Equity | $252M |
+| LSI Financing | Specialty Finance Equity | $211M |
+| Associations Finance, Inc. | Unsecured | $203M |
+| Windows Entities | Equity | $139M |
+| CD&R Value Building Partners (Belron) | Equity | $98M |
+| New PLI Holdings (PLI) | Equity | $87M |
+| WMC Bidco (West Monroe) | Equity | $78M |
+| Hg Saturn Luchaco Limited | Unsecured | $73M |
+| Sunshine Software (Cornerstone) | Equity | $67M |
+| Hg Genesis 9 SumoCo Limited | Unsecured | $63M |
+| Blue Owl Cross-Strategy Opportunities | Specialty Finance Equity | $62M |
+| Eagle Infrastructure Services | Equity | $58M |
+| *...66 more equity/specialty/unsecured positions* | | |
+| **Subtotal** | | **$3,410M** |
+
 ### Blue Owl Credit SLF LLC (Joint Venture — Exhibit 99.2)
 
-The 10-K includes separate audited financials for **Blue Owl Credit SLF LLC**, a senior loan fund JV. Key data:
+The 10-K includes separate audited financials for **Blue Owl Credit SLF LLC**, a senior loan fund JV. This is the **only ringfenced entity whose full portfolio is disclosed**.
 
 | Metric | Amount |
 |--------|--------|
@@ -174,6 +243,7 @@ The 10-K includes separate audited financials for **Blue Owl Credit SLF LLC**, a
 | Average interest rate | 5.7% |
 | Investment type | 100% first lien senior secured loans |
 | Spread range | SOFR + 175 to SOFR + 550 bps |
+| Portfolio companies | ~250 |
 
 **SLF Borrowings:**
 - WISE CLO 2025-1: $320M
@@ -189,6 +259,20 @@ The 10-K includes separate audited financials for **Blue Owl Credit SLF LLC**, a
 **SLF Members:** Blue Owl Capital Corporation, Blue Owl Capital Corporation II, Blue Owl Credit Income Corp., Blue Owl Technology Finance Corp., Blue Owl Technology Income Corp., and State Teachers Retirement System of Ohio.
 
 OBDC's equity interest in the SLF is valued at $415M on the consolidated schedule. The SLF's assets are **separately financed** and do not directly secure OBDC's borrowings.
+
+**SLF Portfolio Companies (complete roster from EX-99.2 Schedule of Investments):**
+
+The SLF holds exclusively broadly syndicated first lien senior secured loans across ~250 borrowers. Unlike OBDC's direct origination portfolio, these are liquid, broadly traded credits. Top industry concentrations:
+
+| Industry | % of Members' Equity | Est. Fair Value |
+|----------|---------------------|-----------------|
+| Internet software & services | 40.0% | ~$246M |
+| Insurance | 28.8% | ~$177M |
+| Food & beverage | 22.9% | ~$140M |
+| Healthcare technology | 21.0% | ~$129M |
+| Healthcare providers/services | 20.1% | ~$124M |
+
+Representative SLF holdings include: Acrisure, Athenahealth, Broadstreet Partners, Charter Communications, Cloud Software Group, Cotiviti, Cushman & Wakefield, Delta (Formula One), Epicor, Focus Financial, Hub International, IQVIA, Live Nation, Medline, Proofpoint, Ryan Specialty, Transdigm, UKG, USI, and ~230 others. (Full company list: 250+ names available in EX-99.2.)
 
 ---
 
