@@ -97,33 +97,29 @@ The 10-K Schedule of Investments contains two critical footnotes:
 - **(25)** "Unless otherwise indicated, the Company's portfolio companies are pledged as collateral supporting the amounts outstanding under the Revolving Credit Facility, SPV Asset Facilities and CLOs."
 - **(26)** "Investment is not pledged as collateral for the credit facilities."
 
-By mapping every investment entry in the Schedule to its footnote markers:
+**XBRL-verified mapping** (corrected from initial HTML analysis):
+
+Footnote (25) is the **default** — it applies to ALL investments unless explicitly overridden by footnote (26). The XBRL instance document contains only **16 footnote arcs** linking to footnote (26), covering exactly **4 investment line items**:
 
 | Pool | Positions | Fair Value | Description |
 |------|-----------|------------|-------------|
-| **Pledged** (no footnote 26) | ~61 | ~$1,770M | Collateral for the Revolving Credit Facility borrowing base |
-| **Not pledged** (footnote 26) | ~302 | ~$14,500M | Either inside SPV/CLO subsidiaries (securing subsidiary debt) or truly unencumbered |
+| **Pledged** (default, footnote 25) | ~361 | ~$15,389M | Collateral supporting the Revolving Credit Facility, SPV Asset Facilities, and CLOs collectively |
+| **Not pledged** (footnote 26) | 4 | $1,085M | Explicitly excluded from all credit facility collateral pools |
 | **Total** | 365 | $16,474M | |
 
-**Interpretation:** Footnote (26) means "not pledged to the parent company's credit facilities." This encompasses two categories:
-1. Investments that have been **contributed to SPV/CLO subsidiaries** — these secure the SPV/CLO's own borrowings but are NOT available to the parent's revolving credit facility or unsecured creditors
-2. Investments that are **truly unencumbered** — not pledged to any facility
+**The 4 unencumbered investments (from XBRL):**
 
-**Top pledged positions (backing the revolving credit facility):**
+| Company | Type | Fair Value | Cost |
+|---------|------|------------|------|
+| Wingspire Capital Holdings LLC | Specialty Finance Equity (Affiliated) | $607M | $501M |
+| Blue Owl Credit SLF LLC | LLC Interest (Affiliated) | $415M | $421M |
+| Blue Owl Cross-Strategy Opportunities LLC | Specialty Finance Equity (Affiliated) | $62M | $62M |
+| Blue Owl Leasing LLC | LLC Interest (Affiliated) | $1M | $1M |
+| **Total Unencumbered** | | **$1,085M** | **$985M** |
 
-| Company | Type | Fair Value |
-|---------|------|------------|
-| Packaging Coordinators Midco | 1L Term Loan | $157M |
-| Trucordia Insurance Holdings | 2L | $150M |
-| Deerfield Dakota Holdings | 1L Term Loan | $116M |
-| EresearchTechnology (Clario) | 1L Term Loan | $103M |
-| Wrench Group LLC | 1L Term Loan | $100M |
-| VCI Asset Holdings 1 LLC | 1L Term Loan | $90M |
-| Eagle Infrastructure Services | 1L TL + Equity | $146M |
-| Denali Intermediate (Dun & Bradstreet) | 1L Term Loan | $76M |
-| MAJCO (Big Brand Tire) | 1L Term Loan | $75M |
-| Klick Inc. | 1L Term Loan | $71M |
-| *...51 more positions* | | |
+**Critical interpretation:** Footnote (25) says investments are "pledged as collateral supporting the amounts outstanding under the Revolving Credit Facility, SPV Asset Facilities **and** CLOs." This is a **collective** pledge — each investment backs a specific facility (parent revolver, a specific SPV, or a specific CLO), but the footnote does not distinguish which. The 10-K treats all secured facilities as one pool for disclosure purposes.
+
+This means $15.4B of the portfolio (93%) is inside the collective secured creditor pool. Only $1.1B (7%) — all affiliated platform equity interests — sits completely outside.
 
 ### What We Can vs Cannot See Inside Each Ring
 
@@ -145,90 +141,69 @@ However, we can decompose the portfolio by **investment type** to understand wha
 
 **Key structural inference:** SPV asset facilities and CLOs hold exclusively **first lien senior secured loans** (per their credit agreements' eligibility criteria). This means the 81 equity, specialty finance, unsecured, and subordinated positions ($3,410M) are almost certainly **unencumbered** — they cannot be contributed to SPV/CLO structures.
 
-### Estimated Asset Allocation
+### Asset Allocation (XBRL-corrected)
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                    OBDC TOTAL PORTFOLIO: $16.5B                  │
 │                                                                  │
-│  ┌─────────────────────────────────────┐                         │
-│  │  Ring A: REVOLVER COLLATERAL        │  ~$1.8B  (11%)         │
-│  │  61 positions at parent level       │                         │
-│  │  Mostly 1L term loans + some 2L    │                         │
-│  │  Backs $1.0B drawn / $4.0B commit   │                         │
-│  │  OC ratio: 1.75x on drawn           │                         │
-│  │  ✓ VISIBLE in 10-K (no fn 26)       │                         │
-│  └─────────────────────────────────────┘                         │
+│  ┌──────────────────────────────────────────────────────┐        │
+│  │  COLLECTIVE SECURED POOL (fn 25 default)             │        │
+│  │  ~361 positions, $15.4B (93% of portfolio)           │        │
+│  │                                                      │        │
+│  │  Pledged to Revolver + SPVs + CLOs collectively.     │        │
+│  │  Each investment backs ONE specific facility, but     │        │
+│  │  10-K does not disclose which.                        │        │
+│  │                                                      │        │
+│  │  ┌────────────────────────┐                           │        │
+│  │  │ Parent Revolver        │ $1,012M drawn             │        │
+│  │  │ (Truist, $4.0B commit) │ $4,025M committed         │        │
+│  │  │ First priority lien on │ Secured by "substantially │        │
+│  │  │ parent-level assets    │ all portfolio investments" │        │
+│  │  └────────────────────────┘                           │        │
+│  │  ┌────────────────────────┐                           │        │
+│  │  │ 4 SPV Asset Facilities │ $1,056M drawn             │        │
+│  │  │ ORCC Fin II (Natixis)  │ $1,625M committed         │        │
+│  │  │ ORCC III Fin (SocGen)  │ Hold 1L loans only        │        │
+│  │  │ ORCC III Fin II (DB)   │ OC/IC/concentration tests │        │
+│  │  │ OBDC III Fin III (BofA)│ ⚠ NOT avail to parent     │        │
+│  │  └────────────────────────┘                           │        │
+│  │  ┌────────────────────────┐                           │        │
+│  │  │ 7 CLO Securitizations  │ $2,298M outstanding       │        │
+│  │  │ Owl Rock CLO I,III,IV, │ Non-recourse, term-match  │        │
+│  │  │ V,VII,X,XIV            │ No ABS-EE (4(a)(2))       │        │
+│  │  │ Hold 1L loans only    │ ⚠ NOT avail to parent     │        │
+│  │  └────────────────────────┘                           │        │
+│  │                                                      │        │
+│  │  Total secured debt: $4,366M against $15,389M assets │        │
+│  │  Aggregate OC ratio: 3.5x on drawn secured debt      │        │
+│  │  ✗ Per-entity holdings NOT disclosed in 10-K         │        │
+│  └──────────────────────────────────────────────────────┘        │
 │                                                                  │
-│  ┌─────────────────────────────────────┐                         │
-│  │  Ring B: SPV ASSET FACILITIES       │  ~$1.7B est.           │
-│  │  4 SPVs: ORCC Fin II (Natixis),    │  $1,056M debt          │
-│  │  ORCC III Fin (SocGen), ORCC III    │                         │
-│  │  Fin II (Deutsche), OBDC III Fin   │                         │
-│  │  III (BofA)                         │                         │
-│  │  Hold first lien loans only        │                         │
-│  │  Subject to OC, IC, concentration   │                         │
-│  │  ⚠ NOT available to parent          │                         │
-│  │  ✗ Per-SPV holdings not disclosed   │                         │
-│  └─────────────────────────────────────┘                         │
+│  ┌──────────────────────────────────────────────────────┐        │
+│  │  UNENCUMBERED (fn 26, XBRL-verified)                 │        │
+│  │  4 positions, $1,085M (7% of portfolio)              │        │
+│  │  All affiliated platform equity interests:           │        │
+│  │  • Wingspire Capital Holdings: $607M                 │        │
+│  │  • Blue Owl Credit SLF LLC: $415M                    │        │
+│  │  • Blue Owl Cross-Strategy: $62M                     │        │
+│  │  • Blue Owl Leasing: $1M                             │        │
+│  └──────────────────────────────────────────────────────┘        │
 │                                                                  │
-│  ┌─────────────────────────────────────┐                         │
-│  │  Ring C: CLO SECURITIZATIONS        │  ~$3.7B est.           │
-│  │  7 CLOs: Owl Rock CLO I, III, IV,  │  $2,298M debt          │
-│  │  V, VII, X, XIV                     │                         │
-│  │  Hold first lien loans only        │                         │
-│  │  Non-recourse, term-matched         │                         │
-│  │  No ABS-EE filings (4(a)(2))       │                         │
-│  │  ⚠ NOT available to parent          │                         │
-│  │  ✗ Per-CLO holdings not disclosed   │                         │
-│  └─────────────────────────────────────┘                         │
-│                                                                  │
-│  ┌─────────────────────────────────────┐                         │
-│  │  Ring D: SLF JOINT VENTURE          │  $2.3B assets          │
-│  │  Blue Owl Credit SLF LLC           │  $1.7B debt            │
-│  │  Unconsolidated — NOT on OBDC's    │  OBDC equity: $415M    │
-│  │  schedule (only equity interest)    │                         │
-│  │  ~250 broadly syndicated 1L loans  │                         │
-│  │  ✓ VISIBLE via EX-99.2 (see below) │                         │
-│  └─────────────────────────────────────┘                         │
-│                                                                  │
-│  ┌─────────────────────────────────────┐                         │
-│  │  Unencumbered Assets                │  ~$9.2B est. (56%)     │
-│  │  81 equity/specialty/unsecured      │  $3,410M (certain)     │
-│  │  + first lien loans not in SPV/CLO │  ~$5,800M (est.)       │
-│  │  Supports $5.0B unsecured notes    │                         │
-│  │  Coverage: ~1.8x on unsecured      │                         │
-│  └─────────────────────────────────────┘                         │
-│                                                                  │
-│  ⚠ Rings B+C+Unencumbered are all marked (26) in the Schedule.  │
-│  The 10-K does not map individual investments to specific SPVs   │
-│  or CLOs. Only Ring A and Ring D contents are directly visible.  │
+│  ┌──────────────────────────────────────────────────────┐        │
+│  │  OFF-BALANCE SHEET: SLF JOINT VENTURE                │        │
+│  │  Blue Owl Credit SLF LLC                             │        │
+│  │  $2.3B assets / $1.7B debt / ~250 1L loans           │        │
+│  │  Unconsolidated — OBDC holds $415M equity interest   │        │
+│  │  ✓ VISIBLE via EX-99.2 (see below)                   │        │
+│  └──────────────────────────────────────────────────────┘        │
 └──────────────────────────────────────────────────────────────────┘
+
+Key: 93% of OBDC's portfolio is pledged to secured facilities.
+Unsecured noteholders ($5.0B) rely on the $11.0B excess collateral
+value above secured claims ($15.4B pledged - $4.4B secured debt)
+plus the $1.1B of unencumbered assets.
 ```
-
-### Largest Unencumbered Positions (certain — equity & specialty finance)
-
-These positions are definitively NOT inside any SPV or CLO (ineligible asset types):
-
-| Company | Type | Fair Value |
-|---------|------|------------|
-| Wingspire Capital Holdings | Specialty Finance Equity | $607M |
-| Blue Owl Credit SLF LLC | JV Equity Interest | $415M |
-| Fifth Season Investments | Specialty Finance Equity | $403M |
-| Metis HoldCo (Mavis Tire) | Equity | $252M |
-| LSI Financing | Specialty Finance Equity | $211M |
-| Associations Finance, Inc. | Unsecured | $203M |
-| Windows Entities | Equity | $139M |
-| CD&R Value Building Partners (Belron) | Equity | $98M |
-| New PLI Holdings (PLI) | Equity | $87M |
-| WMC Bidco (West Monroe) | Equity | $78M |
-| Hg Saturn Luchaco Limited | Unsecured | $73M |
-| Sunshine Software (Cornerstone) | Equity | $67M |
-| Hg Genesis 9 SumoCo Limited | Unsecured | $63M |
-| Blue Owl Cross-Strategy Opportunities | Specialty Finance Equity | $62M |
-| Eagle Infrastructure Services | Equity | $58M |
-| *...66 more equity/specialty/unsecured positions* | | |
-| **Subtotal** | | **$3,410M** |
 
 ### Blue Owl Credit SLF LLC (Joint Venture — Exhibit 99.2)
 
@@ -406,7 +381,8 @@ The 10-K does not provide a facility-level breakdown of pledged fair values. Eac
 | **CLO debt (external)** | $2.3B (7 CLOs) | $1.7B (3 CLOs) |
 | **Available liquidity** | $3.8B | $3.4B+ |
 | **Ringfencing vehicles** | 4 SPVs + 7 CLOs + SLF JV | 3 funding subs + 3 CLOs |
-| **Pledging disclosure** | Marks un-pledged with (26) | Marks pledged with (2) |
+| **Unencumbered assets** | $1.1B (7%) — 4 affiliated equity positions | Not separately disclosed |
+| **Pledging disclosure** | Default pledged; marks 4 un-pledged with (26) | Marks pledged with (2) |
 | **Avg interest rate** | 5.6% | 4.9% |
 
 ### Key Structural Differences
@@ -415,7 +391,7 @@ The 10-K does not provide a facility-level breakdown of pledged fair values. Eac
 
 2. **Subsidiary funding facilities:** ARCC runs three large sub-facilities ($2.5B drawn across Ares Capital CP, ACJB, AFB) vs. OBDC's four SPV Asset Facilities ($1.1B drawn). ARCC's sub-facilities are larger individually. OBDC's structure is partly a legacy of the January 2025 OBDE merger, which brought SPV Facilities V, VI, and VII into the structure.
 
-3. **Disclosure approach:** OBDC marks **un-pledged** investments with footnote (26) — allowing us to identify exactly which 61 positions ($1.8B) back the parent revolver. ARCC marks **pledged** investments with footnote (2) but does NOT distinguish which specific facility holds each asset, making it harder to decompose the ringfence.
+3. **Disclosure approach:** OBDC uses footnote (25) as the **default** — virtually all investments (93%, $15.4B) are pledged collectively to the revolver, SPVs, and CLOs. Only 4 affiliated equity positions ($1.1B) carry footnote (26) marking them as unencumbered. ARCC marks **pledged** investments with footnote (2) but similarly does NOT distinguish which specific facility holds each asset. Neither BDC provides per-entity asset mappings.
 
 4. **Leverage & coverage:** ARCC runs more conservatively (189% asset coverage vs. 178% for OBDC), giving it more cushion. Both are well above the 150% statutory minimum.
 
@@ -427,13 +403,21 @@ The 10-K does not provide a facility-level breakdown of pledged fair values. Eac
 
 The critical structural subordination question: *what's left for unsecured noteholders?*
 
-**OBDC:** Only 61 positions ($1.8B) are pledged to the parent-level revolving credit facility. The remaining $14.5B is marked "not pledged to credit facilities" — this pool includes both:
-- Assets inside SPVs/CLOs (~$5.5B est.) that secure subsidiary debt and are NOT available to unsecured creditors
-- Truly unencumbered assets (~$9.2B est.) that would be available in a liquidation
+**OBDC (XBRL-corrected):** 93% of the portfolio ($15.4B) is pledged collectively to secured facilities. Only $1.1B (4 affiliated equity positions) is explicitly unencumbered per the XBRL footnote data. However, unsecured creditors benefit from the **massive excess collateral** in the secured pool:
 
-Coverage on unsecured notes from unencumbered assets: ~1.8x. Including revolver collateral surplus: higher.
+| | Amount |
+|---|---|
+| Total pledged assets (FV) | $15,389M |
+| Total secured debt | ($4,366M) |
+| **Excess collateral in secured pool** | **$11,023M** |
+| Unencumbered assets | $1,085M |
+| **Total residual for unsecured** | **$12,108M** |
+| Unsecured notes outstanding | ($5,025M) |
+| **Coverage on unsecured** | **2.4x** |
 
-**ARCC:** $29.5B total FV minus $6.3B secured debt = ~$23.2B supporting $9.75B unsecured notes. Coverage: ~2.4x. ARCC's higher asset coverage ratio (189% vs. 178%) and lower secured proportion (39% vs. 46.5%) provide modestly better protection for unsecured creditors.
+In practice, SPV/CLO assets in excess of their own debt would waterfall back to OBDC in a liquidation. The $4.4B of secured debt sits against $15.4B of pledged collateral, so there is substantial surplus that would ultimately support unsecured claims.
+
+**ARCC:** $29.5B total FV minus $6.3B secured debt = ~$23.2B supporting $9.75B unsecured notes. Coverage: ~2.4x. ARCC's higher asset coverage ratio (189% vs. 178%) provides modestly more cushion, though both BDCs show similar effective coverage when accounting for excess collateral.
 
 Both BDCs maintain investment-grade ratings on their unsecured debt.
 
