@@ -194,50 +194,84 @@ OBDC's equity interest in the SLF is valued at $415M on the consolidated schedul
 
 ## 2. Ares Capital Corporation (ARCC)
 
-### Overview
-- **Total portfolio fair value:** ~$29.5B
-- **Total debt outstanding:** ~$16.0B (as of Aug 2025 prospectus)
-- **Net debt-to-equity:** 1.08x
-- **Available liquidity:** >$6.0B
-- **Non-accruals (at cost):** 1.8%
+### Overview (from 10-K, FY2025)
+- **Total portfolio fair value:** $29.5B (amortized cost: $29.2B)
+- **Total debt outstanding:** $16.0B (principal value)
+- **Asset coverage ratio:** 189%
+- **Weighted average interest rate:** 4.9%
+- **Weighted average maturity:** 4.2 years
 
-### Capital Stack (Year-End 2025)
+### Complete Debt Structure (from 10-K Note 5)
 
-| Layer | Type | Amount | % of Debt |
-|-------|------|--------|-----------|
-| **Direct secured debt** | Senior secured revolving credit facility (JPM-led) | ~$3.4B | ~21% |
-| **Subsidiary secured debt** | SPV funding facilities (ARCC FB Funding, etc.) | ~$3.5B | ~22% |
-| **Unsecured notes** | Public investment-grade bonds | ~$9.1B | ~57% |
-| **Total debt** | | **~$16.0B** | 100% |
-| **Equity (NAV)** | | ~$14.8B | — |
+| Facility | Committed | Outstanding | Rate | Maturity |
+|----------|-----------|-------------|------|----------|
+| **Revolving Credit Facility** | $5,493M | $2,028M | S+153-178 bps | Mixed (see below) |
+| **Revolving Funding Facility** (Ares Capital CP) | $2,250M | $1,234M | S+180 bps | 7/2030 |
+| **SMBC Funding Facility** (ACJB) | $1,100M | $563M | S+180 bps | 7/2030 |
+| **BNP Funding Facility** (AFB) | $1,265M | $717M | S+190 bps | 3/2030 |
+| *Subtotal credit facilities* | *$10,108M* | *$4,542M* | | |
+| **ADL CLO 1** (Apr 2036) | $476M | $476M | S+186 blended | 4/2036 |
+| **ADL CLO 4** (Oct 2036) | $544M | $544M | S+158 blended | 10/2036 |
+| **ADL CLO 7** (Jan 2038) | $700M | $700M | S+147 blended | 1/2038 |
+| *Subtotal CLOs* | *$1,720M* | *$1,720M* | | |
+| **TOTAL SECURED** | **$11,828M** | **$6,262M** | | |
+| January 2026 Notes | $1,150M | $1,150M | 3.875% | 1/2026 |
+| July 2026 Notes | $1,000M | $1,000M | 2.150% | 7/2026 |
+| January 2027 Notes | $900M | $900M | 6.331% eff | 1/2027 |
+| June 2027 Notes | $500M | $500M | 2.875% | 6/2027 |
+| June 2028 Notes | $1,250M | $1,250M | 2.875% | 6/2028 |
+| March 2029 Notes | $1,000M | $1,000M | 5.895% eff | 3/2029 |
+| July 2029 Notes | $850M | $850M | 5.393% eff | 7/2029 |
+| September 2030 Notes | $750M | $750M | 5.643% eff | 9/2030 |
+| January 2031 Notes | $650M | $650M | 5.100% | 1/2031 |
+| November 2031 Notes | $700M | $700M | 3.200% | 11/2031 |
+| March 2032 Notes | $1,000M | $1,000M | 5.800% | 3/2032 |
+| *Subtotal unsecured* | *$9,750M* | *$9,750M* | | |
+| **TOTAL DEBT** | **$21,578M** | **$16,012M** | | |
 
-### Secured Facilities
+### Facility Structures (from 10-K Note 5)
 
-**Senior Secured Revolving Credit Facility (A&R Credit Facility):**
-- Administrative agent: JPMorgan Chase Bank, N.A.
-- Total commitments: ~$5.5B (upsized from $5.4B in July 2025)
-- Pricing: SOFR + 10 bps credit spread adjustment + 175-187.5 bps applicable spread
-- Secured by a borrowing base with different advance rates per asset type
-- Available capacity: ~$5.2B for additional borrowings (as of Sep 30, 2025)
+**Revolving Credit Facility** ($5,493M committed = $4,349M revolving + $1,144M term loan):
+- Available for borrowing: $3,411M (net of $54M letters of credit + $218M Deutsche Bank LC facility)
+- Accordion feature up to ~$7,925M
+- Spread: SOFR + 0.10% CSA + 1.525%/1.650%/1.775% (tiered based on borrowing base utilization)
+- Commitment fee: 0.325% on unused portion
+- Maturity: $4,058M revolving ends 4/2029 (matures 4/2030), $246M ends 3/2026, $45M ends 4/2028
+- **Collateral: Secured by certain assets in the Company's portfolio, EXCLUDING investments held by subsidiary facilities** (Ares Capital CP, ACJB, AFB, ADL CLO 1/4/7)
 
-**ARCC FB Funding LLC (BNP Funding Facility):**
-- Borrower: ARCC FB Funding LLC ("AFB"), wholly owned subsidiary
-- Administrative agent: BNP Paribas
-- Collateral agent: U.S. Bank Trust Company
-- Structure: Revolving credit and security agreement (June 2020, 7th Amendment April 2024)
+**Revolving Funding Facility** (Ares Capital CP Funding LLC → $2,250M):
+- SOFR + 180 bps; reinvestment period through 7/2028; maturity 7/2030
+- Secured by all assets held by Ares Capital CP
+- Borrowing base with advance rates; restrictions on sector concentrations, loan size, payment frequency, fixed rate loans, portfolio company leverage
+- Average 2025 outstanding: $1,068M at 6.15%
 
-Collateral eligibility criteria for the BNP Funding Facility:
-- Minimum **96%** Senior Secured Loans and Eligible Investments
-- Maximum **4%** Second Lien Loans (including First-Lien Last-Out)
-- Maximum **5%** Fixed Rate Underlying Assets
-- Maximum **17.5%** of assets rated CCC+ or below (S&P/Fitch)
-- Concentration limits: ≤15% First Lien Last Out / Second Lien combined; ≤10% Second Lien alone
-- Must satisfy Maximum Weighted Average Life Test
+**SMBC Funding Facility** (Ares Capital JB Funding LLC → $1,100M, accordion to $1,300M):
+- SOFR + 180 bps; reinvestment period through 7/2028; maturity 7/2030 (extendable)
+- Secured by all assets held by ACJB
+- Same restriction categories as Revolving Funding Facility
+- Average 2025 outstanding: $455M at 6.13%
 
-### Unsecured Notes
-- Total outstanding: ~$9.1B
-- January 2025 issuance: $1.0B, 5.800% coupon, maturing March 8, 2032
-- ~70% of total borrowings are floating rate (up from ~50% prior year)
+**BNP Funding Facility** (ARCC FB Funding LLC → $1,265M):
+- SOFR + 190 bps (reinvestment), +240 bps (post-reinvestment); reinvest through 3/2028; maturity 3/2030
+- Secured by all assets held by AFB
+- Same restriction categories
+- Average 2025 outstanding: $721M at 6.18%
+
+**CLOs (ADL CLO 1, 4, 7):**
+- ADL CLO 1: $702M total ($476M external), Class A $406M at S+180, Class B $70M at S+220; reinvest through 4/2028
+- ADL CLO 4: $804M total ($544M external), Class A $464M at S+154, Class B $80M at S+183; reinvest through 10/2028
+- ADL CLO 7: $1,003M total ($700M external), Class A-1 $570M at S+140, Class A-2 $50M at S+165, Class B $80M at S+185; reinvest through 1/2038
+- ARCC retains subordinated notes ($226M + $260M + $303M = $789M) eliminated in consolidation
+- All backed by diversified portfolios of first lien senior secured loans
+
+### What's in the Ringfence? (from 10-K Schedule of Investments)
+
+ARCC uses a **different disclosure approach** than OBDC:
+- **Footnote (2):** "These assets are pledged as collateral under the Company's or the Company's consolidated subsidiaries' various revolving credit facilities and debt securitizations and, as a result, are not directly available to the creditors of the Company to satisfy any obligations of the Company other than the obligations under each of the respective credit facilities and debt securitizations."
+
+Unlike OBDC (which marks un-pledged assets), ARCC marks **pledged** assets with footnote (2). However, ARCC does **NOT** use separate footnotes to distinguish which specific facility each investment is pledged to — the single (2) covers all facilities collectively.
+
+The 10-K does not provide a facility-level breakdown of pledged fair values. Each subsidiary (Ares Capital CP, ACJB, AFB, ADL CLO 1/4/7) holds its own segregated collateral pool, but the per-subsidiary allocation is not disclosed at the line-item level.
 
 ### Asset Allocation
 
@@ -246,22 +280,25 @@ Collateral eligibility criteria for the BNP Funding Facility:
 │                    ARCC TOTAL PORTFOLIO: $29.5B                  │
 │                                                                  │
 │  ┌─────────────────────────────────────┐                         │
-│  │  REVOLVER COLLATERAL                │  ~$3.4B drawn           │
-│  │  Secured by borrowing base          │  $5.5B committed        │
-│  │  (advance rates per asset type)     │                         │
+│  │  REVOLVER COLLATERAL                │  $2.0B drawn            │
+│  │  Parent-level assets only           │  $5.5B committed        │
+│  │  Secured by borrowing base          │  $3.4B available        │
+│  │  EXCLUDES sub-facility assets       │                         │
 │  └─────────────────────────────────────┘                         │
 │                                                                  │
 │  ┌─────────────────────────────────────┐                         │
-│  │  RINGFENCED SUBSIDIARIES            │  ~$3.5B debt            │
-│  │  ARCC FB Funding LLC (BNP)          │                         │
-│  │  + other consolidated subs          │                         │
-│  │  ≥96% sr sec, ≤4% 2L, ≤5% fixed    │                         │
-│  │  ⚠ Structurally senior to parent   │                         │
+│  │  RINGFENCED SUBSIDIARIES            │  $4.2B debt             │
+│  │  Ares Capital CP ($2,250M commit)   │                         │
+│  │  ACJB / SMBC ($1,100M commit)       │                         │
+│  │  AFB / BNP ($1,265M commit)         │                         │
+│  │  ADL CLO 1/4/7 ($1,720M external)   │                         │
+│  │  ⚠ NOT available to parent          │                         │
+│  │  ⚠ NOT available to unsecured       │                         │
 │  └─────────────────────────────────────┘                         │
 │                                                                  │
 │  ┌─────────────────────────────────────┐                         │
-│  │  SUPPORTS UNSECURED NOTES           │  ~$9.1B unsecured       │
-│  │  General credit of ARCC             │  Coverage: ~2.5x        │
+│  │  SUPPORTS UNSECURED NOTES           │  $9.75B unsecured       │
+│  │  General credit of ARCC             │                         │
 │  └─────────────────────────────────────┘                         │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -275,27 +312,32 @@ Collateral eligibility criteria for the BNP Funding Facility:
 | Metric | OBDC | ARCC |
 |--------|------|------|
 | **Total assets (FV)** | $16.5B | $29.5B |
-| **Total debt** | $9.4B | ~$16.0B |
-| **Net debt/equity** | 1.19x | 1.08x |
-| **Asset coverage** | 178% | ~185% |
-| **Secured debt** | $4.4B (46.5%) | ~$6.9B (~43%) |
-| **Unsecured notes** | $5.0B (53.5%) | ~$9.1B (~57%) |
-| **Available liquidity** | $4.2B | >$6.0B |
-| **Ringfencing vehicles** | 4 SPVs + 7 CLOs + SLF JV | AFB + other subs |
-| **Investments pledged to parent revolver** | ~61 ($1.8B) | Not separately disclosed |
-| **Investments NOT pledged to parent** | ~302 ($14.5B) | Not separately disclosed |
+| **Total debt** | $9.4B | $16.0B |
+| **Total committed** | $13.0B | $21.6B |
+| **Asset coverage** | 178% | 189% |
+| **Secured debt** | $4.4B (46.5%) | $6.3B (39%) |
+| **Unsecured notes** | $5.0B (53.5%) | $9.8B (61%) |
+| **Revolver drawn / committed** | $1.0B / $4.0B (25%) | $2.0B / $5.5B (37%) |
+| **Sub-facility debt** | $1.1B (4 SPVs) | $2.5B (3 subs) |
+| **CLO debt (external)** | $2.3B (7 CLOs) | $1.7B (3 CLOs) |
+| **Available liquidity** | $3.8B | $3.4B+ |
+| **Ringfencing vehicles** | 4 SPVs + 7 CLOs + SLF JV | 3 funding subs + 3 CLOs |
+| **Pledging disclosure** | Marks un-pledged with (26) | Marks pledged with (2) |
+| **Avg interest rate** | 5.6% | 4.9% |
 
 ### Key Structural Differences
 
-1. **CLO usage:** OBDC has seven active CLO transactions ($2.3B outstanding), providing term-matched, non-recourse funding. ARCC relies more on revolving subsidiary facilities.
+1. **CLO usage:** OBDC has seven active CLO transactions ($2.3B outstanding) vs. ARCC's three ($1.7B external). OBDC uses CLOs more aggressively for term-matched, non-recourse funding. ARCC's CLOs are newer (2024-2025 vintages) and achieved tighter spreads (S+147-186 blended vs. OBDC's older structures).
 
-2. **Ringfencing granularity:** OBDC's 4 SPVs + 7 CLOs + SLF JV create many discrete collateral pools. ARCC's approach uses fewer, larger ringfenced subsidiaries (primarily AFB). OBDC's structure is partly a legacy of the January 2025 OBDE merger, which brought SPV Facilities V, VI, and VII into the structure.
+2. **Subsidiary funding facilities:** ARCC runs three large sub-facilities ($2.5B drawn across Ares Capital CP, ACJB, AFB) vs. OBDC's four SPV Asset Facilities ($1.1B drawn). ARCC's sub-facilities are larger individually. OBDC's structure is partly a legacy of the January 2025 OBDE merger, which brought SPV Facilities V, VI, and VII into the structure.
 
-3. **Disclosure:** OBDC's Schedule of Investments uses footnotes (25)/(26) to mark every investment as pledged or not. ARCC discloses eligibility criteria for the BNP Facility (96% senior secured, ≤4% 2L, etc.) but the 10-K's per-investment footnoting follows a similar approach.
+3. **Disclosure approach:** OBDC marks **un-pledged** investments with footnote (26) — allowing us to identify exactly which 61 positions ($1.8B) back the parent revolver. ARCC marks **pledged** investments with footnote (2) but does NOT distinguish which specific facility holds each asset, making it harder to decompose the ringfence.
 
-4. **Leverage:** ARCC runs at lower leverage (1.08x vs. 1.19x), giving it more cushion relative to the 2:1 statutory BDC leverage limit.
+4. **Leverage & coverage:** ARCC runs more conservatively (189% asset coverage vs. 178% for OBDC), giving it more cushion. Both are well above the 150% statutory minimum.
 
-5. **Revolver utilization:** OBDC draws $1.0B on a $4.0B revolver (25% utilization) vs. ARCC drawing ~$3.4B on $5.5B (~62%). OBDC has relatively more "dry powder" in its revolver.
+5. **Revolver utilization:** OBDC draws $1.0B on $4.0B (25%) vs. ARCC $2.0B on $5.5B (37%). Both have substantial dry powder. ARCC's revolver has an accordion up to ~$7.9B.
+
+6. **Unsecured mix:** ARCC has shifted more toward unsecured funding (61% of debt vs. OBDC's 53.5%), which reduces structural subordination for unsecured noteholders. ARCC's lower average cost (4.9% vs. 5.6%) reflects its larger proportion of low-coupon legacy notes and effective interest rate swap program.
 
 ### Implications for Unsecured Creditors
 
@@ -307,7 +349,7 @@ The critical structural subordination question: *what's left for unsecured noteh
 
 Coverage on unsecured notes from unencumbered assets: ~1.8x. Including revolver collateral surplus: higher.
 
-**ARCC:** ~$29.5B total FV minus ~$6.9B secured = ~$22.6B supporting ~$9.1B unsecured notes. Coverage: ~2.5x.
+**ARCC:** $29.5B total FV minus $6.3B secured debt = ~$23.2B supporting $9.75B unsecured notes. Coverage: ~2.4x. ARCC's higher asset coverage ratio (189% vs. 178%) and lower secured proportion (39% vs. 46.5%) provide modestly better protection for unsecured creditors.
 
 Both BDCs maintain investment-grade ratings on their unsecured debt.
 
@@ -318,6 +360,7 @@ Both BDCs maintain investment-grade ratings on their unsecured debt.
 - [OBDC 10-K (FY2025) on SEC EDGAR](https://www.sec.gov/Archives/edgar/data/0001655888/000165588826000010/obdc-20251231.htm) — Note 5 (Debt), Schedule of Investments, Exhibit 21.1 (Subsidiary List), Exhibit 99.2 (SLF Financials)
 - [OBDC Q4 2025 Earnings Release](https://www.blueowlcapitalcorporation.com/investors/news-events/press-releases/detail/90/blue-owl-capital-corporation-announces-december-31-2025)
 - [OBDC Debt Securities Page](https://www.blueowlcapitalcorporation.com/investors/fixed-income/debt-securities)
+- [ARCC 10-K (FY2025) on SEC EDGAR](https://www.sec.gov/Archives/edgar/data/1287750/000128775026000006/arcc-20251231.htm) — Note 5 (Debt), Schedule of Investments
 - [ARCC Investor Resources](https://ir.arescapitalcorp.com/)
 - [ARCC SEC Prospectus Filing (Aug 2025)](https://www.sec.gov/Archives/edgar/data/1287750/000110465925087467/arcc-20250902xn2.htm)
 - [ARCC BNP Funding Facility Amendment (8-K, Apr 2024)](https://www.sec.gov/Archives/edgar/data/1287750/000128775024000021/arcc-20240412.htm)
